@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("editor")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  news      News[]
+}
+
+model News {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  content   String
+  imageUrl  String?
+  published Boolean  @default(false)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String   @default("")
+  category  String   @default("general")
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Camp {
+  id             String        @id @default(cuid())
+  city           String
+  venue          String
+  dates          String
+  price          String
+  earlyBirdPrice String
+  totalSpots     Int
+  remainingSpots Int
+  active         Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  applications   Application[]
+}
+
+model Application {
+  id          String   @id @default(cuid())
+  parentName  String
+  parentEmail String
+  parentPhone String
+  childName   String
+  childAge    Int
+  campId      String
+  camp        Camp     @relation(fields: [campId], references: [id])
+  status      String   @default("new")
+  notes       String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
