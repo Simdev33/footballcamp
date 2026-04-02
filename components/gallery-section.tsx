@@ -3,15 +3,17 @@
 import Image from "next/image"
 import { useLanguage } from "@/lib/language-context"
 
+const CDN = "https://focis.b-cdn.net"
+
 const GALLERY_IMAGES = [
   { src: "/edzes-kozben.jpg", alt: "Edzés közben", span: "col-span-1 row-span-1" },
-  { src: "/gyerekcsapat.jpg", alt: "Csapatmunka", span: "col-span-1 row-span-2" },
+  { src: `${CDN}/Photos/14-Pavlidis_2.png`, alt: "Pavlidis - SL Benfica", span: "col-span-1 row-span-2" },
   { src: "/gyerekek-edzovel.jpg", alt: "Gyerekek az edzővel", span: "col-span-1 row-span-1" },
-  { src: "/kickoff-labdaval.jpg", alt: "Kickoff", span: "col-span-1 row-span-2" },
-  { src: "/field-with-balls.jpg", alt: "Pálya labdákkal", span: "col-span-1 row-span-1" },
-  { src: "/soccer-match.jpg", alt: "Mérkőzés", span: "col-span-1 row-span-1" },
-  { src: "/youth-soccer.jpg", alt: "Ifjúsági foci", span: "col-span-1 row-span-1" },
-  { src: "/soccer-ball-grass.jpg", alt: "Focilabda", span: "col-span-1 row-span-1" },
+  { src: `${CDN}/Photos/5-BARRENECHEA-3.png`, alt: "Barrenechea - SL Benfica", span: "col-span-1 row-span-2" },
+  { src: "/gyerekcsapat.jpg", alt: "Csapatmunka", span: "col-span-1 row-span-1" },
+  { src: `${CDN}/Photos/84-Joao-Rego.png`, alt: "João Rego - SL Benfica", span: "col-span-1 row-span-1" },
+  { src: "/kickoff-labdaval.jpg", alt: "Kickoff", span: "col-span-1 row-span-1" },
+  { src: `${CDN}/Photos/66-J.Wynder_2.png`, alt: "Wynder - SL Benfica", span: "col-span-1 row-span-1" },
 ]
 
 export function GallerySection() {

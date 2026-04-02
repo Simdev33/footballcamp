@@ -3,6 +3,8 @@ import { deleteCamp } from "@/lib/actions"
 import Link from "next/link"
 import { Plus, MapPin, Calendar, Users, Pencil, Trash2 } from "lucide-react"
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminCampsPage() {
   const camps = await db.camp.findMany({ orderBy: { createdAt: "desc" }, include: { _count: { select: { applications: true } } } })
 

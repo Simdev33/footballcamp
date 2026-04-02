@@ -26,7 +26,13 @@ export default function AdminLoginPage() {
     setLoading(false)
 
     if (result?.error) {
-      setError("Hibás email vagy jelszó")
+      if (result.code === "database_unreachable") {
+        setError(
+          "Az alkalmazás nem éri el az adatbázist (rossz DATABASE_URL vagy hálózat). Supabase: Project Settings → Database → másold ki a Connection stringet a .env-be, majd indítsd újra a dev szervert. Ellenőrzés: npm run db:users"
+        )
+      } else {
+        setError("Hibás email vagy jelszó")
+      }
     } else {
       router.push("/admin")
       router.refresh()

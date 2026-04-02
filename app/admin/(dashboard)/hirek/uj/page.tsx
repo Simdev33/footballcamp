@@ -4,11 +4,13 @@ import { useSession } from "next-auth/react"
 import { createNews } from "@/lib/actions"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { ImagePicker } from "@/components/admin/image-picker"
 import { useState } from "react"
 
 export default function NewNewsPage() {
   const { data: session } = useSession()
   const [content, setContent] = useState("")
+  const [imageUrl, setImageUrl] = useState("")
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -28,8 +30,9 @@ export default function NewNewsPage() {
         </div>
 
         <div>
-          <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Kép URL (opcionális)</label>
-          <input type="text" name="imageUrl" className="w-full h-11 px-4 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm" placeholder="https://..." />
+          <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Kep (opcionalis)</label>
+          <ImagePicker value={imageUrl} onChange={setImageUrl} folder="news" />
+          <input type="hidden" name="imageUrl" value={imageUrl} />
         </div>
 
         <div>

@@ -240,14 +240,14 @@ export const translations = {
       register: "Register",
     },
     hero: {
-      campBadge: "International kids' football camp · Benfica",
+      campBadge: "International youth football camp",
       location: "Ages 6–15, boys & girls",
       pickLocation: "Choose your camp location",
       line1: "Top European",
       line2: "football academy",
       line3: "coaches in Hungary!",
       subtitle:
-        "Summer football camp with international coaches and academy methodology – real development and unforgettable moments on the pitch.",
+        "Summer football camp with international coaches and academy methodology – real development, an unforgettable experience on the pitch.",
       cta: "Register now",
       earlyLabel: "Limited spots!",
       scroll: "Scroll",

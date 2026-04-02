@@ -192,7 +192,7 @@ export function Hero() {
                   type="button"
                   onClick={() => api?.scrollTo(i)}
                   className={cn(
-                    "h-2.5 rounded-full transition-all duration-300",
+                    "h-2.5 rounded-full transition-[width,background-color] duration-300",
                     current === i ? "w-10 bg-[#d4a017]" : "w-2.5 bg-white/35 hover:bg-white/55",
                   )}
                   aria-label={camp.city}

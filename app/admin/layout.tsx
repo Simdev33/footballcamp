@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { AdminSessionProvider } from "./admin-session-provider"
 
 export const metadata: Metadata = {
   title: "Admin | Benfica Football Camp",
@@ -6,5 +7,5 @@ export const metadata: Metadata = {
 }
 
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {
-  return children
+  return <AdminSessionProvider>{children}</AdminSessionProvider>
 }

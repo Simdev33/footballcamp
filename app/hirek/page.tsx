@@ -4,6 +4,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { Calendar, ArrowRight } from "lucide-react"
 
+export const dynamic = 'force-dynamic'
+
 export default async function HirekPage() {
   const news = await db.news.findMany({
     where: { published: true },

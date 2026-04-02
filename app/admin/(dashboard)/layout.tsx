@@ -2,12 +2,12 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { useSession, signOut, SessionProvider } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 import {
   LayoutDashboard, Newspaper, ImageIcon, Tent, ClipboardList,
   Users, LogOut, ChevronLeft, Menu, Shield,
 } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -18,35 +18,6 @@ const NAV_ITEMS = [
   { href: "/admin/felhasznalok", label: "Felhasználók", icon: Users },
 ]
 
-function AdminSidebar() {
-  const pathname = usePathname()
-  const router = useRouter()
-  const { data: session, status } = useSession()
-  const [collapsed, setCollapsed] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen bg-[#0a1f0a] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#d4a017] border-t-transparent animate-spin" />
-      </div>
-    )
-  }
-
-  if (status === "unauthenticated") {
-    router.push("/admin/login")
-    return null
-  }
-
-  const role = (session?.user as any)?.role || "viewer"
-  const filteredNav = NAV_ITEMS.filter((item) => {
-    if (item.href === "/admin/felhasznalok" && role !== "super_admin") return false
-    return true
-  })
-
-  return { collapsed, setCollapsed, mobileOpen, setMobileOpen, pathname, session, role, filteredNav }
-}
-
 function DashboardInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
@@ -54,17 +25,18 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
-  if (status === "loading") {
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/admin/login")
+    }
+  }, [status, router])
+
+  if (status === "loading" || status === "unauthenticated") {
     return (
       <div className="min-h-screen bg-[#0a1f0a] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#d4a017] border-t-transparent animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#d4a017] border-t-transparent rounded-full animate-spin" />
       </div>
     )
-  }
-
-  if (status === "unauthenticated") {
-    router.push("/admin/login")
-    return null
   }
 
   const role = (session?.user as any)?.role || "viewer"
@@ -75,14 +47,11 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-[#0b1e0b] flex">
-      {/* Mobile overlay */}
       {mobileOpen && (
         <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setMobileOpen(false)} />
       )}
 
-      {/* Sidebar */}
       <aside className={`fixed lg:sticky top-0 left-0 h-screen z-50 bg-[#0a1f0a] border-r border-[#d4a017]/10 flex flex-col transition-all duration-300 ${collapsed ? "w-20" : "w-64"} ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
-        {/* Logo */}
         <div className="h-16 flex items-center gap-3 px-4 border-b border-[#d4a017]/10">
           <div className="w-10 h-10 bg-[#d4a017] flex items-center justify-center flex-shrink-0">
             <Shield className="w-5 h-5 text-[#0a1f0a]" />
@@ -90,7 +59,6 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
           {!collapsed && <span className="font-serif font-bold text-white text-sm">Admin Panel</span>}
         </div>
 
-        {/* Nav */}
         <nav className="flex-1 py-4 overflow-y-auto">
           {filteredNav.map((item) => {
             const isActive = item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href)
@@ -112,7 +80,6 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        {/* User / Collapse */}
         <div className="border-t border-[#d4a017]/10 p-3">
           {!collapsed && session?.user && (
             <div className="mb-3 px-2">
@@ -132,9 +99,7 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      {/* Main */}
       <div className="flex-1 flex flex-col min-h-screen">
-        {/* Top bar */}
         <header className="h-16 bg-[#0a1f0a]/80 backdrop-blur border-b border-[#d4a017]/10 flex items-center px-4 lg:px-8 sticky top-0 z-30">
           <button onClick={() => setMobileOpen(true)} className="lg:hidden w-10 h-10 flex items-center justify-center text-white/50 hover:text-white mr-3">
             <Menu className="w-5 h-5" />
@@ -144,7 +109,6 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
           </h1>
         </header>
 
-        {/* Content */}
         <main className="flex-1 p-4 lg:p-8">
           {children}
         </main>
@@ -154,9 +118,5 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
 }
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <SessionProvider>
-      <DashboardInner>{children}</DashboardInner>
-    </SessionProvider>
-  )
+  return <DashboardInner>{children}</DashboardInner>
 }

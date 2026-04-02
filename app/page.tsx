@@ -117,8 +117,8 @@ export default function Home() {
         titleHighlight={t.experience.textHighlight}
         titleEnd={t.experience.text1End}
         text={t.experience.text2}
-        imageSrc="/kickoff-labdaval.jpg"
-        imageAlt="Futball labda közelről"
+        imageSrc="https://focis.b-cdn.net/Post_2%20Kit/fundo-iniciados-juvenis.png"
+        imageAlt="Benfica Football Camp"
       >
         <blockquote className="relative pl-6 border-l-2 border-[#d4a017]/50">
           <p className="font-serif text-base text-white/80 italic leading-relaxed">

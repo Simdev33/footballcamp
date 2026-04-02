@@ -4,6 +4,8 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, User, Mail, Phone, Calendar, MapPin } from "lucide-react"
 
+export const dynamic = 'force-dynamic'
+
 const STATUSES = [
   { value: "new", label: "Új", color: "bg-blue-500" },
   { value: "processing", label: "Feldolgozás alatt", color: "bg-amber-500" },

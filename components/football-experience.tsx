@@ -11,7 +11,7 @@ export function FootballExperience() {
       <div className="absolute inset-0">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/soccer-ball-grass.jpg')" }}
+          style={{ backgroundImage: "url('https://focis.b-cdn.net/Post_2%20Kit/fundo-infantis.png')" }}
         />
         <div className="absolute inset-0 bg-[#0a1f0a]/92" />
       </div>

@@ -1,9 +1,15 @@
-import NextAuth from "next-auth"
+import NextAuth, { CredentialsSignin } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import { compare } from "bcryptjs"
 import { db } from "@/lib/db"
 
+class DatabaseUnreachable extends CredentialsSignin {
+  code = "database_unreachable"
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
+  secret: process.env.AUTH_SECRET,
   pages: {
     signIn: "/admin/login",
   },
@@ -16,33 +22,42 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null
+        const rawEmail = credentials?.email
+        const password = credentials?.password
+        if (!rawEmail || !password) return null
 
-        const user = await db.user.findUnique({
-          where: { email: credentials.email as string },
-        })
+        const email = String(rawEmail).trim().toLowerCase()
 
-        if (!user) return null
+        try {
+          const user = await db.user.findUnique({
+            where: { email },
+          })
 
-        const isValid = await compare(credentials.password as string, user.password)
-        if (!isValid) return null
+          if (!user) return null
 
-        return { id: user.id, name: user.name, email: user.email, role: user.role }
+          const isValid = await compare(String(password), user.password)
+          if (!isValid) return null
+
+          return { id: user.id, name: user.name, email: user.email, role: user.role }
+        } catch (err) {
+          console.error("[auth] Adatbázis hiba bejelentkezéskor:", err)
+          throw new DatabaseUnreachable()
+        }
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role
-        token.id = user.id
+        token.userRole = (user as any).role
+        token.userId = user.id
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).role = token.role
-        (session.user as any).id = token.id
+        (session.user as any).role = token.userRole as string
+        (session.user as any).id = token.userId as string
       }
       return session
     },

@@ -2,6 +2,8 @@ import { db } from "@/lib/db"
 import { createUser, updateUserRole, deleteUser } from "@/lib/actions"
 import { UserPlus, Trash2, Shield, Pencil, Eye } from "lucide-react"
 
+export const dynamic = 'force-dynamic'
+
 const ROLE_CONFIG: Record<string, { label: string; icon: any; class: string }> = {
   super_admin: { label: "Super Admin", icon: Shield, class: "bg-[#d4a017]/15 text-[#d4a017]" },
   editor: { label: "Szerkesztő", icon: Pencil, class: "bg-blue-500/15 text-blue-400" },

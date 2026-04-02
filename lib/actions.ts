@@ -7,10 +7,21 @@ import { hash } from "bcryptjs"
 
 // ─── Camps ───
 
+function parseIncludes(formData: FormData): string[] {
+  const raw = formData.get("includes") as string
+  if (!raw) return []
+  return raw
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean)
+}
+
 export async function createCamp(formData: FormData) {
+  const city = formData.get("city") as string
   await db.camp.create({
     data: {
-      city: formData.get("city") as string,
+      slug: slugify(city) + "-" + Date.now().toString(36),
+      city,
       venue: formData.get("venue") as string,
       dates: formData.get("dates") as string,
       price: formData.get("price") as string,
@@ -18,14 +29,20 @@ export async function createCamp(formData: FormData) {
       totalSpots: Number(formData.get("totalSpots")),
       remainingSpots: Number(formData.get("totalSpots")),
       active: formData.get("active") === "on",
+      description: (formData.get("description") as string) || "",
+      imageUrl: (formData.get("imageUrl") as string) || null,
+      clubName: (formData.get("clubName") as string) || "SL Benfica",
+      ageRange: (formData.get("ageRange") as string) || "6-15",
+      includes: parseIncludes(formData),
     },
   })
   revalidatePath("/admin/taborok")
+  revalidatePath("/taborok")
   redirect("/admin/taborok")
 }
 
 export async function updateCamp(id: string, formData: FormData) {
-  await db.camp.update({
+  const camp = await db.camp.update({
     where: { id },
     data: {
       city: formData.get("city") as string,
@@ -36,15 +53,23 @@ export async function updateCamp(id: string, formData: FormData) {
       totalSpots: Number(formData.get("totalSpots")),
       remainingSpots: Number(formData.get("remainingSpots")),
       active: formData.get("active") === "on",
+      description: (formData.get("description") as string) || "",
+      imageUrl: (formData.get("imageUrl") as string) || null,
+      clubName: (formData.get("clubName") as string) || "SL Benfica",
+      ageRange: (formData.get("ageRange") as string) || "6-15",
+      includes: parseIncludes(formData),
     },
   })
   revalidatePath("/admin/taborok")
+  revalidatePath("/taborok")
+  revalidatePath(`/taborok/${camp.slug}`)
   redirect("/admin/taborok")
 }
 
 export async function deleteCamp(id: string) {
   await db.camp.delete({ where: { id } })
   revalidatePath("/admin/taborok")
+  revalidatePath("/taborok")
 }
 
 // ─── Applications ───

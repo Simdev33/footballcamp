@@ -91,7 +91,7 @@ export default function PartnerprogramPage() {
       {/* Image + CTA Banner */}
       <section className="relative py-20 md:py-28 overflow-hidden">
         <div className="absolute inset-0">
-          <Image src="/youth-soccer.jpg" alt="" fill className="object-cover" loading="lazy" />
+          <Image src="https://focis.b-cdn.net/Post_1%20Camp/03%20Template%20Benfica%20Camp%202025_26-03.png" alt="Benfica Camp" fill className="object-cover" loading="lazy" />
           <div className="absolute inset-0 bg-[#0a1f0a]/85" />
         </div>
         <div className="relative z-10 max-w-[800px] mx-auto px-6 md:px-12 text-center">

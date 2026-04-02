@@ -4,10 +4,12 @@ import { useEffect, useState } from "react"
 import { updateNews } from "@/lib/actions"
 import Link from "next/link"
 import { ArrowLeft, Loader2 } from "lucide-react"
+import { ImagePicker } from "@/components/admin/image-picker"
 
 export default function EditNewsPage({ params }: { params: Promise<{ id: string }> }) {
   const [news, setNews] = useState<any>(null)
   const [content, setContent] = useState("")
+  const [imageUrl, setImageUrl] = useState("")
   const [id, setId] = useState("")
 
   useEffect(() => {
@@ -17,6 +19,7 @@ export default function EditNewsPage({ params }: { params: Promise<{ id: string 
       const data = await res.json()
       setNews(data)
       setContent(data.content)
+      setImageUrl(data.imageUrl || "")
     })
   }, [params])
 
@@ -47,8 +50,9 @@ export default function EditNewsPage({ params }: { params: Promise<{ id: string 
         </div>
 
         <div>
-          <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Kép URL</label>
-          <input type="text" name="imageUrl" defaultValue={news.imageUrl || ""} className="w-full h-11 px-4 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm" />
+          <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Kep</label>
+          <ImagePicker value={imageUrl} onChange={setImageUrl} folder="news" />
+          <input type="hidden" name="imageUrl" value={imageUrl} />
         </div>
 
         <div>

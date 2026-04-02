@@ -1,22 +1,21 @@
 import { db } from "@/lib/db"
 import { Tent, ClipboardList, Newspaper, ImageIcon } from "lucide-react"
 
+export const dynamic = 'force-dynamic'
+
 async function getStats() {
-  const [campCount, applicationCount, newsCount, galleryCount, recentApplications] = await Promise.all([
+  const [campCount, applicationCount, newsCount, galleryCount, newApplications, recentApplications] = await Promise.all([
     db.camp.count({ where: { active: true } }),
     db.application.count(),
     db.news.count({ where: { published: true } }),
     db.galleryImage.count(),
+    db.application.count({ where: { status: "new" } }),
     db.application.findMany({
       take: 5,
       orderBy: { createdAt: "desc" },
       include: { camp: true },
     }),
   ])
-
-  const newApplications = await db.application.count({
-    where: { status: "new" },
-  })
 
   return { campCount, applicationCount, newsCount, galleryCount, newApplications, recentApplications }
 }
