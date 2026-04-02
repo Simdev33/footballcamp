@@ -1,16 +1,25 @@
-import { auth } from "@/lib/auth"
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
 
-export default auth((req) => {
-  const isAdmin = req.nextUrl.pathname.startsWith("/admin")
+export function middleware(req: NextRequest) {
   const isLogin = req.nextUrl.pathname === "/admin/login"
-  const isApi = req.nextUrl.pathname.startsWith("/api")
+  const token =
+    req.cookies.get("authjs.session-token")?.value ||
+    req.cookies.get("__Secure-authjs.session-token")?.value
 
-  if (!isAdmin || isLogin || isApi) return
-
-  if (!req.auth) {
-    return Response.redirect(new URL("/admin/login", req.nextUrl.origin))
+  if (isLogin) {
+    if (token) {
+      return NextResponse.redirect(new URL("/admin", req.url))
+    }
+    return NextResponse.next()
   }
-})
+
+  if (!token) {
+    return NextResponse.redirect(new URL("/admin/login", req.url))
+  }
+
+  return NextResponse.next()
+}
 
 export const config = {
   matcher: ["/admin/:path*"],
