@@ -18,7 +18,7 @@ export function WhySpecial() {
           <div className="relative order-2 lg:order-1">
             <div className="relative aspect-[4/3] overflow-hidden">
               <Image
-                src="/gyerekek-edzovel.jpg"
+                src="https://focis.b-cdn.net/site/gyerekek-edzovel.jpg"
                 alt="Gyerekek az edzővel"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"

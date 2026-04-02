@@ -19,7 +19,7 @@ export default function RolunkPage() {
       {/* Hero with background image */}
       <section className="relative pt-36 pb-24 md:pt-44 md:pb-32 overflow-hidden">
         <div className="absolute inset-0">
-          <Image src="/gyerekek-edzovel.jpg" alt="" fill className="object-cover" priority />
+          <Image src="https://focis.b-cdn.net/site/gyerekek-edzovel.jpg" alt="" fill className="object-cover" priority />
           <div className="absolute inset-0 bg-[#0a1f0a]/85" />
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a1f0a]/40 via-transparent to-[#0a1f0a]" />
         </div>

@@ -55,7 +55,7 @@ export function PartnerProgram() {
 
           <div className="relative">
             <div className="relative aspect-[4/3] overflow-hidden">
-              <Image src="/gyerekcsapat.jpg" alt="Gyerekcsapat" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" loading="lazy" />
+              <Image src="https://focis.b-cdn.net/site/gyerekcsapat.jpg" alt="Gyerekcsapat" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" loading="lazy" />
             </div>
             <div className="absolute -bottom-4 -left-4 w-full h-full border-2 border-primary/30 -z-10" />
           </div>

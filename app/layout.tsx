@@ -45,6 +45,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="hu">
+      <head>
+        <link rel="preconnect" href="https://focis.b-cdn.net" />
+        <link rel="dns-prefetch" href="https://focis.b-cdn.net" />
+      </head>
       <body className={`${playfair.variable} ${inter.variable} font-sans antialiased`}>
         <LayoutWrapper>{children}</LayoutWrapper>
         <Analytics />

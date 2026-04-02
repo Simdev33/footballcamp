@@ -1,13 +1,13 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
 import {
   LayoutDashboard, Newspaper, ImageIcon, Tent, ClipboardList,
   Users, LogOut, ChevronLeft, Menu, Shield,
 } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -20,24 +20,9 @@ const NAV_ITEMS = [
 
 function DashboardInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const router = useRouter()
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/admin/login")
-    }
-  }, [status, router])
-
-  if (status === "loading" || status === "unauthenticated") {
-    return (
-      <div className="min-h-screen bg-[#0a1f0a] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#d4a017] border-t-transparent rounded-full animate-spin" />
-      </div>
-    )
-  }
 
   const role = (session?.user as any)?.role || "viewer"
   const filteredNav = NAV_ITEMS.filter((item) => {
@@ -51,7 +36,7 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
         <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setMobileOpen(false)} />
       )}
 
-      <aside className={`fixed lg:sticky top-0 left-0 h-screen z-50 bg-[#0a1f0a] border-r border-[#d4a017]/10 flex flex-col transition-all duration-300 ${collapsed ? "w-20" : "w-64"} ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
+      <aside className={`fixed lg:sticky top-0 left-0 h-screen z-50 bg-[#0a1f0a] border-r border-[#d4a017]/10 flex flex-col transition-[width,transform] duration-200 ${collapsed ? "w-20" : "w-64"} ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
         <div className="h-16 flex items-center gap-3 px-4 border-b border-[#d4a017]/10">
           <div className="w-10 h-10 bg-[#d4a017] flex items-center justify-center flex-shrink-0">
             <Shield className="w-5 h-5 text-[#0a1f0a]" />
@@ -66,8 +51,9 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={true}
                 onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3 mx-2 px-3 h-11 text-sm font-medium transition-colors duration-200 ${
+                className={`flex items-center gap-3 mx-2 px-3 h-11 text-sm font-medium transition-colors duration-150 ${
                   isActive
                     ? "bg-[#d4a017]/15 text-[#d4a017] border-r-2 border-[#d4a017]"
                     : "text-white/50 hover:text-white hover:bg-white/5"

@@ -30,7 +30,7 @@ export function WhatKidsGet() {
           <div className="relative">
             <div className="relative aspect-[4/3] overflow-hidden">
               <Image
-                src="/edzes-kozben.jpg"
+                src="https://focis.b-cdn.net/site/edzes-kozben.jpg"
                 alt="Gyerekek a focitáborban"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"

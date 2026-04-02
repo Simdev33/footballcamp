@@ -13,8 +13,12 @@ import { CampCard } from "@/components/camp-card"
 import { cn } from "@/lib/utils"
 
 const AUTOPLAY_MS = 7000
+const CDN = "https://focis.b-cdn.net"
 
-const CAMP_IMAGES = ["/field-with-balls.jpg", "/stadium-pitch.jpg"] as const
+const CAMP_IMAGES = [
+  `${CDN}/site/field-with-balls.jpg`,
+  `${CDN}/site/stadium-pitch.jpg`,
+] as const
 
 export function Hero() {
   const { t } = useLanguage()
@@ -53,11 +57,10 @@ export function Hero() {
           loop
           muted
           playsInline
-          preload="metadata"
-          poster="/kickoff-labdaval.jpg"
+          preload="none"
           className="absolute inset-0 h-full w-full object-cover"
         >
-          <source src="/videos/hero-bg.mp4" type="video/mp4" />
+          <source src={`${CDN}/site/hero-bg.mp4`} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a1f0a]/60 via-[#0a1f0a]/80 to-[#0a1f0a]" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0a1f0a] via-transparent to-[#0a1f0a]/85" />
