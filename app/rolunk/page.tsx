@@ -56,7 +56,7 @@ export default function RolunkPage() {
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
           <div className="text-center mb-14">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              Miért <span className="text-[#d4a017]">különlegesek</span> vagyunk?
+              Miért vagyunk <span className="text-[#d4a017]">különlegesek?</span>
             </h2>
             <div className="w-20 h-1 bg-[#d4a017] mx-auto mt-5" />
           </div>
