@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { Check, Sparkles, Trophy, Users, Target, Heart } from "lucide-react"
+import { Check, Quote, Trophy, Users, Target, Heart } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
 const STATS = [
@@ -26,7 +26,7 @@ export default function RolunkPage() {
         <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
           <div className="max-w-3xl">
             <span className="inline-block px-5 py-2 bg-[#d4a017] text-[#0a1f0a] text-xs tracking-[0.3em] uppercase font-bold mb-6">
-              {t.whySpecial.badge}
+              Rólunk
             </span>
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.05]">
               {t.whySpecial.title}{" "}
@@ -79,7 +79,7 @@ export default function RolunkPage() {
         <div className="absolute inset-0 bg-[#0a1f0a]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#d4a01712_0%,transparent_60%)]" />
         <div className="relative z-10 max-w-[900px] mx-auto px-6 md:px-12 text-center">
-          <Sparkles className="w-10 h-10 text-[#d4a017] mx-auto mb-8" />
+          <Quote className="w-10 h-10 text-[#d4a017] mx-auto mb-8" />
           <blockquote className="font-serif text-2xl md:text-3xl lg:text-4xl text-white italic leading-snug">
             &ldquo;{t.experience.text1}{" "}
             <span className="text-[#d4a017] not-italic font-bold">{t.experience.textHighlight}</span>{" "}

@@ -20,9 +20,22 @@ const NAV_ITEMS = [
 
 function DashboardInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-[#0b1e0b] flex items-center justify-center">
+        <div className="w-10 h-10 border-2 border-[#d4a017] border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  if (status === "unauthenticated") {
+    if (typeof window !== "undefined") window.location.href = "/admin/login"
+    return null
+  }
 
   const role = (session?.user as any)?.role || "viewer"
   const filteredNav = NAV_ITEMS.filter((item) => {

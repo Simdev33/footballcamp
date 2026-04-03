@@ -16,6 +16,11 @@ const nextConfig = {
         hostname: "focis.b-cdn.net",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+        pathname: "/**",
+      },
     ],
   },
   async headers() {

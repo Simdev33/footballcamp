@@ -1,10 +1,10 @@
 "use client"
 
-import { Palette, GraduationCap, Settings, CalendarDays, ArrowRight, Handshake } from "lucide-react"
+import { Users, Building2, Heart, ArrowRight, Handshake } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import Image from "next/image"
 
-const ICONS = [Palette, GraduationCap, Settings, CalendarDays]
+const ICONS = [Users, Building2, Heart]
 
 export function PartnerProgram() {
   const { t } = useLanguage()
@@ -27,16 +27,16 @@ export function PartnerProgram() {
             <p className="mt-6 text-base text-muted-foreground leading-relaxed max-w-lg">{t.partnerProgram.text}</p>
 
             <div className="mt-8 space-y-4">
-              {t.partnerProgram.benefits.map((benefit, index) => {
+              {t.partnerProgram.sections.map((section, index) => {
                 const Icon = ICONS[index]
                 return (
-                  <div key={benefit.title} className="flex items-start gap-4 group">
-                    <div className="w-12 h-12 flex items-center justify-center flex-shrink-0 bg-[#0a1f0a] group-hover:bg-primary transition-colors duration-300">
+                  <div key={section.title} className="flex items-start gap-4 group">
+                    <div className="w-12 h-12 flex items-center justify-center shrink-0 bg-[#0a1f0a] group-hover:bg-primary transition-colors duration-300">
                       <Icon className="w-6 h-6 text-[#d4a017] group-hover:text-primary-foreground transition-colors" strokeWidth={1.5} />
                     </div>
                     <div>
-                      <h3 className="font-serif text-lg font-bold text-foreground group-hover:text-primary transition-colors">{benefit.title}</h3>
-                      <p className="text-muted-foreground text-sm">{benefit.desc}</p>
+                      <h3 className="font-serif text-lg font-bold text-foreground group-hover:text-primary transition-colors">{section.title}</h3>
+                      <p className="text-muted-foreground text-sm">{section.text}</p>
                     </div>
                   </div>
                 )

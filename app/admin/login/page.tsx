@@ -1,16 +1,19 @@
 "use client"
 
-import { useState } from "react"
-import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { signIn, useSession } from "next-auth/react"
 import { Loader2, Shield } from "lucide-react"
 
 export default function AdminLoginPage() {
-  const router = useRouter()
+  const { status } = useSession()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (status === "authenticated") window.location.href = "/admin"
+  }, [status])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

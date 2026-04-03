@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState, useEffect } from "react"
-import { Sparkles, Globe } from "lucide-react"
+import { PenLine, Globe } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
 export function Header() {
@@ -44,14 +44,14 @@ export function Header() {
             : "bg-transparent"
         }`}
       >
-        <div className="mx-auto max-w-[1800px] px-6 md:px-12 lg:px-16 xl:px-24">
-          <nav className="flex h-24 items-center justify-between">
-            <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+        <div className="mx-auto max-w-[1800px] px-4 md:px-12 lg:px-16 xl:px-24">
+          <nav className="flex h-16 md:h-24 items-center justify-between">
+            <Link href="/" className="flex items-center gap-2 md:gap-3 group flex-shrink-0">
               <div className="relative">
-                <div className="w-12 h-12 bg-[#0a1f0a] flex items-center justify-center">
-                  <span className="text-[#d4a017] font-serif font-bold text-xl">B</span>
+                <div className="w-9 h-9 md:w-12 md:h-12 bg-[#0a1f0a] flex items-center justify-center">
+                  <span className="text-[#d4a017] font-serif font-bold text-base md:text-xl">B</span>
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-12 h-12 border border-primary/40 -z-10" />
+                <div className="absolute -bottom-0.5 -right-0.5 md:-bottom-1 md:-right-1 w-9 h-9 md:w-12 md:h-12 border border-primary/40 -z-10" />
               </div>
               <div className="hidden sm:block">
                 <span className={`block font-serif text-base font-semibold leading-tight transition-colors duration-500 ${showSolid ? "text-foreground" : "text-white"}`}>
@@ -100,14 +100,14 @@ export function Header() {
 
               <Link href="/jelentkezes" className="hidden sm:block">
                 <span className={`inline-flex items-center gap-2 text-sm hover:text-primary transition-colors duration-300 font-medium ${showSolid ? "text-foreground" : "text-white"}`}>
-                  <Sparkles className="w-4 h-4 text-primary" />
+                  <PenLine className="w-4 h-4 text-primary" />
                   {t.nav.register}
                 </span>
               </Link>
 
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="lg:hidden relative w-12 h-12 flex items-center justify-center bg-primary/10 hover:bg-primary/20 transition-colors"
+                className="lg:hidden relative w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-primary/10 hover:bg-primary/20 transition-colors"
                 aria-label="Menu"
               >
                 <div className="relative w-6 h-4 flex flex-col justify-between">
@@ -146,7 +146,7 @@ export function Header() {
               {locale === "hu" ? "English" : "Magyar"}
             </button>
             <Link href="/jelentkezes" className="flex items-center gap-3 px-10 py-5 bg-primary text-primary-foreground text-xl font-semibold">
-              <Sparkles className="w-5 h-5" />
+              <PenLine className="w-5 h-5" />
               {t.nav.register}
             </Link>
           </div>

@@ -1,27 +1,27 @@
 import Image from "next/image"
 import Link from "next/link"
 import { db } from "@/lib/db"
-import { MapPin, Calendar, Users, ArrowRight, Sparkles, Shirt, Utensils, Dumbbell, Heart, Clock, Sun, Sunset, Moon } from "lucide-react"
+import { MapPin, Calendar, Users, ArrowRight, Tag, Shirt, Utensils, Dumbbell, Heart, Clock, Sun, Sunset, Moon } from "lucide-react"
 import { SubpageHero } from "@/components/subpage-hero"
 
 export const dynamic = "force-dynamic"
 
 const SCHEDULE = [
-  { time: "08:00", title: "Reggeli", desc: "Taplalo reggeli a szallashelyen", icon: Sun, color: "bg-amber-500" },
-  { time: "09:00", title: "Delelotti edzes", desc: "Technikai alapok, labdaerzek fejlesztes", icon: Dumbbell, color: "bg-emerald-600" },
-  { time: "11:00", title: "Taktikai trening", desc: "Pozicios jatek, csapatmunka", icon: Dumbbell, color: "bg-emerald-700" },
-  { time: "12:30", title: "Ebed & piheno", desc: "Kiegyensulyozott ebed es szabad ido", icon: Utensils, color: "bg-orange-500" },
-  { time: "14:00", title: "Delutani foglalkozas", desc: "Specialis keszsegfejlesztes", icon: Sunset, color: "bg-blue-600" },
-  { time: "16:00", title: "Merkozesek", desc: "Kis palyas meccsek, versenyhelyzetek", icon: Heart, color: "bg-red-500" },
-  { time: "18:00", title: "Vacsora & program", desc: "Kozos program, csapatepites", icon: Moon, color: "bg-indigo-600" },
+  { time: "08:00", title: "Reggeli", desc: "Tápláló reggeli a szálláshelyen", icon: Sun, color: "bg-amber-500" },
+  { time: "09:00", title: "Délelőtti edzés", desc: "Technikai alapok, labdaérzék fejlesztés", icon: Dumbbell, color: "bg-emerald-600" },
+  { time: "11:00", title: "Taktikai tréning", desc: "Pozíciós játék, csapatmunka", icon: Dumbbell, color: "bg-emerald-700" },
+  { time: "12:30", title: "Ebéd & pihenő", desc: "Kiegyensúlyozott ebéd és szabad idő", icon: Utensils, color: "bg-orange-500" },
+  { time: "14:00", title: "Délutáni foglalkozás", desc: "Speciális készségfejlesztés", icon: Sunset, color: "bg-blue-600" },
+  { time: "16:00", title: "Mérkőzések", desc: "Kis pályás meccsek, versenyhelyzetek", icon: Heart, color: "bg-red-500" },
+  { time: "18:00", title: "Vacsora & program", desc: "Közös program, csapatépítés", icon: Moon, color: "bg-indigo-600" },
 ]
 
 const KID_ICONS = [Shirt, Utensils, Dumbbell, Heart]
 const KID_ITEMS = [
-  { title: "Hivatalos felszereles", desc: "1 garnitura a klub hivatalos felszerelesebol (sportszar, nadrag, mez)" },
-  { title: "Napi etkezes", desc: "Napi haromszori etkezes (tizoral, ebed, uzsonna)" },
-  { title: "Valtozatos edzesek", desc: "Napi 4 edzes valtozatos es jatekos feladatokkal" },
-  { title: "Eletre szolo elmeny", desc: "Kiemelkedo hangulat, biztonsagos kornyezet, felejthetetlen elmeny" },
+  { title: "Hivatalos felszerelés", desc: "1 garnitúra a klub hivatalos felszereléséből (sportszár, nadrág, mez)" },
+  { title: "Napi étkezés", desc: "Napi háromszori étkezés (tízórai, ebéd, uzsonna)" },
+  { title: "Változatos edzések", desc: "Napi 4 edzés változatos és játékos feladatokkal" },
+  { title: "Életre szóló élmény", desc: "Kiemelkedő hangulat, biztonságos környezet, felejthetetlen élmény" },
 ]
 
 const CDN = "https://focis.b-cdn.net"
@@ -47,8 +47,8 @@ export default async function TaborokPage() {
           <div className="absolute inset-0 bg-[#0a1f0a]/80" />
         </div>
         <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24 text-center">
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-white">Taborok</h1>
-          <p className="mt-4 text-lg text-white/60 max-w-xl mx-auto">Reszletek, idopont, ar</p>
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-white">Táborok</h1>
+          <p className="mt-4 text-lg text-white/60 max-w-xl mx-auto">Részletek, időpont, ár</p>
           <div className="w-20 h-1 bg-[#d4a017] mx-auto mt-8" />
         </div>
       </section>
@@ -86,7 +86,7 @@ export default async function TaborokPage() {
         <div className="max-w-[900px] mx-auto px-6 md:px-12">
           <div className="text-center mb-14">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              Egy napod <span className="text-[#d4a017]">nalunk</span>
+              Egy napod <span className="text-[#d4a017]">nálunk</span>
             </h2>
             <div className="w-20 h-1 bg-[#d4a017] mx-auto mt-5" />
           </div>
@@ -115,15 +115,15 @@ export default async function TaborokPage() {
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
           <div className="text-center mb-14">
             <span className="inline-block px-6 py-2 bg-[#0a1f0a] border border-[#d4a017]/30 text-[#d4a017] text-sm tracking-[0.3em] uppercase font-medium">
-              Helyszinek es arak
+              Helyszínek és árak
             </span>
             <h2 className="mt-5 font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-white">
-              Valaszd ki a <span className="text-[#d4a017]">helyszint</span>
+              Válaszd ki a <span className="text-[#d4a017]">helyszínt</span>
             </h2>
           </div>
 
           {camps.length === 0 ? (
-            <p className="text-center text-white/40 py-12">Hamarosan frissitjuk a tabor kinalatunkat!</p>
+            <p className="text-center text-white/40 py-12">Hamarosan frissítjük a tábor kínálatunkat!</p>
           ) : (
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-10">
               {camps.map((camp) => (
@@ -155,7 +155,7 @@ export default async function TaborokPage() {
                       </div>
 
                       <div className="absolute top-4 right-4 px-3 py-2 bg-[#d4a017] text-[#0a1f0a] font-bold text-xs">
-                        <Sparkles className="inline-block w-4 h-4 mr-1" />
+                        <Tag className="inline-block w-4 h-4 mr-1" />
                         {camp.clubName}
                       </div>
                     </div>
@@ -165,36 +165,36 @@ export default async function TaborokPage() {
                         <div>
                           <div className="flex items-center gap-2 text-white/50 mb-2">
                             <Calendar className="w-4 h-4 text-[#d4a017]" />
-                            <span className="text-xs uppercase tracking-wider font-medium">Idopont</span>
+                            <span className="text-xs uppercase tracking-wider font-medium">Időpont</span>
                           </div>
                           <p className="font-semibold text-white text-sm">{camp.dates}</p>
                         </div>
                         <div>
                           <div className="flex items-center gap-2 text-white/50 mb-2">
                             <Users className="w-4 h-4 text-[#d4a017]" />
-                            <span className="text-xs uppercase tracking-wider font-medium">Ferohely</span>
+                            <span className="text-xs uppercase tracking-wider font-medium">Férőhely</span>
                           </div>
-                          <p className="font-semibold text-white text-sm">{camp.remainingSpots}/{camp.totalSpots} fo</p>
+                          <p className="font-semibold text-white text-sm">{camp.remainingSpots}/{camp.totalSpots} fő</p>
                         </div>
                         <div>
                           <div className="flex items-center gap-2 text-white/50 mb-2">
                             <Clock className="w-4 h-4 text-[#d4a017]" />
-                            <span className="text-xs uppercase tracking-wider font-medium">Korosztaly</span>
+                            <span className="text-xs uppercase tracking-wider font-medium">Korosztály</span>
                           </div>
-                          <p className="font-semibold text-white text-sm">{camp.ageRange} ev</p>
+                          <p className="font-semibold text-white text-sm">{camp.ageRange} év</p>
                         </div>
                       </div>
 
                       <div className="flex items-end justify-between border-t border-white/10 pt-4">
                         <div>
-                          <p className="text-xs text-[#d4a017] uppercase tracking-wider mb-1 font-medium">Early bird ar</p>
+                          <p className="text-xs text-[#d4a017] uppercase tracking-wider mb-1 font-medium">Early bird ár</p>
                           <div className="flex items-baseline gap-3">
                             <span className="font-serif text-2xl md:text-3xl font-bold text-white">{camp.earlyBirdPrice}</span>
                             <span className="text-sm text-white/40 line-through">{camp.price}</span>
                           </div>
                         </div>
                         <span className="flex items-center gap-2 text-[#d4a017] text-sm font-semibold group-hover:underline">
-                          Reszletek <ArrowRight className="w-4 h-4" />
+                          Részletek <ArrowRight className="w-4 h-4" />
                         </span>
                       </div>
                     </div>

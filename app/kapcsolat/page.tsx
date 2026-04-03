@@ -1,14 +1,12 @@
 "use client"
 
-import { Mail, Phone, MapPin, Clock, Facebook, Instagram, Youtube, ArrowRight } from "lucide-react"
+import { Mail, Phone, Facebook, Instagram, Youtube, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
 
 const CONTACT_CARDS = [
   { icon: Mail, label: "Email", value: "info@benficacamp.hu", href: "mailto:info@benficacamp.hu", color: "bg-blue-600" },
   { icon: Phone, label: "Telefon", value: "+36 30 123 4567", href: "tel:+36301234567", color: "bg-emerald-600" },
-  { icon: MapPin, label: "Helyszínek", value: "Szeged & Kecskemét", href: null, color: "bg-red-500" },
-  { icon: Clock, label: "Elérhetőség", value: "H-P: 9:00 - 17:00", href: null, color: "bg-amber-600" },
 ]
 
 const SOCIALS = [
@@ -39,7 +37,7 @@ export default function KapcsolatPage() {
 
       {/* Contact Cards Grid */}
       <section className="relative -mt-10 z-20 max-w-[1100px] mx-auto px-6 md:px-12 lg:px-24">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid sm:grid-cols-2 gap-4 max-w-lg mx-auto">
           {CONTACT_CARDS.map((card) => {
             const Wrapper = card.href ? "a" : "div"
             return (

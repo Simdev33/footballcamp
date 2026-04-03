@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import { ChevronLeft, ChevronRight, Sparkles, Users } from "lucide-react"
+import { ChevronLeft, ChevronRight, Users } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import {
   Carousel,
@@ -16,8 +16,8 @@ const AUTOPLAY_MS = 7000
 const CDN = "https://focis.b-cdn.net"
 
 const CAMP_IMAGES = [
-  `${CDN}/site/field-with-balls.jpg`,
-  `${CDN}/site/stadium-pitch.jpg`,
+  `${CDN}/Post_1%20Camp/02%20Template%20Benfica%20Camp%202025_26-02.png`,
+  `${CDN}/Post_1%20Camp/01%20Template%20Benfica%20Camp%202025_26_FEED.png`,
 ] as const
 
 export function Hero() {
@@ -50,7 +50,7 @@ export function Hero() {
   }, [api])
 
   return (
-    <section className="relative min-h-[100svh] overflow-hidden pb-32 md:pb-36">
+    <section className="relative min-h-[100svh] overflow-hidden pb-20 md:pb-36">
       <div className="absolute inset-0">
         <video
           autoPlay
@@ -67,37 +67,39 @@ export function Hero() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0a1f0a_72%)]" />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[1400px] flex-col justify-center px-6 pt-24 md:px-12 lg:px-24 lg:pt-28">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[1400px] flex-col justify-center px-4 pt-20 md:px-12 md:pt-24 lg:px-24 lg:pt-28">
+        <div className="grid items-center gap-8 md:gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="animate-fade-in">
-            <span className="inline-block border border-[#d4a017]/40 bg-[#0a1f0a]/60 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#d4a017] backdrop-blur-sm md:text-sm">
+            <span className="inline-block border border-[#d4a017]/40 bg-[#0a1f0a]/60 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d4a017] backdrop-blur-sm md:px-4 md:py-2 md:text-sm">
               {t.hero.campBadge}
             </span>
 
-            <div className="mb-6 mt-6 inline-flex flex-wrap items-center gap-3">
-              <div className="h-4 w-4 animate-pulse rounded-full bg-[#d4a017]" />
-              <span className="text-sm font-medium uppercase tracking-[0.3em] text-white/80 md:text-base">
+            <div className="mb-4 mt-4 md:mb-6 md:mt-6 inline-flex flex-wrap items-center gap-2 md:gap-3">
+              <div className="h-3 w-3 md:h-4 md:w-4 animate-pulse rounded-full bg-[#d4a017]" />
+              <span className="text-xs font-medium uppercase tracking-[0.25em] text-white/80 md:text-base md:tracking-[0.3em]">
                 {t.hero.location}
               </span>
-              <Users className="h-5 w-5 text-[#d4a017]" />
+              <Users className="h-4 w-4 md:h-5 md:w-5 text-[#d4a017]" />
             </div>
 
-            <h1 className="font-serif text-[clamp(2rem,5vw,4rem)] font-bold leading-[0.95] tracking-tight">
+            <h1 className="font-serif text-[clamp(1.6rem,5vw,4rem)] font-bold leading-[0.95] tracking-tight">
               <span className="block text-white">{t.hero.line1}</span>
               <span className="block text-[#d4a017]">{t.hero.line2}</span>
               <span className="block text-white/75">{t.hero.line3}</span>
             </h1>
 
-            <p className="mt-6 max-w-xl text-base font-light leading-relaxed text-white/65 md:text-lg">
+            <p className="mt-4 md:mt-6 max-w-xl text-sm font-light leading-relaxed text-white/65 md:text-lg">
               {t.hero.subtitle}
             </p>
+            <p className="mt-2 md:mt-3 text-xs font-semibold uppercase tracking-[0.15em] text-[#d4a017]/80 md:text-base">
+              {t.hero.tagline}
+            </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-4">
+            <div className="mt-5 md:mt-8 flex flex-wrap items-center gap-3 md:gap-4">
               <a
                 href="/jelentkezes"
-                className="group relative inline-flex items-center gap-3 overflow-hidden bg-[#d4a017] px-8 py-4 text-base font-semibold text-[#0a1f0a] transition-shadow duration-300 hover:shadow-[0_0_50px_#d4a01780]"
+                className="group relative inline-flex items-center gap-2 md:gap-3 overflow-hidden bg-[#d4a017] px-5 py-3 md:px-8 md:py-4 text-sm md:text-base font-semibold text-[#0a1f0a] transition-shadow duration-300 hover:shadow-[0_0_50px_#d4a01780]"
               >
-                <Sparkles className="h-5 w-5" />
                 {t.hero.cta}
                 <svg
                   width="22"

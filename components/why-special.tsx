@@ -2,7 +2,7 @@
 
 import { useRef } from "react"
 import Image from "next/image"
-import { Check, Sparkles } from "lucide-react"
+import { Check, Trophy } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
 export function WhySpecial() {
@@ -31,7 +31,7 @@ export function WhySpecial() {
               <div className="absolute bottom-6 left-6 right-6 p-5 bg-[#0a1f0a]/95 border border-[#d4a017]/30 shadow-[0_10px_30px_#d4a01726]">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-[#0a1f0a] flex items-center justify-center">
-                    <Sparkles className="w-6 h-6 text-[#d4a017]" />
+                    <Trophy className="w-6 h-6 text-[#d4a017]" />
                   </div>
                   <div>
                     <span className="font-serif text-4xl font-bold text-primary">
@@ -49,9 +49,11 @@ export function WhySpecial() {
 
           {/* Right - Content */}
           <div className="order-1 lg:order-2">
-            <span className="inline-block px-6 py-2 bg-[#d4a017] text-[#0a1f0a] text-sm tracking-[0.3em] uppercase font-medium">
-              {t.whySpecial.badge}
-            </span>
+            {t.whySpecial.badge && (
+              <span className="inline-block px-6 py-2 bg-[#d4a017] text-[#0a1f0a] text-sm tracking-[0.3em] uppercase font-medium">
+                {t.whySpecial.badge}
+              </span>
+            )}
 
             <h2 className="mt-5 font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-[1.1]">
               {t.whySpecial.title}{" "}

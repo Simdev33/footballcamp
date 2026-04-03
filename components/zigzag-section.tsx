@@ -35,9 +35,9 @@ export function ZigzagSection({
     : "bg-[#0a1f0a] text-[#d4a017]"
 
   return (
-    <section className={`relative py-20 md:py-28 overflow-hidden ${bg}`}>
-      <div className="relative z-10 max-w-[1800px] mx-auto px-6 md:px-12 lg:px-24">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+    <section className={`relative py-14 md:py-28 overflow-hidden ${bg}`}>
+      <div className="relative z-10 max-w-[1800px] mx-auto px-4 md:px-12 lg:px-24">
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-center">
           {/* Image */}
           <div className={`relative ${reversed ? "order-2 lg:order-2" : "order-2 lg:order-1"}`}>
             <div className="relative aspect-[4/3] overflow-hidden">
@@ -51,18 +51,18 @@ export function ZigzagSection({
               />
               <div className={`absolute inset-0 bg-gradient-to-t ${dark ? "from-[#0a1f0a]" : "from-background"} via-transparent to-transparent opacity-40`} />
             </div>
-            <div className={`absolute -top-4 ${reversed ? "-right-4" : "-left-4"} w-full h-full border-2 border-[#d4a017]/30 -z-10`} />
+            <div className={`absolute -top-3 md:-top-4 ${reversed ? "-right-3 md:-right-4" : "-left-3 md:-left-4"} w-full h-full border-2 border-[#d4a017]/30 -z-10`} />
           </div>
 
           {/* Content */}
           <div className={`${reversed ? "order-1 lg:order-1" : "order-1 lg:order-2"}`}>
             {badge && (
-              <span className={`inline-block px-6 py-2 text-sm tracking-[0.3em] uppercase font-medium ${badgeBg}`}>
+              <span className={`inline-block px-4 py-1.5 md:px-6 md:py-2 text-xs md:text-sm tracking-[0.3em] uppercase font-medium ${badgeBg}`}>
                 {badge}
               </span>
             )}
 
-            <h2 className={`mt-5 font-serif text-2xl md:text-3xl lg:text-4xl font-bold leading-[1.1] ${textColor}`}>
+            <h2 className={`mt-4 md:mt-5 font-serif text-xl md:text-3xl lg:text-4xl font-bold leading-[1.1] ${textColor}`}>
               {title}{" "}
               {titleHighlight && (
                 <span className="text-[#d4a017]">{titleHighlight}</span>
@@ -70,11 +70,11 @@ export function ZigzagSection({
               {titleEnd}
             </h2>
 
-            <div className={`mt-6 text-base leading-relaxed ${mutedColor}`}>
+            <div className={`mt-4 md:mt-6 text-sm md:text-base leading-relaxed ${mutedColor}`}>
               {typeof text === "string" ? <p>{text}</p> : text}
             </div>
 
-            {children && <div className="mt-8">{children}</div>}
+            {children && <div className="mt-6 md:mt-8">{children}</div>}
           </div>
         </div>
       </div>

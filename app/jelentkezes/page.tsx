@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect } from "react"
 import { SubpageHero } from "@/components/subpage-hero"
-import { Sparkles, CheckCircle, Loader2 } from "lucide-react"
+import { Send, CheckCircle, Loader2 } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 
 interface Camp {
@@ -48,7 +48,7 @@ function JelentkezesForm() {
           className="space-y-6 bg-white p-8 border border-border/50 shadow-sm"
         >
           <h2 className="font-serif text-2xl font-bold text-foreground flex items-center gap-3">
-            <Sparkles className="w-6 h-6 text-[#d4a017]" />
+            <Send className="w-6 h-6 text-[#d4a017]" />
             Jelentkezési űrlap
           </h2>
 
@@ -101,7 +101,7 @@ function JelentkezesForm() {
             disabled={loading}
             className="w-full h-12 bg-[#d4a017] text-[#0a1f0a] font-semibold hover:bg-[#d4a017]/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Sparkles className="w-5 h-5" /> Jelentkezés elküldése</>}
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Send className="w-5 h-5" /> Jelentkezés elküldése</>}
           </button>
         </form>
       </div>

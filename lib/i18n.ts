@@ -13,14 +13,14 @@ export const translations = {
       register: "Jelentkezés",
     },
     hero: {
-      campBadge: "Nemzetközi gyerek foci tábor",
+      campBadge: "Európai sztárcsapatok focitáborai",
       location: "6–15 éves fiúk & lányok",
-      pickLocation: "Válaszd a táborod helyszínét",
-      line1: "A legjobb európai",
-      line2: "futball akadémiák",
-      line3: "edzői Magyarországon!",
-      subtitle:
-        "Nyári futballtábor nemzetközi edzőkkel és akadémiai módszertannal – valódi fejlődés, felejthetetlen élmény a pályán.",
+      pickLocation: "Következő táboraink",
+      line1: "Európai sztárcsapatok",
+      line2: "focitáborai",
+      line3: "Magyarországon!",
+      subtitle: "Légy részese egy felejthetetlen fociélménynek!",
+      tagline: "Top akadémiák – Külföldi edzők – Örök élmény",
       cta: "Jelentkezés",
       earlyLabel: "Korlátozott létszám!",
       scroll: "Görgess",
@@ -28,23 +28,32 @@ export const translations = {
       carouselNext: "Következő tábor",
     },
     usp: {
-      badge: "Miért mi?",
-      title: "A futball",
-      titleHighlight: "jövője",
+      badge: "11 érv",
+      title: "Miért válaszd",
+      titleHighlight: "táborainkat?",
+      subtitle: "A mi kezdőcsapatunk",
       items: [
-        { title: "Külföldi sztáredzők", desc: "Európa legjobb akadémiáiról" },
-        { title: "Nemzetközi módszertan", desc: "Világszínvonalú képzés" },
-        { title: "Angol és magyar nyelv", desc: "Kétnyelvű edzések" },
-        { title: "Prémium felszerelés", desc: "Hivatalos Benfica szettek" },
+        { title: "Európai sztárcsapatok edzésmódszerei", desc: "" },
+        { title: "Külföldi edzők", desc: "" },
+        { title: "Nemzetközi módszertan – profi képzés", desc: "" },
+        { title: "Angol és magyar nyelvű környezet", desc: "" },
+        { title: "12-15 fős csoportok, több figyelem a gyereknek", desc: "" },
+        { title: "Segédedzők, hogy minden gyerekre jusson figyelem", desc: "" },
+        { title: "Klub hivatalos felszerelése", desc: "" },
+        { title: "Biztonságos környezet, modern infrastruktúra", desc: "" },
+        { title: "Napi 3x étkezés", desc: "" },
+        { title: "Garantált fáradtság a nap végére", desc: "" },
+        { title: "Certifikáció a részvételről", desc: "" },
       ],
     },
     whySpecial: {
-      badge: "Rólunk",
+      badge: "",
       title: "Adj gyermekednek egy olyan futballélményt, amire",
       titleHighlight: "sokáig",
       titleEnd: "emlékezni fog!",
-      text: "Táborainkban a gyerekek a legjobb európai akadémiák edzői által vezetett, nemzetközi szemléletű képzésben vesznek részt. Az angol és magyar nyelvű környezet különleges lehetőséget teremt arra, hogy a gyerekek már fiatal korban megtapasztalják a nemzetközi futball világát.",
+      text: "Táborainkban a gyerekek a legjobb európai akadémiák edzői által vezetett, nemzetközi szemléletű képzésben vesznek részt. Az angol és magyar nyelvű környezet különleges lehetőséget teremt arra, hogy a gyerekek már fiatal korban megtapasztalják a nemzetközi futball világát. A napi 4 edzés során sor kerül a technika, az állóképesség, az önbizalom, és a csapatszellem fejlesztésére is.",
       bullets: [
+        "a gyerekek nemzetközi top klubok edzőitől és szakembereitől tanulhatnak",
         "megtanuljanak csapatban gondolkodni,",
         "magabiztosabbá váljanak a pályán és azon kívül is,",
         "és motiváltan, örömmel térjenek vissza minden egyes nap.",
@@ -66,10 +75,10 @@ export const translations = {
           cta: "Tudj meg többet",
         },
         {
-          name: "Hamarosan",
-          role: "Új partnerek",
-          desc: "Folyamatosan bővítjük partneri hálózatunkat. Célunk, hogy a gyerekek minél szélesebb körű nemzetközi tapasztalatot szerezhessenek a legnevesebb európai akadémiák módszereivel.",
-          cta: "Értesülj elsőként",
+          name: "Atlético Madrid",
+          role: "Hivatalos akadémiai partner",
+          desc: "A spanyol labdarúgás egyik legnagyobb klubja, amely világszerte ismert az utánpótlás-neveléséről. Az Atlético akadémia olyan játékosokat adott a világnak, mint Fernando Torres, Koke és Antoine Griezmann.",
+          cta: "Tudj meg többet",
         },
       ],
     },
@@ -77,27 +86,38 @@ export const translations = {
       badge: "Partnerprogram",
       title: "Csatlakozz",
       titleHighlight: "hozzánk",
-      titleEnd: "klubként!",
-      text: "Klubként vagy akadémiaként szeretnél csatlakozni hozzánk? Kínálj játékosaidnak nemzetközi szintű edzőtábor élményt a saját márkád alatt.",
-      benefits: [
-        { title: "Egyedi branding", desc: "A tábor a te klubod neve és arculata alatt fut" },
-        { title: "Nemzetközi edzők", desc: "Hozzáférés a legjobb európai akadémiai edzőkhöz" },
-        { title: "Teljes szervezés", desc: "Mi intézzük a logisztikát, neked csak a játékosokat kell hoznod" },
-        { title: "Rugalmas időpontok", desc: "Válassz a rendelkezésre álló időpontok közül" },
+      titleEnd: "partnerként!",
+      text: "Többféleképpen is partnereinkké válhattok – legyen szó egyesületről, önkormányzatról vagy szponzori lehetőségről.",
+      sections: [
+        {
+          title: "Hazai egyesületek",
+          text: "Klubként vagy akadémiaként szeretnél csatlakozni hozzánk? Kínálj játékosaidnak nemzetközi szintű edzőtábor-élményt a saját helyszíneteken, a saját márkátok alatt. Az edzőket és a módszertant mi biztosítjuk.",
+        },
+        {
+          title: "Önkormányzatok, egyéb szervezetek",
+          text: "Településként vagy szervezetként szeretnétek élményt nyújtani a helyi fiataloknak? Szervezzünk közösen táborokat, amelyek a sportot és a közösségépítést ötvözik.",
+        },
+        {
+          title: "Támogatók, szponzorok",
+          text: "Támogasd a fiatalok sportfejlődését. Szponzorként logód megjelenik a tábori anyagokon, felszerelésen és kommunikációnkban – miközben egy valóban értékes ügyet támogatsz.",
+        },
       ],
       cta: "Kapcsolatfelvétel",
     },
     whatKidsGet: {
-      badge: "Mit kap a gyerek",
-      title: "Minden",
-      titleHighlight: "benne",
-      titleEnd: "van",
-      subtitle: "Táborainkban minden adott ahhoz, hogy a gyerekek a maximumot hozzák ki magukból - a pályán és azon kívül is.",
+      badge: "A tábor tartalma",
+      title: "Mit tartalmaz",
+      titleHighlight: "a tábor?",
+      titleEnd: "",
+      subtitle: "Táborainkban minden adott ahhoz, hogy a gyerekek a maximumot hozzák ki magukból — a pályán és azon kívül is.",
       items: [
         { title: "Hivatalos felszerelés", desc: "1 garnitúra a klub hivatalos felszereléséből (sportszár, nadrág, mez)" },
         { title: "Napi étkezés", desc: "Napi háromszori étkezés (tízórai, ebéd, uzsonna)" },
         { title: "Változatos edzések", desc: "Napi 4 edzés változatos és játékos feladatokkal" },
         { title: "Életre szóló élmény", desc: "Kiemelkedő hangulat, biztonságos környezet, felejthetetlen élmény" },
+        { title: "Edzők külföldről", desc: "Az edzők egyenesen külföldről repülnek hozzád" },
+        { title: "Angol nyelvű környezet", desc: "Kiváló alkalom a nyelvtudásod fejlesztésére is" },
+        { title: "Benfica oklevél", desc: "Certifikáció a táborban való részvételről" },
       ],
     },
     locations: {
@@ -130,6 +150,11 @@ export const translations = {
         },
       ],
     },
+    limitedSpots: {
+      title: "Korlátozott férőhelyek – Biztosítsd a helyed időben!",
+      text: "Táboraink kis létszámmal működnek, hogy minden gyerek maximális figyelmet kapjon. Az early bird kedvezmény május 31-ig érvényes, és részletfizetési lehetőséget is biztosítunk!",
+      cta: "Jelentkezés most",
+    },
     experience: {
       badge: "A futball mint élmény",
       text1: "Táborainkban a gyerekek nemcsak technikai tudást szereznek, hanem olyan",
@@ -154,9 +179,9 @@ export const translations = {
       subtitle: "Jelentkezz táborunkba, és csapatunk hamarosan felveszi veled a kapcsolatot a részletekkel kapcsolatban.",
       cta: "Jelentkezés",
       trust: [
-        { label: "Limitált helyek", desc: "Táboronként max. 40 fő" },
+        { label: "Kis csoportok", desc: "Korosztályonként max. 12-15 fő" },
         { label: "Korai kedvezmény", desc: "Május 31-ig 20.000 Ft" },
-        { label: "Gyors visszajelzés", desc: "24 órán belül" },
+        { label: "Részletfizetés", desc: "Részletfizetési lehetőség" },
       ],
       security: "Adataidat biztonságosan kezeljük",
     },
@@ -167,7 +192,7 @@ export const translations = {
       items: [
         {
           question: "Miben különböznek ezek a táborok egy átlagos focitábortól?",
-          answer: "Táborainkban az edzéseket a világ legjobb futball akadémiáinak edzői irányítják. Top klubok nemzetközi szintű, bizonyítottan sikeres edzésmódszereit ismerhetik meg a résztvevők. Egész héten teljes fókusz a futballon van, általában napi 4 edzéssel. Az edzések részben angol nyelven zajlanak, így a gyerekek az angol tudásukat is fejleszthetik, valamint tapasztalatot szerezhetnek külföldi edzőkkel való közös munkában.",
+          answer: "Táborainkban az edzéseket a világ legjobb futball akadémiáinak edzői irányítják. Ők egyenesen külföldről érkező, a klub főállású szakemberei, nem egy-két nap alatt betanított magyar edzők. Top klubok nemzetközi szintű, bizonyítottan sikeres edzésmódszereit ismerhetik meg a résztvevők. Egész héten teljes fókusz a futballon van, általában napi 4 edzéssel. Az edzések részben angol nyelven zajlanak, így a gyerekek az angol tudásukat is fejleszthetik, valamint tapasztalatot szerezhetnek külföldi edzőkkel való közös munkában.",
         },
         {
           question: "Kik vehetnek részt a táborokban?",
@@ -175,7 +200,7 @@ export const translations = {
         },
         {
           question: "Milyen korosztálynak szólnak a táborok?",
-          answer: "Klubonként változó, de általában 6-15 éves kor között várjuk a jelentkezőket.",
+          answer: "A klubok egyedi szabályozása szerint eltérő lehet, de általában 6-15 éves kor között várjuk a jelentkezőket.",
         },
         {
           question: "Milyen nyelven zajlanak az edzések?",
@@ -183,7 +208,7 @@ export const translations = {
         },
         {
           question: "Kell-e előzetes tudás vagy klubtagság?",
-          answer: "A táborba jelentkezésnek nem feltétele, hogy a résztvevő igazolt játékos legyen. A táborokban való részvételt előzetes tudásszint-felmérés nem előzi meg, de értelemszerűen olyanoknak érdemes jelentkezni, akik nem most fognak először focilabdát látni.",
+          answer: "A táborba jelentkezésnek nem feltétele, hogy a résztvevő igazolt játékos legyen. A táborokban való részvételt előzetes tudásszint-felmérés nem előzi meg, de értelemszerűen olyanoknak érdemes jelentkezni, akik azért fociztak már korábban.",
         },
         {
           question: "Milyen felszerelés szükséges?",
@@ -191,7 +216,7 @@ export const translations = {
         },
         {
           question: "Mit tartalmaz a részvételi díj?",
-          answer: "A részvételi díj tartalmazza a teljes hétre szóló edzésprogramot, napi háromszori étkezést (tízórai, ebéd, uzsonna), egy garnitúra hivatalos felszerelést, valamint az összes programot és aktivitást.",
+          answer: "A részvételi díj tartalmazza az 5 napra szóló edzésprogramot, napi háromszori étkezést (tízórai, ebéd, uzsonna), egy garnitúra hivatalos felszerelést, Benfica certifikáció a táborban való részvételről, valamint az összes programot és aktivitást.",
         },
         {
           question: "Hogyan lehet jelentkezni?",
@@ -199,7 +224,7 @@ export const translations = {
         },
         {
           question: "Van-e lehetőség részletfizetésre?",
-          answer: "Igen van! Jelentkezéskor 30.000 Ft előleg megfizetése kötelező, ezt követően a fennmaradó összeg megfizetése – igény szerint – még két részletben is történhet. A teljes összeg megfizetésének a tábor kezdési időpontja előtt egy héttel meg kell történnie.",
+          answer: "Igen van! Jelentkezéskor 30.000 Ft előleg megfizetése kötelező, ezt követően a fennmaradó összeg megfizetése – igény szerint – még két részletben is történhet. A teljes összeg megfizetésének a tábor kezdési időpontja előtt egy héttel meg kell történnie. Fontos, hogy az EARLYBIRD kedvezmény igénybevétele esetén nincs lehetőség részletfizetésre!",
         },
         {
           question: "Van lehetőség korai kedvezményre?",
@@ -240,14 +265,14 @@ export const translations = {
       register: "Register",
     },
     hero: {
-      campBadge: "International youth football camp",
+      campBadge: "European star clubs' football camps",
       location: "Ages 6–15, boys & girls",
-      pickLocation: "Choose your camp location",
-      line1: "Top European",
-      line2: "football academy",
-      line3: "coaches in Hungary!",
-      subtitle:
-        "Summer football camp with international coaches and academy methodology – real development, an unforgettable experience on the pitch.",
+      pickLocation: "Our upcoming camps",
+      line1: "European star clubs'",
+      line2: "football camps",
+      line3: "in Hungary!",
+      subtitle: "Be part of an unforgettable football experience!",
+      tagline: "Top academies – International coaches – Lifetime memories",
       cta: "Register now",
       earlyLabel: "Limited spots!",
       scroll: "Scroll",
@@ -255,23 +280,32 @@ export const translations = {
       carouselNext: "Next camp",
     },
     usp: {
-      badge: "Why us?",
-      title: "The future of",
-      titleHighlight: "football",
+      badge: "11 reasons",
+      title: "Why choose",
+      titleHighlight: "our camps?",
+      subtitle: "Our starting eleven",
       items: [
-        { title: "International star coaches", desc: "From Europe's best academies" },
-        { title: "International methodology", desc: "World-class training" },
-        { title: "English & Hungarian", desc: "Bilingual training sessions" },
-        { title: "Premium equipment", desc: "Official Benfica kits" },
+        { title: "Training methods of European star clubs", desc: "" },
+        { title: "International coaches", desc: "" },
+        { title: "International methodology – professional training", desc: "" },
+        { title: "English & Hungarian language environment", desc: "" },
+        { title: "12-15 person groups, more attention per child", desc: "" },
+        { title: "Assistant coaches for individual attention", desc: "" },
+        { title: "Official club equipment", desc: "" },
+        { title: "Safe environment, modern infrastructure", desc: "" },
+        { title: "3 meals per day", desc: "" },
+        { title: "Guaranteed tiredness by end of day", desc: "" },
+        { title: "Participation certificate", desc: "" },
       ],
     },
     whySpecial: {
-      badge: "About us",
+      badge: "",
       title: "Give your child a football experience they will",
       titleHighlight: "remember",
       titleEnd: "for a long time!",
-      text: "In our camps, children participate in internationally-minded training led by coaches from Europe's best academies. The English and Hungarian language environment creates a unique opportunity for children to experience the world of international football at a young age.",
+      text: "In our camps, children participate in internationally-minded training led by coaches from Europe's best academies. The English and Hungarian language environment creates a unique opportunity for children to experience the world of international football at a young age. During 4 daily training sessions, focus is placed on developing technique, endurance, confidence, and team spirit.",
       bullets: [
+        "children learn from coaches and professionals of international top clubs",
         "learn to think as a team,",
         "become more confident on and off the pitch,",
         "and return every day motivated and full of joy.",
@@ -293,10 +327,10 @@ export const translations = {
           cta: "Learn more",
         },
         {
-          name: "Coming soon",
-          role: "New partners",
-          desc: "We're continuously expanding our partner network. Our goal is to provide children with the broadest possible international experience through the methods of Europe's most prestigious academies.",
-          cta: "Be the first to know",
+          name: "Atlético Madrid",
+          role: "Official academy partner",
+          desc: "One of the biggest clubs in Spanish football, renowned worldwide for their youth development. Atlético's academy has produced world-class players like Fernando Torres, Koke and Antoine Griezmann.",
+          cta: "Learn more",
         },
       ],
     },
@@ -304,27 +338,38 @@ export const translations = {
       badge: "Partner Program",
       title: "Join us",
       titleHighlight: "as a",
-      titleEnd: "club!",
-      text: "Want to join us as a club or academy? Offer your players an international-level training camp experience under your own brand.",
-      benefits: [
-        { title: "Custom branding", desc: "The camp runs under your club's name and identity" },
-        { title: "International coaches", desc: "Access to the best European academy coaches" },
-        { title: "Full organization", desc: "We handle logistics, you just bring the players" },
-        { title: "Flexible dates", desc: "Choose from available time slots" },
+      titleEnd: "partner!",
+      text: "There are multiple ways to become our partner – whether you're a club, a municipality, or a sponsor.",
+      sections: [
+        {
+          title: "Local clubs",
+          text: "Want to join us as a club or academy? Offer your players an international-level training camp experience at your own venue, under your own brand. We provide the coaches and methodology.",
+        },
+        {
+          title: "Municipalities & organizations",
+          text: "As a municipality or organization, would you like to provide experiences for local youth? Let's organize camps together that combine sports and community building.",
+        },
+        {
+          title: "Sponsors & supporters",
+          text: "Support the sports development of young people. As a sponsor, your logo appears on camp materials, equipment, and in our communications – while supporting a truly valuable cause.",
+        },
       ],
       cta: "Get in touch",
     },
     whatKidsGet: {
-      badge: "What kids get",
-      title: "Everything is",
-      titleHighlight: "included",
+      badge: "Camp contents",
+      title: "What does the",
+      titleHighlight: "camp include?",
       titleEnd: "",
-      subtitle: "In our camps, everything is in place for kids to get the most out of themselves - on and off the pitch.",
+      subtitle: "In our camps, everything is in place for kids to get the most out of themselves — on and off the pitch.",
       items: [
         { title: "Official equipment", desc: "1 set of the club's official kit (shorts, pants, jersey)" },
         { title: "Daily meals", desc: "Three meals a day (morning snack, lunch, afternoon snack)" },
         { title: "Varied training", desc: "4 training sessions daily with varied and playful exercises" },
         { title: "Lifetime experience", desc: "Outstanding atmosphere, safe environment, unforgettable memories" },
+        { title: "Coaches from abroad", desc: "Coaches fly in directly from abroad" },
+        { title: "English-speaking environment", desc: "A great opportunity to improve language skills" },
+        { title: "Benfica certificate", desc: "Certification of participation in the camp" },
       ],
     },
     locations: {
@@ -357,6 +402,11 @@ export const translations = {
         },
       ],
     },
+    limitedSpots: {
+      title: "Limited spots – Secure your place in time!",
+      text: "Our camps operate with small group sizes so every child gets maximum attention. The early bird discount is valid until May 31, and we also offer instalment payment options!",
+      cta: "Register now",
+    },
     experience: {
       badge: "Football as an experience",
       text1: "In our camps, children don't just gain technical skills, but also enrich themselves with",
@@ -381,9 +431,9 @@ export const translations = {
       subtitle: "Register for our camp and our team will contact you shortly with the details.",
       cta: "Register now",
       trust: [
-        { label: "Limited spots", desc: "Max. 40 per camp" },
+        { label: "Small groups", desc: "Max. 12-15 per age group" },
         { label: "Early discount", desc: "€50 off until May 31" },
-        { label: "Quick response", desc: "Within 24 hours" },
+        { label: "Instalment payment", desc: "Flexible payment options" },
       ],
       security: "Your data is handled securely",
     },
@@ -394,7 +444,7 @@ export const translations = {
       items: [
         {
           question: "What makes these camps different from an average football camp?",
-          answer: "Our training sessions are led by coaches from the world's best football academies. Participants learn internationally proven, successful training methods from top clubs. The entire week is fully focused on football, typically with 4 training sessions per day. Sessions are partly conducted in English, helping kids improve their language skills while gaining experience working with international coaches.",
+          answer: "Our training sessions are led by coaches from the world's best football academies. They are full-time professionals from the club, flying in directly from abroad – not locally trained coaches rushed through a quick course. Participants learn internationally proven, successful training methods from top clubs. The entire week is fully focused on football, typically with 4 training sessions per day. Sessions are partly conducted in English, helping kids improve their language skills while gaining experience working with international coaches.",
         },
         {
           question: "Who can participate in the camps?",
@@ -402,7 +452,7 @@ export const translations = {
         },
         {
           question: "What age group are the camps designed for?",
-          answer: "It varies by club, but generally we welcome participants between the ages of 6 and 15.",
+          answer: "It may vary according to each club's specific regulations, but generally we welcome participants between the ages of 6 and 15.",
         },
         {
           question: "What language are the training sessions in?",
@@ -410,7 +460,7 @@ export const translations = {
         },
         {
           question: "Is prior experience or club membership required?",
-          answer: "Participation does not require the applicant to be a registered player. There is no preliminary skill assessment, but it is recommended for those who have at least some prior experience with football.",
+          answer: "Participation does not require the applicant to be a registered player. There is no preliminary skill assessment, but it is recommended for those who have at least played football before.",
         },
         {
           question: "What equipment is needed?",
@@ -418,7 +468,7 @@ export const translations = {
         },
         {
           question: "What does the participation fee include?",
-          answer: "The fee includes the full week training program, three daily meals (morning snack, lunch, afternoon snack), one set of official equipment, and all programs and activities.",
+          answer: "The fee includes the 5-day training program, three daily meals (morning snack, lunch, afternoon snack), one set of official equipment, Benfica certification of camp participation, and all programs and activities.",
         },
         {
           question: "How can I register?",
@@ -426,7 +476,7 @@ export const translations = {
         },
         {
           question: "Is instalment payment available?",
-          answer: "Yes! A deposit of 30,000 HUF is required upon registration, after which the remaining amount can be paid in up to two additional instalments if needed. The full amount must be paid at least one week before the camp start date.",
+          answer: "Yes! A deposit of 30,000 HUF is required upon registration, after which the remaining amount can be paid in up to two additional instalments if needed. The full amount must be paid at least one week before the camp start date. Important: instalment payment is not available when using the EARLYBIRD discount!",
         },
         {
           question: "Are early bird discounts available?",
