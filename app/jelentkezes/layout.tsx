@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Jelentkezés | Benfica Football Camp Hungary',
+  title: 'Jelentkezés | Kickoff Elite Football Camps',
   description:
-    'Jelentkezz a Benfica Football Camp Hungary futballtáborába!',
+    'Jelentkezz a Kickoff Elite Football Camps futballtáborába!',
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {

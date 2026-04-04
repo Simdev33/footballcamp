@@ -76,7 +76,7 @@ export default function KlubokPage() {
       {/* Benfica Header */}
       <section className="relative py-16 md:py-20 overflow-hidden">
         <div className="absolute inset-0">
-          <Image src={`${CDN}/Post_1%20Camp/04%20Template%20Benfica%20Camp%202025_26_Banner.png`} alt="Benfica Camp" fill className="object-cover" loading="lazy" />
+          <Image src={`${CDN}/Post_1%20Camp/04%20Template%20Benfica%20Camp%202025_26_Banner.png`} alt="Kickoff" fill className="object-cover" loading="lazy" />
           <div className="absolute inset-0 bg-[#0a1f0a]/80" />
         </div>
         <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">

@@ -17,7 +17,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'DreamTeam Football Camp Hungary | Nemzetközi Futballtáborok',
+  title: 'Kickoff Elite Football Camps | Nemzetközi Futballtáborok',
   description: 'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény a legjobb európai akadémiák módszereivel.',
   icons: {
     icon: [

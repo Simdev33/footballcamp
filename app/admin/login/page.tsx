@@ -47,7 +47,7 @@ export default function AdminLoginPage() {
             <Shield className="w-8 h-8 text-[#0a1f0a]" />
           </div>
           <h1 className="font-serif text-3xl font-bold text-white">Admin</h1>
-          <p className="text-white/50 mt-2 text-sm">Benfica Football Camp Hungary</p>
+          <p className="text-white/50 mt-2 text-sm">Kickoff Elite Football Camps</p>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-[#0f2b0f] border border-[#d4a017]/20 p-8">

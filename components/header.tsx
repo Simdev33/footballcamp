@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useState, useEffect } from "react"
 import { PenLine, Globe } from "lucide-react"
@@ -46,21 +47,15 @@ export function Header() {
       >
         <div className="mx-auto max-w-[1800px] px-4 md:px-12 lg:px-16 xl:px-24">
           <nav className="flex h-16 md:h-24 items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 md:gap-3 group flex-shrink-0">
-              <div className="relative">
-                <div className="w-9 h-9 md:w-12 md:h-12 bg-[#0a1f0a] flex items-center justify-center">
-                  <span className="text-[#d4a017] font-serif font-bold text-base md:text-xl">B</span>
-                </div>
-                <div className="absolute -bottom-0.5 -right-0.5 md:-bottom-1 md:-right-1 w-9 h-9 md:w-12 md:h-12 border border-primary/40 -z-10" />
-              </div>
-              <div className="hidden sm:block">
-                <span className={`block font-serif text-base font-semibold leading-tight transition-colors duration-500 ${showSolid ? "text-foreground" : "text-white"}`}>
-                  Benfica
-                </span>
-                <span className={`block text-[10px] tracking-widest uppercase transition-colors duration-500 ${showSolid ? "text-primary" : "text-[#d4a017]"}`}>
-                  Football Camp
-                </span>
-              </div>
+            <Link href="/" className="flex items-center group flex-shrink-0">
+              <Image
+                src="/kickoff-logo.png"
+                alt="Kickoff Elite Football Camps"
+                width={140}
+                height={56}
+                className="h-10 md:h-14 w-auto object-contain drop-shadow-md"
+                priority
+              />
             </Link>
 
             <ul className="hidden lg:flex items-center gap-5 xl:gap-7">

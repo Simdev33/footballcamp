@@ -39,7 +39,7 @@ export default async function TaborokPage() {
         <div className="absolute inset-0">
           <Image
             src={`${CDN}/Post_1%20Camp/04%20Template%20Benfica%20Camp%202025_26_Banner.png`}
-            alt="Benfica Camp"
+            alt="Kickoff"
             fill
             className="object-cover"
             priority

@@ -15,7 +15,7 @@ export default async function HirekPage() {
 
   return (
     <main>
-      <SubpageHero title="Hírek" subtitle="A legfrissebb hírek és események a Benfica Football Camp Hungary-tól" />
+      <SubpageHero title="Hírek" subtitle="A legfrissebb hírek és események a Kickoff Elite Football Camps-tól" />
 
       <section className="py-20 bg-background">
         <div className="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-24">

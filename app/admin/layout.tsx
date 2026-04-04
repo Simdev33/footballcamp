@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { AdminSessionProvider } from "./admin-session-provider"
 
 export const metadata: Metadata = {
-  title: "Admin | Benfica Football Camp",
+  title: "Admin | Kickoff",
   robots: "noindex, nofollow",
 }
 

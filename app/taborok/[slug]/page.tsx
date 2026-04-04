@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!camp) return { title: "Tábor nem található" }
 
   return {
-    title: `${camp.city} - ${camp.clubName} Tábor | Benfica Football Camp Hungary`,
+    title: `${camp.city} - ${camp.clubName} Tábor | Kickoff Elite Football Camps`,
     description: camp.description || `${camp.clubName} futballtábor ${camp.city} helyszínnel, ${camp.dates}. ${camp.ageRange} éves korosztálynak.`,
     openGraph: {
       title: `${camp.city} - ${camp.clubName} Tábor`,

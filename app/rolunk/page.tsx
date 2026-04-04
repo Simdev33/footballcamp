@@ -96,7 +96,7 @@ export default function RolunkPage() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="relative">
               <div className="relative aspect-[4/3] overflow-hidden">
-                <Image src="https://focis.b-cdn.net/Post_1%20Camp/01%20Template%20Benfica%20Camp%202025_26_FEED.png" alt="Benfica Camp" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" loading="lazy" />
+                <Image src="https://focis.b-cdn.net/Post_1%20Camp/01%20Template%20Benfica%20Camp%202025_26_FEED.png" alt="Kickoff" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" loading="lazy" />
               </div>
               <div className="absolute -bottom-4 -right-4 w-full h-full border-2 border-[#d4a017]/30 -z-10" />
             </div>

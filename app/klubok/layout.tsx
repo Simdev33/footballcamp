@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Klubok | Benfica Football Camp Hungary',
+  title: 'Klubok | Kickoff Elite Football Camps',
   description:
     'Partnereink és akadémiai kapcsolataink a legjobb európai futballklubokkal.',
 }

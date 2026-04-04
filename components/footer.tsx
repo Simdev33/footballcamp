@@ -2,6 +2,7 @@
 
 import { Input } from "@/components/ui/input"
 import { Facebook, Instagram, Youtube, ArrowRight, CheckCircle } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
 import { useLanguage } from "@/lib/language-context"
@@ -28,17 +29,15 @@ export function Footer() {
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-8">
           {/* Brand */}
           <div className="lg:col-span-5">
-            <Link href="/" className="flex items-center gap-3 mb-8">
-              <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                  <span className="text-[#0a1f0a] font-serif font-bold text-2xl">B</span>
-                </div>
-                <div className="absolute -bottom-1.5 -right-1.5 w-12 h-12 border border-[#d4a017]/40 -z-10" />
-              </div>
-              <div>
-                <span className="block font-serif text-lg font-bold text-white">Benfica Camp</span>
-                <span className="block text-sm text-[#d4a017] tracking-widest uppercase">Hungary</span>
-              </div>
+            <Link href="/" className="flex items-center mb-8">
+              <Image
+                src="/kickoff-logo.png"
+                alt="Kickoff Elite Football Camps"
+                width={180}
+                height={72}
+                className="h-16 w-auto object-contain brightness-110"
+                loading="lazy"
+              />
             </Link>
             <p className="text-white/60 max-w-sm leading-relaxed mb-8 text-sm">{t.footer.desc}</p>
             <div className="flex gap-4">
