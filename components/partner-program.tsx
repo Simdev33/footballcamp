@@ -24,7 +24,7 @@ export function PartnerProgram() {
               <span className="text-primary">{t.partnerProgram.titleHighlight}</span>{" "}
               {t.partnerProgram.titleEnd}
             </h2>
-            <p className="mt-6 text-base text-muted-foreground leading-relaxed max-w-lg">{t.partnerProgram.text}</p>
+            <p className="mt-6 text-base text-muted-foreground leading-relaxed max-w-lg">{t.partnerProgram.intro}</p>
 
             <div className="mt-8 space-y-4">
               {t.partnerProgram.sections.map((section, index) => {

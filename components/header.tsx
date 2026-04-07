@@ -46,14 +46,14 @@ export function Header() {
         }`}
       >
         <div className="mx-auto max-w-[1800px] px-4 md:px-12 lg:px-16 xl:px-24">
-          <nav className="flex h-16 md:h-24 items-center justify-between">
+          <nav className="flex h-20 md:h-28 items-center justify-between">
             <Link href="/" className="flex items-center group flex-shrink-0">
               <Image
                 src="/kickoff-logo.png"
                 alt="Kickoff Elite Football Camps"
-                width={140}
-                height={56}
-                className="h-10 md:h-14 w-auto object-contain drop-shadow-md"
+                width={200}
+                height={80}
+                className="h-14 md:h-20 w-auto object-contain drop-shadow-md"
                 priority
               />
             </Link>

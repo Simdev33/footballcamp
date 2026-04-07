@@ -1,24 +1,26 @@
 "use client"
 
-import { Check, Shirt, Utensils, Zap, Star, Plane, Languages, GraduationCap, ArrowRight } from "lucide-react"
+import { Check, Plane, Dumbbell, Users, Languages, Utensils, Shirt, Heart, ArrowRight } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import Link from "next/link"
 import { ZigzagSection } from "@/components/zigzag-section"
+import { WhyDifferent } from "@/components/why-different"
 import { USPSection } from "@/components/usp-section"
 import { LimitedSpots } from "@/components/limited-spots"
+import { TargetAudience } from "@/components/target-audience"
 import { LocationCards } from "@/components/location-cards"
 import { ApplicationForm } from "@/components/application-form"
 
 const CDN = "https://focis.b-cdn.net"
 
 const KID_ITEMS = [
-  { Icon: Shirt, color: "#ef4444" },
-  { Icon: Utensils, color: "#f97316" },
-  { Icon: Zap, color: "#eab308" },
-  { Icon: Star, color: "#22c55e" },
   { Icon: Plane, color: "#3b82f6" },
+  { Icon: Dumbbell, color: "#ef4444" },
+  { Icon: Users, color: "#22c55e" },
   { Icon: Languages, color: "#8b5cf6" },
-  { Icon: GraduationCap, color: "#d4a017" },
+  { Icon: Utensils, color: "#f97316" },
+  { Icon: Shirt, color: "#d4a017" },
+  { Icon: Heart, color: "#ec4899" },
 ]
 
 export default function BelowFoldHome() {
@@ -26,7 +28,7 @@ export default function BelowFoldHome() {
 
   return (
     <>
-      {/* 1. WhySpecial */}
+      {/* 1. WhySpecial – bevezető szekció */}
       <ZigzagSection
         badge={t.whySpecial.badge}
         title={t.whySpecial.title}
@@ -48,19 +50,22 @@ export default function BelowFoldHome() {
             </div>
           ))}
         </div>
-        <Link href="/rolunk" className="inline-flex items-center gap-2 mt-6 text-sm font-semibold text-primary hover:text-primary/80 transition-colors">
-          {t.coaches.cards[0].cta}
+        <Link href="/taborok" className="inline-flex items-center gap-2 mt-6 text-sm font-semibold text-primary hover:text-primary/80 transition-colors">
+          {t.whySpecial.detailsCta}
           <ArrowRight className="w-4 h-4" />
         </Link>
       </ZigzagSection>
 
-      {/* 2. USP – 11 reasons */}
+      {/* 2. Ezért más ez a focitábor */}
+      <WhyDifferent />
+
+      {/* 3. USP – 11 érv */}
       <USPSection />
 
-      {/* 3. Limited spots CTA */}
+      {/* 4. Korlátozott létszám CTA */}
       <LimitedSpots />
 
-      {/* 4. WhatKidsGet */}
+      {/* 5. Mit kapsz a táborban? */}
       <ZigzagSection
         reversed
         badge={t.whatKidsGet.badge}
@@ -92,19 +97,19 @@ export default function BelowFoldHome() {
             )
           })}
         </div>
-        <Link href="/taborok" className="inline-flex items-center gap-2 mt-6 text-sm font-semibold text-primary hover:text-primary/80 transition-colors">
-          {t.nav.camps} részletek
-          <ArrowRight className="w-4 h-4" />
-        </Link>
       </ZigzagSection>
 
-      {/* 5. Csapatszellem + Experience merge */}
+      {/* 6. Kinek ajánljuk? */}
+      <TargetAudience />
+
+      {/* 7. Több mint edzés */}
       <ZigzagSection
         dark
-        badge="Csapatszellem"
-        title="Több mint"
-        titleHighlight="edzés"
-        text="Táborainkban a gyerekek nemcsak technikai tudást szereznek, hanem megtanulnak együtt dolgozni, egymást támogatni és csapatban gondolkodni. Az összetartozás érzése az, ami igazán különlegessé teszi a tábori élményt – és ami a pályán kívül is elkíséri őket."
+        badge={t.experience.badge}
+        title={t.experience.title}
+        titleHighlight={t.experience.titleHighlight}
+        titleEnd={t.experience.titleEnd}
+        text={`${t.experience.text1} ${t.experience.text1End}`}
         imageSrc={`${CDN}/site/gyerekcsapat.jpg`}
         imageAlt="Gyerekcsapat összetartás"
       >
@@ -127,10 +132,10 @@ export default function BelowFoldHome() {
         </blockquote>
       </ZigzagSection>
 
-      {/* LocationCards */}
+      {/* 8. Helyszínek */}
       <LocationCards />
 
-      {/* 6. Application Form */}
+      {/* 9. Záró CTA */}
       <ApplicationForm />
     </>
   )

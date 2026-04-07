@@ -88,9 +88,9 @@ export function Hero() {
               <span className="block text-white/75">{t.hero.line3}</span>
             </h1>
 
-            <p className="mt-4 md:mt-6 max-w-xl text-sm font-light leading-relaxed text-white/65 md:text-lg">
+            <h2 className="mt-4 md:mt-6 max-w-xl text-sm font-light leading-relaxed text-white/65 md:text-lg">
               {t.hero.subtitle}
-            </p>
+            </h2>
             <p className="mt-2 md:mt-3 text-xs font-semibold uppercase tracking-[0.15em] text-[#d4a017]/80 md:text-base">
               {t.hero.tagline}
             </p>

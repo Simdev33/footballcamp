@@ -33,9 +33,9 @@ export function Footer() {
               <Image
                 src="/kickoff-logo.png"
                 alt="Kickoff Elite Football Camps"
-                width={180}
-                height={72}
-                className="h-16 w-auto object-contain brightness-110"
+                width={220}
+                height={88}
+                className="h-20 w-auto object-contain brightness-110"
                 loading="lazy"
               />
             </Link>

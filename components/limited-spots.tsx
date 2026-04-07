@@ -1,6 +1,6 @@
 "use client"
 
-import { Clock, CreditCard, ArrowRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
 export function LimitedSpots() {
@@ -19,10 +19,9 @@ export function LimitedSpots() {
           {t.limitedSpots.text}
         </p>
 
-        <div className="mt-4 md:mt-6 flex flex-wrap justify-center gap-4 md:gap-6 text-[#0a1f0a]/60 text-xs md:text-sm">
-          <span className="inline-flex items-center gap-1.5 md:gap-2"><Clock className="w-3.5 h-3.5 md:w-4 md:h-4" /> Early bird: máj. 31-ig</span>
-          <span className="inline-flex items-center gap-1.5 md:gap-2"><CreditCard className="w-3.5 h-3.5 md:w-4 md:h-4" /> Részletfizetés</span>
-        </div>
+        <p className="mt-3 md:mt-5 text-xs md:text-sm text-[#0a1f0a]/65 font-medium max-w-xl mx-auto">
+          {t.limitedSpots.earlyBirdNote}
+        </p>
 
         <div className="mt-6 md:mt-8">
           <a
