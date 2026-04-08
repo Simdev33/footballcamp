@@ -23,6 +23,13 @@ export function LocationCards() {
 
       <div className="relative z-10 mx-auto max-w-[1400px] px-4 md:px-12 lg:px-24">
         <div className="mb-8 md:mb-14 text-center">
+          {/* Stadium location pin icon */}
+          <div className="inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#0a1f0a]/5 border border-[#0a1f0a]/10 mb-4">
+            <svg viewBox="0 0 24 24" className="w-6 h-6 md:w-7 md:h-7 text-[#d4a017]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </div>
           <span className="inline-block bg-[#0a1f0a] px-4 py-1.5 md:px-6 md:py-2 text-xs md:text-sm font-medium uppercase tracking-[0.3em] text-[#d4a017]">
             {t.locations.badge}
           </span>

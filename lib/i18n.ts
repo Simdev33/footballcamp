@@ -53,7 +53,7 @@ export const translations = {
       titleEnd: "emlékezni fog!",
       text: "Táborainkban a gyerekek nemzetközi szintű képzésben vesznek részt, európai akadémiák edzőinek irányításával. Az angol és magyar nyelvű edzések során már fiatal korban megtapasztalhatják a profi futball szemléletét.",
       bullets: [
-        "Profi edzők a Benfica és az Atlético Madrid akadémiáiról – valódi nemzetközi módszertan",
+        "Profi edzők az SL Benfica akadémiájáról – valódi nemzetközi módszertan",
         "Napi több edzés, kis létszámú csoportokban – minden gyerek figyelmet kap",
         "Technikai, taktikai és mentális fejlődés – nem csak játék, hanem képzés",
         "Élmény, önbizalom és csapatszellem – ami a pályán túl is megmarad",
@@ -98,12 +98,6 @@ export const translations = {
           name: "SL Benfica",
           role: "Hivatalos akadémiai partner",
           desc: "A világ egyik legelismertebb utánpótlás-akadémiájának módszertana és edzői tapasztalata. A Benfica akadémia olyan játékosokat nevelt ki, mint João Félix, Bernardo Silva és Rúben Dias.",
-          cta: "Tudj meg többet",
-        },
-        {
-          name: "Atlético Madrid",
-          role: "Hivatalos akadémiai partner",
-          desc: "A spanyol labdarúgás egyik legnagyobb klubja, amely világszerte ismert az utánpótlás-neveléséről. Az Atlético akadémia olyan játékosokat adott a világnak, mint Fernando Torres, Koke és Antoine Griezmann.",
           cta: "Tudj meg többet",
         },
       ],
@@ -383,7 +377,7 @@ export const translations = {
       titleEnd: "for a long time!",
       text: "In our camps, children receive international-level training under the guidance of European academy coaches. Through English and Hungarian sessions, they experience the world of professional football at a young age.",
       bullets: [
-        "Professional coaches from Benfica and Atlético Madrid academies – real international methodology",
+        "Professional coaches from the SL Benfica academy – real international methodology",
         "Multiple daily sessions in small groups – every child gets attention",
         "Technical, tactical and mental development – not just play, but real training",
         "Experience, confidence and teamwork – that stays with them beyond the pitch",
@@ -428,12 +422,6 @@ export const translations = {
           name: "SL Benfica",
           role: "Official academy partner",
           desc: "The methodology and coaching expertise of one of the world's most renowned youth academies. Benfica's academy has produced players like João Félix, Bernardo Silva and Rúben Dias.",
-          cta: "Learn more",
-        },
-        {
-          name: "Atlético Madrid",
-          role: "Official academy partner",
-          desc: "One of the biggest clubs in Spanish football, renowned worldwide for their youth development. Atlético's academy has produced world-class players like Fernando Torres, Koke and Antoine Griezmann.",
           cta: "Learn more",
         },
       ],

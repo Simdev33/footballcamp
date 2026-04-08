@@ -24,7 +24,17 @@ export function Footer() {
   }
 
   return (
-    <footer className="relative bg-[#0a1f0a] text-white border-t border-[#1a3a1a] overflow-hidden">
+    <footer className="relative bg-[#0a1f0a] text-white overflow-hidden">
+      {/* Top grass edge */}
+      <div className="h-2 md:h-3 bg-gradient-to-r from-[#1e6b1e] via-[#2d7a2d] to-[#1e6b1e]">
+        <div className="h-full bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.015)_0px,rgba(255,255,255,0.015)_50px,transparent_50px,transparent_100px)]" />
+      </div>
+
+      {/* Pitch lines */}
+      <svg className="absolute top-8 left-0 right-0 bottom-0 w-full h-full opacity-[0.025] pointer-events-none" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+        <line x1="400" y1="0" x2="400" y2="400" stroke="white" strokeWidth="2" />
+        <circle cx="400" cy="200" r="60" stroke="white" strokeWidth="2" fill="none" />
+      </svg>
       <div className="relative z-10 max-w-[1800px] mx-auto px-4 md:px-12 lg:px-24 py-10 lg:py-20">
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-8">
           {/* Brand */}
@@ -33,9 +43,9 @@ export function Footer() {
               <Image
                 src="/kickoff-logo.png"
                 alt="Kickoff Elite Football Camps"
-                width={220}
-                height={88}
-                className="h-20 w-auto object-contain brightness-110"
+                width={280}
+                height={112}
+                className="h-24 w-auto object-contain brightness-110"
                 loading="lazy"
               />
             </Link>
@@ -95,9 +105,18 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-white/40">{t.footer.copyright}</p>
-          <p className="text-base text-[#d4a017] italic font-serif">{t.footer.motto}</p>
+        {/* Scoreboard-style copyright */}
+        <div className="mt-14 pt-6 border-t border-white/10">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 px-4 py-3 md:px-6 md:py-4 bg-[#0d260d] border border-[#d4a017]/15 rounded-lg">
+            <div className="flex items-center gap-3">
+              <svg viewBox="0 0 24 24" className="w-4 h-4 text-[#d4a017]/50" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M12 2L14 7 19.5 7 15.5 10.5 17 16 12 12.5 7 16 8.5 10.5 4.5 7 10 7Z" fill="currentColor" fillOpacity="0.3" />
+              </svg>
+              <p className="text-white/40 text-xs md:text-sm">{t.footer.copyright}</p>
+            </div>
+            <p className="text-sm md:text-base text-[#d4a017] italic font-serif">{t.footer.motto}</p>
+          </div>
         </div>
       </div>
     </footer>

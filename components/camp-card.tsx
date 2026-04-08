@@ -22,13 +22,13 @@ export function CampCard({ camp, imageSrc, className, priority }: CampCardProps)
   return (
     <div className={cn("group relative", className)}>
       <div className="relative overflow-hidden bg-[#0a1f0a] transition-[transform,box-shadow] duration-500 will-change-transform hover:-translate-y-2 hover:shadow-[0_40px_100px_#d4a01733]">
-        <div className="relative aspect-[16/8] overflow-hidden">
+        <div className="relative aspect-[16/11] overflow-hidden">
           <Image
             src={imageSrc}
             alt={camp.city}
             fill
             sizes="(max-width: 1024px) 100vw, 420px"
-            className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-110"
+            className="object-cover object-top transition-transform duration-700 will-change-transform group-hover:scale-110"
             loading={priority ? "eager" : "lazy"}
             priority={priority}
           />

@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import { ChevronLeft, ChevronRight, Users } from "lucide-react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import {
   Carousel,
@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/carousel"
 import { CampCard } from "@/components/camp-card"
 import { cn } from "@/lib/utils"
-
 const AUTOPLAY_MS = 7000
 const CDN = "https://focis.b-cdn.net"
 
@@ -50,7 +49,8 @@ export function Hero() {
   }, [api])
 
   return (
-    <section className="relative min-h-[100svh] overflow-hidden pb-20 md:pb-36">
+    <section className="relative min-h-svh overflow-hidden pb-20 md:pb-36">
+      {/* Video background */}
       <div className="absolute inset-0">
         <video
           autoPlay
@@ -62,63 +62,70 @@ export function Hero() {
         >
           <source src={`${CDN}/site/hero-bg.mp4`} type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a1f0a]/60 via-[#0a1f0a]/80 to-[#0a1f0a]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a1f0a] via-transparent to-[#0a1f0a]/85" />
+        <div className="absolute inset-0 bg-linear-to-b from-[#0a1f0a]/60 via-[#0a1f0a]/80 to-[#0a1f0a]" />
+        <div className="absolute inset-0 bg-linear-to-r from-[#0a1f0a] via-transparent to-[#0a1f0a]/85" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0a1f0a_72%)]" />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[1400px] flex-col justify-center px-4 pt-20 md:px-12 md:pt-24 lg:px-24 lg:pt-28">
+      {/* Stadium floodlight glow */}
+      <div className="absolute top-0 left-[15%] w-[30%] h-[200px] bg-[radial-gradient(ellipse_at_top,rgba(212,160,23,0.06)_0%,transparent_70%)] pointer-events-none z-1" />
+      <div className="absolute top-0 right-[15%] w-[30%] h-[200px] bg-[radial-gradient(ellipse_at_top,rgba(212,160,23,0.06)_0%,transparent_70%)] pointer-events-none z-1" />
+
+      <div className="relative z-10 mx-auto flex min-h-svh max-w-[1400px] flex-col justify-center px-4 pt-20 md:px-12 md:pt-24 lg:px-24 lg:pt-28">
         <div className="grid items-center gap-8 md:gap-12 lg:grid-cols-2 lg:gap-16">
+          {/* Left: text content */}
           <div className="animate-fade-in">
-            <span className="inline-block border border-[#d4a017]/40 bg-[#0a1f0a]/60 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d4a017] backdrop-blur-sm md:px-4 md:py-2 md:text-sm">
+            <span className="inline-block border border-[#d4a017]/40 bg-[#0a1f0a]/60 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d4a017] backdrop-blur-sm md:px-4 md:py-2 md:text-xs mb-5 md:mb-7">
               {t.hero.campBadge}
             </span>
 
-            <div className="mb-4 mt-4 md:mb-6 md:mt-6 inline-flex flex-wrap items-center gap-2 md:gap-3">
-              <div className="h-3 w-3 md:h-4 md:w-4 animate-pulse rounded-full bg-[#d4a017]" />
-              <span className="text-xs font-medium uppercase tracking-[0.25em] text-white/80 md:text-base md:tracking-[0.3em]">
+            {/* Location tag */}
+            <div className="mb-5 md:mb-7 inline-flex items-center gap-2 md:gap-3 px-3 py-1.5 md:px-4 md:py-2 bg-white/[0.05] border border-white/10 backdrop-blur-sm rounded-full">
+              <div className="h-2 w-2 rounded-full bg-[#22c55e] animate-pulse" />
+              <span className="text-xs font-medium uppercase tracking-[0.2em] text-white/70 md:text-sm">
                 {t.hero.location}
               </span>
-              <Users className="h-4 w-4 md:h-5 md:w-5 text-[#d4a017]" />
             </div>
 
-            <h1 className="font-serif text-[clamp(1.6rem,5vw,4rem)] font-bold leading-[0.95] tracking-tight">
+            <h1 className="font-serif text-[clamp(1.8rem,5.5vw,4.2rem)] font-bold leading-[0.92] tracking-tight">
               <span className="block text-white">{t.hero.line1}</span>
-              <span className="block text-[#d4a017]">{t.hero.line2}</span>
-              <span className="block text-white/75">{t.hero.line3}</span>
+              <span className="block text-[#d4a017] mt-1">{t.hero.line2}</span>
+              <span className="block text-white/70 mt-1">{t.hero.line3}</span>
             </h1>
 
-            <h2 className="mt-4 md:mt-6 max-w-xl text-sm font-light leading-relaxed text-white/65 md:text-lg">
+            <h2 className="mt-5 md:mt-7 max-w-xl text-sm font-light leading-relaxed text-white/60 md:text-lg">
               {t.hero.subtitle}
             </h2>
-            <p className="mt-2 md:mt-3 text-xs font-semibold uppercase tracking-[0.15em] text-[#d4a017]/80 md:text-base">
-              {t.hero.tagline}
-            </p>
 
-            <div className="mt-5 md:mt-8 flex flex-wrap items-center gap-3 md:gap-4">
+            {/* Trust indicators */}
+            <div className="mt-3 md:mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 md:gap-x-6">
+              {t.hero.tagline.split("•").map((item, i) => (
+                <span key={i} className="flex items-center gap-1.5 text-[11px] md:text-sm font-medium text-[#d4a017]/75">
+                  <span className="w-1 h-1 rounded-full bg-[#d4a017]/50" />
+                  {item.trim()}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-6 md:mt-9 flex flex-wrap items-center gap-3 md:gap-5">
               <a
                 href="/jelentkezes"
-                className="group relative inline-flex items-center gap-2 md:gap-3 overflow-hidden bg-[#d4a017] px-5 py-3 md:px-8 md:py-4 text-sm md:text-base font-semibold text-[#0a1f0a] transition-shadow duration-300 hover:shadow-[0_0_50px_#d4a01780]"
+                className="group relative inline-flex items-center gap-2 md:gap-3 overflow-hidden bg-[#d4a017] px-6 py-3.5 md:px-9 md:py-4.5 text-sm md:text-base font-bold text-[#0a1f0a] transition-shadow duration-300 hover:shadow-[0_0_60px_#d4a01780] rounded-sm"
               >
                 {t.hero.cta}
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14" />
                   <path d="m12 5 7 7-7 7" />
                 </svg>
               </a>
-              <p className="text-sm text-white/55">{t.hero.earlyLabel}</p>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[#ef4444] animate-pulse" />
+                <p className="text-xs md:text-sm text-white/55 font-medium">{t.hero.earlyLabel}</p>
+              </div>
             </div>
           </div>
 
+          {/* Right: camp cards carousel */}
           <div className="relative mx-auto w-full max-w-md lg:mx-0 lg:max-w-lg">
             <p className="mb-3 text-center text-[11px] font-medium uppercase tracking-[0.28em] text-[#d4a017] lg:text-left">
               {t.hero.pickLocation}
@@ -167,7 +174,7 @@ export function Hero() {
                 opts={{ loop: true, duration: 30 }}
                 setApi={setApi}
               >
-                <CarouselContent className="-ml-0">
+                <CarouselContent className="ml-0">
                   {camps.map((camp, index) => (
                     <CarouselItem
                       key={camp.city}
@@ -209,14 +216,20 @@ export function Hero() {
         </div>
       </div>
 
+      {/* Scroll indicator */}
       <div className="pointer-events-none absolute bottom-6 left-0 right-0 z-10 flex flex-col items-center md:bottom-8">
-        <div className="pointer-events-none flex flex-col items-center gap-5 animate-bounce">
-          <span className="text-[11px] font-medium uppercase tracking-[0.45em] text-[#d4a017]">
+        <div className="flex flex-col items-center gap-3 animate-bounce">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.5em] text-[#d4a017]/70">
             {t.hero.scroll}
           </span>
-          <div className="h-14 w-px bg-gradient-to-b from-[#d4a017] via-[#d4a017]/50 to-transparent" />
+          <svg width="16" height="24" viewBox="0 0 16 24" fill="none" className="text-[#d4a017]/60">
+            <path d="M8 4v12M4 12l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </div>
       </div>
+
+      {/* Bottom grass edge */}
+      <div className="absolute bottom-0 left-0 right-0 h-1.5 md:h-2 bg-gradient-to-r from-[#1e6b1e] via-[#2d7a2d] to-[#1e6b1e] z-10" />
     </section>
   )
 }

@@ -10,6 +10,7 @@ import { LimitedSpots } from "@/components/limited-spots"
 import { TargetAudience } from "@/components/target-audience"
 import { LocationCards } from "@/components/location-cards"
 import { ApplicationForm } from "@/components/application-form"
+import { FootballDivider, GrassStrip } from "@/components/football-divider"
 
 const CDN = "https://focis.b-cdn.net"
 
@@ -41,7 +42,7 @@ export default function BelowFoldHome() {
         <div className="space-y-3">
           {t.whySpecial.bullets.map((point) => (
             <div key={point} className="flex items-start gap-3 group">
-              <div className="mt-0.5 w-6 h-6 bg-[#d4a017] flex items-center justify-center flex-shrink-0">
+              <div className="mt-0.5 w-6 h-6 bg-[#d4a017] flex items-center justify-center shrink-0">
                 <Check className="w-4 h-4 text-[#0a1f0a]" />
               </div>
               <span className="text-sm text-muted-foreground group-hover:text-primary transition-colors">
@@ -56,13 +57,18 @@ export default function BelowFoldHome() {
         </Link>
       </ZigzagSection>
 
-      {/* 2. Ezért más ez a focitábor */}
+      {/* Grass transition → tactic board */}
+      <GrassStrip />
+
+      {/* 2. Ezért más ez a focitábor — taktikai tábla stílus */}
       <WhyDifferent />
 
-      {/* 3. USP – 11 érv */}
+      <GrassStrip />
+
+      {/* 3. USP – 11 érv, focipálya felállás */}
       <USPSection />
 
-      {/* 4. Korlátozott létszám CTA */}
+      {/* 4. Korlátozott létszám CTA — stadion jegy stílus */}
       <LimitedSpots />
 
       {/* 5. Mit kapsz a táborban? */}
@@ -84,7 +90,7 @@ export default function BelowFoldHome() {
             return (
               <div key={item.title} className="flex items-start gap-3 md:gap-4 group">
                 <div
-                  className="w-9 h-9 md:w-11 md:h-11 flex items-center justify-center flex-shrink-0 rounded-lg transition-transform duration-300 group-hover:scale-110"
+                  className="w-9 h-9 md:w-11 md:h-11 flex items-center justify-center shrink-0 rounded-lg transition-transform duration-300 group-hover:scale-110"
                   style={{ background: `${color}18` }}
                 >
                   <Icon className="w-4 h-4 md:w-5 md:h-5" style={{ color }} strokeWidth={1.5} />
@@ -99,7 +105,10 @@ export default function BelowFoldHome() {
         </div>
       </ZigzagSection>
 
-      {/* 6. Kinek ajánljuk? */}
+      {/* Pitch center line divider */}
+      <FootballDivider />
+
+      {/* 6. Kinek ajánljuk? — csapatlista stílus */}
       <TargetAudience />
 
       {/* 7. Több mint edzés */}
@@ -132,10 +141,12 @@ export default function BelowFoldHome() {
         </blockquote>
       </ZigzagSection>
 
+      <GrassStrip />
+
       {/* 8. Helyszínek */}
       <LocationCards />
 
-      {/* 9. Záró CTA */}
+      {/* 9. Záró CTA — Transfer window stílus */}
       <ApplicationForm />
     </>
   )
