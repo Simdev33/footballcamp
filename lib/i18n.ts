@@ -10,6 +10,7 @@ export const translations = {
       gallery: "Galéria",
       contact: "Kapcsolat",
       faq: "GYIK",
+      blog: "Blog",
       register: "Jelentkezés",
     },
     hero: {
@@ -334,6 +335,7 @@ export const translations = {
       gallery: "Gallery",
       contact: "Contact",
       faq: "FAQ",
+      blog: "Blog",
       register: "Register",
     },
     hero: {

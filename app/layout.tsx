@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Playfair_Display, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { LayoutWrapper } from '@/components/layout-wrapper'
+import { getSiteContent } from '@/lib/content'
 import './globals.css'
 
 const playfair = Playfair_Display({ 
@@ -38,11 +39,13 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const dbContent = await getSiteContent()
+
   return (
     <html lang="hu">
       <head>
@@ -50,7 +53,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://focis.b-cdn.net" />
       </head>
       <body className={`${playfair.variable} ${inter.variable} font-sans antialiased`}>
-        <LayoutWrapper>{children}</LayoutWrapper>
+        <LayoutWrapper dbContent={dbContent}>{children}</LayoutWrapper>
         <Analytics />
       </body>
     </html>

@@ -153,6 +153,50 @@ export async function deleteNews(id: string) {
   revalidatePath("/admin/hirek")
 }
 
+// ─── Blog ───
+
+export async function createBlogPost(formData: FormData) {
+  const title = formData.get("title") as string
+  await db.blogPost.create({
+    data: {
+      title,
+      slug: slugify(title) + "-" + Date.now().toString(36),
+      excerpt: (formData.get("excerpt") as string) || "",
+      content: formData.get("content") as string,
+      imageUrl: (formData.get("imageUrl") as string) || null,
+      category: (formData.get("category") as string) || "általános",
+      published: formData.get("published") === "on",
+      authorId: formData.get("authorId") as string,
+    },
+  })
+  revalidatePath("/admin/blog")
+  revalidatePath("/blog")
+  redirect("/admin/blog")
+}
+
+export async function updateBlogPost(id: string, formData: FormData) {
+  await db.blogPost.update({
+    where: { id },
+    data: {
+      title: formData.get("title") as string,
+      excerpt: (formData.get("excerpt") as string) || "",
+      content: formData.get("content") as string,
+      imageUrl: (formData.get("imageUrl") as string) || null,
+      category: (formData.get("category") as string) || "általános",
+      published: formData.get("published") === "on",
+    },
+  })
+  revalidatePath("/admin/blog")
+  revalidatePath("/blog")
+  redirect("/admin/blog")
+}
+
+export async function deleteBlogPost(id: string) {
+  await db.blogPost.delete({ where: { id } })
+  revalidatePath("/admin/blog")
+  revalidatePath("/blog")
+}
+
 // ─── Gallery ───
 
 export async function addGalleryImage(formData: FormData) {
@@ -197,4 +241,27 @@ export async function updateUserRole(id: string, role: string) {
 export async function deleteUser(id: string) {
   await db.user.delete({ where: { id } })
   revalidatePath("/admin/felhasznalok")
+}
+
+// ─── Site Content ───
+
+export async function updateSiteContent(
+  section: string,
+  locale: string,
+  content: Record<string, unknown>,
+) {
+  const json = content as unknown as import("@prisma/client").Prisma.InputJsonValue
+  await db.siteContent.upsert({
+    where: { section_locale: { section, locale } },
+    create: { section, locale, content: json },
+    update: { content: json },
+  })
+  revalidatePath("/", "layout")
+  revalidatePath("/admin/tartalom")
+}
+
+export async function resetSiteContent(section: string, locale: string) {
+  await db.siteContent.deleteMany({ where: { section, locale } })
+  revalidatePath("/", "layout")
+  revalidatePath("/admin/tartalom")
 }

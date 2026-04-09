@@ -11,14 +11,19 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
+interface LanguageProviderProps {
+  children: React.ReactNode;
+  dbContent?: { hu: unknown; en: unknown } | null;
+}
+
+export function LanguageProvider({ children, dbContent }: LanguageProviderProps) {
   const [locale, setLocale] = useState<Locale>("hu");
 
   const toggleLocale = useCallback(() => {
     setLocale((prev) => (prev === "hu" ? "en" : "hu"));
   }, []);
 
-  const t = translations[locale];
+  const t = (dbContent ? dbContent[locale] : translations[locale]) as Translations;
 
   return (
     <LanguageContext.Provider value={{ locale, t, toggleLocale }}>

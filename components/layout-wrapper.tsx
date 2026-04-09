@@ -5,7 +5,12 @@ import { LanguageProvider } from "@/lib/language-context"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
-export function LayoutWrapper({ children }: { children: React.ReactNode }) {
+interface LayoutWrapperProps {
+  children: React.ReactNode
+  dbContent?: { hu: unknown; en: unknown } | null
+}
+
+export function LayoutWrapper({ children, dbContent }: LayoutWrapperProps) {
   const pathname = usePathname()
   const isAdmin = pathname.startsWith("/admin")
 
@@ -14,7 +19,7 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <LanguageProvider>
+    <LanguageProvider dbContent={dbContent}>
       <div className="min-h-screen bg-background">
         <Header />
         {children}

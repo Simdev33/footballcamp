@@ -5,13 +5,15 @@ import { usePathname } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
 import {
   LayoutDashboard, Newspaper, ImageIcon, Tent, ClipboardList,
-  Users, LogOut, ChevronLeft, Menu, Shield,
+  Users, LogOut, ChevronLeft, Menu, Shield, FileText, BookOpen,
 } from "lucide-react"
 import { useState } from "react"
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/tartalom", label: "Tartalom", icon: FileText },
   { href: "/admin/hirek", label: "Hírek", icon: Newspaper },
+  { href: "/admin/blog", label: "Blog", icon: BookOpen },
   { href: "/admin/galeria", label: "Galéria", icon: ImageIcon },
   { href: "/admin/taborok", label: "Táborok", icon: Tent },
   { href: "/admin/jelentkezesek", label: "Jelentkezések", icon: ClipboardList },

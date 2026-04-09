@@ -22,6 +22,7 @@ export function Header() {
     { href: "/galeria", label: t.nav.gallery },
     { href: "/kapcsolat", label: t.nav.contact },
     { href: "/gyik", label: t.nav.faq },
+    { href: "/blog", label: t.nav.blog },
   ]
 
   useEffect(() => {
@@ -53,7 +54,11 @@ export function Header() {
                 alt="Kickoff Elite Football Camps"
                 width={320}
                 height={128}
-                className="h-18 md:h-28 w-auto object-contain drop-shadow-md"
+                className={`h-18 md:h-28 w-auto object-contain transition-all duration-500 ${
+                  showSolid
+                    ? "drop-shadow-md"
+                    : "brightness-[1.8] drop-shadow-[0_0_12px_rgba(212,160,23,0.4)]"
+                }`}
                 priority
               />
             </Link>
