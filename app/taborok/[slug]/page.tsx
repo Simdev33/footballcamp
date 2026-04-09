@@ -129,11 +129,11 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
                   <SectionTitle>Mit tartalmaz</SectionTitle>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {camp.includes.map((item) => (
-                      <div key={item} className="flex items-start gap-3 p-4 bg-[#0a1f0a]/50 border border-[#d4a017]/10">
+                      <div key={item} className="flex items-start gap-3 p-4 bg-white border border-border/60 shadow-sm">
                         <div className="mt-0.5 w-6 h-6 bg-[#d4a017] flex items-center justify-center shrink-0">
                           <Check className="w-4 h-4 text-[#0a1f0a]" />
                         </div>
-                        <span className="text-sm text-foreground">{item}</span>
+                        <span className="text-sm text-foreground font-medium">{item}</span>
                       </div>
                     ))}
                   </div>
@@ -153,9 +153,9 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
                   <SectionTitle>Edzők</SectionTitle>
                   <div className="grid sm:grid-cols-2 gap-6">
                     {coaches.map((coach, i) => (
-                      <div key={i} className="flex gap-4 p-5 bg-[#0a1f0a]/50 border border-[#d4a017]/10">
+                      <div key={i} className="flex gap-4 p-5 bg-white border border-border/60 shadow-sm">
                         {coach.image ? (
-                          <div className="relative w-20 h-20 shrink-0 overflow-hidden">
+                          <div className="relative w-20 h-20 shrink-0 overflow-hidden rounded-full border-2 border-[#d4a017]/30">
                             <Image
                               src={coach.image}
                               alt={coach.name}
@@ -166,8 +166,8 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
                             />
                           </div>
                         ) : (
-                          <div className="w-20 h-20 shrink-0 bg-[#d4a017]/10 flex items-center justify-center">
-                            <Users className="w-8 h-8 text-[#d4a017]/30" />
+                          <div className="w-20 h-20 shrink-0 bg-[#0a1f0a] rounded-full flex items-center justify-center">
+                            <Users className="w-8 h-8 text-[#d4a017]/50" />
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
@@ -357,8 +357,8 @@ function StatBox({ icon, value, label }: { icon: React.ReactNode; value: string;
   return (
     <div className="text-center p-6 bg-[#0a1f0a] border border-[#d4a017]/15">
       <div className="text-[#d4a017] mx-auto mb-2 flex justify-center">{icon}</div>
-      <span className="block font-serif text-lg font-bold text-foreground leading-tight">{value}</span>
-      <span className="block text-muted-foreground text-xs mt-1">{label}</span>
+      <span className="block font-serif text-lg font-bold text-white leading-tight">{value}</span>
+      <span className="block text-white/50 text-xs mt-1">{label}</span>
     </div>
   )
 }

@@ -18,7 +18,7 @@ export function CampFaq({ items }: CampFaqProps) {
         <AccordionItem
           key={i}
           value={`faq-${i}`}
-          className="border border-[#d4a017]/10 bg-[#0a1f0a]/30 px-6"
+          className="border border-border/60 bg-white px-6 shadow-sm"
         >
           <AccordionTrigger className="text-foreground font-semibold text-left hover:no-underline">
             {item.question}
