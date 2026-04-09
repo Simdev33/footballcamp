@@ -38,10 +38,9 @@ export function SubpageHero({ title, titleHighlight, subtitle }: SubpageHeroProp
         {subtitle && (
           <p className="mt-5 text-sm md:text-lg text-white/60 max-w-2xl mx-auto">{subtitle}</p>
         )}
-
-        {/* Grass edge at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-2 md:h-3 bg-gradient-to-r from-[#1e6b1e] via-[#2d7a2d] to-[#1e6b1e]" />
       </div>
+
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-[#d4a017]/20" />
     </section>
   )
 }
