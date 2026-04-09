@@ -57,9 +57,9 @@ export default async function BlogPage() {
               {/* Featured post */}
               {featured && (
                 <article className="group">
-                  <Link href={`/blog/${featured.slug}`} className="grid md:grid-cols-2 gap-6 md:gap-10 items-center">
+                  <Link href={`/blog/${featured.slug}`} className={`grid gap-6 md:gap-10 items-center ${featured.imageUrl ? "md:grid-cols-2" : ""}`}>
                     {featured.imageUrl && (
-                      <div className="relative aspect-[16/10] overflow-hidden">
+                      <div className="relative aspect-video overflow-hidden">
                         <Image
                           src={featured.imageUrl}
                           alt={featured.title}
@@ -68,10 +68,10 @@ export default async function BlogPage() {
                           sizes="(max-width: 768px) 100vw, 50vw"
                           priority
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
                       </div>
                     )}
-                    <div>
+                    <div className={featured.imageUrl ? "" : "max-w-2xl"}>
                       <div className="flex flex-wrap items-center gap-3 mb-4">
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#d4a017]/10 text-[#d4a017] text-xs font-semibold uppercase tracking-wider">
                           <Tag className="w-3 h-3" />
@@ -110,8 +110,8 @@ export default async function BlogPage() {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {rest.map((post) => (
                     <article key={post.id} className="group bg-white border border-border/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                      {post.imageUrl && (
-                        <div className="relative aspect-[16/9] overflow-hidden">
+                      {post.imageUrl ? (
+                        <div className="relative aspect-video overflow-hidden">
                           <Image
                             src={post.imageUrl}
                             alt={post.title}
@@ -119,6 +119,10 @@ export default async function BlogPage() {
                             className="object-cover group-hover:scale-105 transition-transform duration-500"
                             sizes="(max-width: 768px) 100vw, 33vw"
                           />
+                        </div>
+                      ) : (
+                        <div className="aspect-video bg-linear-to-br from-[#1a3c2a] to-[#2d5a3f] flex items-center justify-center">
+                          <span className="text-[#d4a017] font-serif text-2xl font-bold opacity-30">Blog</span>
                         </div>
                       )}
                       <div className="p-6">
