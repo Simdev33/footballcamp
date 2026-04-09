@@ -58,6 +58,12 @@ model Camp {
   clubName       String        @default("SL Benfica")
   ageRange       String        @default("6-15")
   includes       String[]
+  gallery        String[]
+  videoUrl       String?
+  mapEmbedUrl    String?
+  schedule       Json?
+  coaches        Json?
+  faq            Json?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   applications   Application[]

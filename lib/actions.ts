@@ -7,13 +7,19 @@ import { hash } from "bcryptjs"
 
 // ─── Camps ───
 
-function parseIncludes(formData: FormData): string[] {
-  const raw = formData.get("includes") as string
+function parseStringArray(formData: FormData, key: string): string[] {
+  const raw = formData.get(key) as string
   if (!raw) return []
   return raw
     .split("\n")
     .map((s) => s.trim())
     .filter(Boolean)
+}
+
+function parseJson(formData: FormData, key: string) {
+  const raw = formData.get(key) as string
+  if (!raw) return undefined
+  try { return JSON.parse(raw) } catch { return undefined }
 }
 
 export async function createCamp(formData: FormData) {
@@ -33,7 +39,13 @@ export async function createCamp(formData: FormData) {
       imageUrl: (formData.get("imageUrl") as string) || null,
       clubName: (formData.get("clubName") as string) || "SL Benfica",
       ageRange: (formData.get("ageRange") as string) || "6-15",
-      includes: parseIncludes(formData),
+      includes: parseStringArray(formData, "includes"),
+      gallery: parseStringArray(formData, "gallery"),
+      videoUrl: (formData.get("videoUrl") as string) || null,
+      mapEmbedUrl: (formData.get("mapEmbedUrl") as string) || null,
+      schedule: parseJson(formData, "schedule"),
+      coaches: parseJson(formData, "coaches"),
+      faq: parseJson(formData, "faq"),
     },
   })
   revalidatePath("/admin/taborok")
@@ -57,7 +69,13 @@ export async function updateCamp(id: string, formData: FormData) {
       imageUrl: (formData.get("imageUrl") as string) || null,
       clubName: (formData.get("clubName") as string) || "SL Benfica",
       ageRange: (formData.get("ageRange") as string) || "6-15",
-      includes: parseIncludes(formData),
+      includes: parseStringArray(formData, "includes"),
+      gallery: parseStringArray(formData, "gallery"),
+      videoUrl: (formData.get("videoUrl") as string) || null,
+      mapEmbedUrl: (formData.get("mapEmbedUrl") as string) || null,
+      schedule: parseJson(formData, "schedule"),
+      coaches: parseJson(formData, "coaches"),
+      faq: parseJson(formData, "faq"),
     },
   })
   revalidatePath("/admin/taborok")

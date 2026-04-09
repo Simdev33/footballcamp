@@ -4,8 +4,13 @@ import Image from "next/image"
 import Link from "next/link"
 import type { Metadata } from "next"
 import { MapPin, Calendar, Users, ArrowRight, Tag, Check, Shield, Clock } from "lucide-react"
+import { CampFaq } from "./camp-faq"
+import { CampGallery } from "./camp-gallery"
 
 export const dynamic = "force-dynamic"
+
+type ScheduleItem = { time: string; activity: string }
+type CoachItem = { name: string; role: string; image: string; bio: string }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
@@ -23,6 +28,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
+function getYouTubeId(url: string): string | null {
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?\s]+)/)
+  return match?.[1] || null
+}
+
 export default async function CampDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const camp = await db.camp.findUnique({ where: { slug } })
@@ -33,9 +43,14 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
     take: 3,
   })
 
+  const schedule = (camp.schedule as ScheduleItem[] | null) || []
+  const coaches = (camp.coaches as CoachItem[] | null) || []
+  const faq = camp.faq as { question: string; answer: string }[] | null
+  const ytId = camp.videoUrl ? getYouTubeId(camp.videoUrl) : null
+
   return (
     <main>
-      {/* Hero */}
+      {/* ─── HERO ─── */}
       <section className="relative pt-36 pb-20 md:pt-44 md:pb-28 overflow-hidden">
         <div className="absolute inset-0">
           {camp.imageUrl ? (
@@ -48,10 +63,10 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
               unoptimized={camp.imageUrl.includes("b-cdn.net")}
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-[#d4a017]/10 to-[#0a1f0a]" />
+            <div className="absolute inset-0 bg-linear-to-br from-[#d4a017]/10 to-[#0a1f0a]" />
           )}
           <div className="absolute inset-0 bg-[#0a1f0a]/75" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a1f0a] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-[#0a1f0a] via-transparent to-transparent" />
         </div>
         <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
           <div className="flex items-center gap-3 mb-4">
@@ -68,28 +83,50 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
         </div>
       </section>
 
-      {/* Content */}
+      {/* ─── CONTENT + SIDEBAR ─── */}
       <section className="py-16 md:py-24 bg-background">
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
           <div className="grid lg:grid-cols-[1fr_380px] gap-12 lg:gap-16">
-            {/* Left: Description & Includes */}
-            <div className="space-y-12">
+            {/* Left column */}
+            <div className="space-y-16">
+
+              {/* Description */}
               {camp.description && (
                 <div>
-                  <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-6">
-                    A táborról
-                  </h2>
+                  <SectionTitle>A táborról</SectionTitle>
                   <div className="prose prose-lg max-w-none text-muted-foreground leading-relaxed whitespace-pre-line">
                     {camp.description}
                   </div>
                 </div>
               )}
 
+              {/* Schedule */}
+              {schedule.length > 0 && (
+                <div>
+                  <SectionTitle>Napi program</SectionTitle>
+                  <div className="relative">
+                    <div className="absolute left-[39px] top-2 bottom-2 w-px bg-[#d4a017]/20" />
+                    <div className="space-y-0">
+                      {schedule.map((item, i) => (
+                        <div key={i} className="flex items-start gap-5 group py-3">
+                          <div className="relative z-10 w-20 shrink-0 text-right">
+                            <span className="font-mono text-sm font-bold text-[#d4a017]">{item.time}</span>
+                          </div>
+                          <div className="relative z-10 mt-1.5 w-3 h-3 rounded-full bg-[#d4a017] shrink-0 ring-4 ring-background" />
+                          <div className="flex-1 pb-1">
+                            <span className="text-foreground text-sm font-medium">{item.activity}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Includes */}
               {camp.includes.length > 0 && (
                 <div>
-                  <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-6">
-                    Mit tartalmaz
-                  </h2>
+                  <SectionTitle>Mit tartalmaz</SectionTitle>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {camp.includes.map((item) => (
                       <div key={item} className="flex items-start gap-3 p-4 bg-[#0a1f0a]/50 border border-[#d4a017]/10">
@@ -103,27 +140,51 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
                 </div>
               )}
 
-              {/* Camp Stats */}
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center p-6 bg-[#0a1f0a] border border-[#d4a017]/15">
-                  <Calendar className="w-6 h-6 text-[#d4a017] mx-auto mb-2" />
-                  <span className="block font-serif text-xl font-bold text-foreground">5 nap</span>
-                  <span className="block text-muted-foreground text-xs mt-1">Teljes hét</span>
-                </div>
-                <div className="text-center p-6 bg-[#0a1f0a] border border-[#d4a017]/15">
-                  <Clock className="w-6 h-6 text-[#d4a017] mx-auto mb-2" />
-                  <span className="block font-serif text-xl font-bold text-foreground">4 edzés</span>
-                  <span className="block text-muted-foreground text-xs mt-1">Naponta</span>
-                </div>
-                <div className="text-center p-6 bg-[#0a1f0a] border border-[#d4a017]/15">
-                  <Users className="w-6 h-6 text-[#d4a017] mx-auto mb-2" />
-                  <span className="block font-serif text-xl font-bold text-foreground">{camp.totalSpots} fő</span>
-                  <span className="block text-muted-foreground text-xs mt-1">Maximum létszám</span>
-                </div>
+              {/* Stats */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <StatBox icon={<Calendar className="w-6 h-6" />} value={camp.dates.split(/[-–]/)[0]?.trim() || camp.dates} label="Időpont" />
+                <StatBox icon={<MapPin className="w-6 h-6" />} value={camp.venue} label="Helyszín" />
+                <StatBox icon={<Users className="w-6 h-6" />} value={`${camp.totalSpots} fő`} label="Maximum létszám" />
               </div>
+
+              {/* Coaches */}
+              {coaches.length > 0 && (
+                <div>
+                  <SectionTitle>Edzők</SectionTitle>
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    {coaches.map((coach, i) => (
+                      <div key={i} className="flex gap-4 p-5 bg-[#0a1f0a]/50 border border-[#d4a017]/10">
+                        {coach.image ? (
+                          <div className="relative w-20 h-20 shrink-0 overflow-hidden">
+                            <Image
+                              src={coach.image}
+                              alt={coach.name}
+                              fill
+                              className="object-cover"
+                              sizes="80px"
+                              unoptimized={coach.image.includes("b-cdn.net")}
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-20 h-20 shrink-0 bg-[#d4a017]/10 flex items-center justify-center">
+                            <Users className="w-8 h-8 text-[#d4a017]/30" />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-serif font-bold text-foreground">{coach.name}</h4>
+                          <p className="text-[#d4a017] text-xs font-semibold uppercase tracking-wider mt-0.5">{coach.role}</p>
+                          {coach.bio && (
+                            <p className="text-muted-foreground text-sm mt-2 line-clamp-3">{coach.bio}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Right: Sticky Price Card */}
+            {/* ─── RIGHT: Sticky Price Card ─── */}
             <div className="lg:sticky lg:top-28 lg:self-start">
               <div className="bg-[#0a1f0a] border border-[#d4a017]/20 overflow-hidden">
                 <div className="bg-[#d4a017] px-6 py-4">
@@ -136,18 +197,9 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
 
                 <div className="p-6 space-y-5">
                   <div className="space-y-3 text-sm">
-                    <div className="flex items-center justify-between">
-                      <span className="text-white/50">Helyszín</span>
-                      <span className="text-white font-medium">{camp.venue}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-white/50">Időpont</span>
-                      <span className="text-white font-medium">{camp.dates}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-white/50">Korosztály</span>
-                      <span className="text-white font-medium">{camp.ageRange} év</span>
-                    </div>
+                    <InfoRow label="Helyszín" value={camp.venue} />
+                    <InfoRow label="Időpont" value={camp.dates} />
+                    <InfoRow label="Korosztály" value={`${camp.ageRange} év`} />
                     <div className="flex items-center justify-between">
                       <span className="text-white/50">Szabad helyek</span>
                       <span className={`font-bold ${camp.remainingSpots <= 5 ? "text-red-400" : "text-emerald-400"}`}>
@@ -160,7 +212,6 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
                     href={`/jelentkezes?camp=${camp.slug}`}
                     className="flex w-full items-center justify-center gap-2 bg-[#d4a017] px-6 py-4 text-[#0a1f0a] font-bold text-base hover:shadow-[0_0_40px_#d4a01780] transition-shadow"
                   >
-                    <ArrowRight className="w-5 h-5" />
                     Jelentkezés
                     <ArrowRight className="w-5 h-5" />
                   </Link>
@@ -176,7 +227,74 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
         </div>
       </section>
 
-      {/* Other Camps */}
+      {/* ─── GALLERY (full-width) ─── */}
+      {camp.gallery.length > 0 && (
+        <section className="py-16 md:py-24 bg-[#0a1f0a]">
+          <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-white mb-10 text-center">
+              Galéria
+            </h2>
+            <CampGallery images={camp.gallery} campName={camp.city} />
+          </div>
+        </section>
+      )}
+
+      {/* ─── VIDEO ─── */}
+      {ytId && (
+        <section className="py-16 md:py-24 bg-background">
+          <div className="max-w-[1000px] mx-auto px-6 md:px-12 lg:px-24">
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-10 text-center">
+              Videó
+            </h2>
+            <div className="aspect-video border border-[#d4a017]/20 overflow-hidden">
+              <iframe
+                src={`https://www.youtube.com/embed/${ytId}`}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ─── MAP ─── */}
+      {camp.mapEmbedUrl && (
+        <section className="py-16 md:py-24 bg-[#0a1f0a]">
+          <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-white mb-4 text-center">
+              Helyszín
+            </h2>
+            <p className="text-white/50 text-center mb-10">
+              <MapPin className="inline w-4 h-4 mr-1" />
+              {camp.venue}, {camp.city}
+            </p>
+            <div className="aspect-21/9 border border-[#d4a017]/20 overflow-hidden">
+              <iframe
+                src={camp.mapEmbedUrl}
+                className="w-full h-full"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ─── FAQ ─── */}
+      {faq && faq.length > 0 && (
+        <section className="py-16 md:py-24 bg-background">
+          <div className="max-w-[800px] mx-auto px-6 md:px-12 lg:px-24">
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-10 text-center">
+              Gyakran Ismételt Kérdések
+            </h2>
+            <CampFaq items={faq} />
+          </div>
+        </section>
+      )}
+
+      {/* ─── OTHER CAMPS ─── */}
       {otherCamps.length > 0 && (
         <section className="py-16 md:py-24 bg-[#0a1f0a]">
           <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
@@ -198,11 +316,11 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
                           unoptimized={other.imageUrl.includes("b-cdn.net")}
                         />
                       ) : (
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#d4a017]/10 to-[#0a1f0a] flex items-center justify-center">
+                        <div className="absolute inset-0 bg-linear-to-br from-[#d4a017]/10 to-[#0a1f0a] flex items-center justify-center">
                           <MapPin className="w-10 h-10 text-[#d4a017]/20" />
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
                       <div className="absolute bottom-3 left-4">
                         <span className="font-serif text-xl font-bold text-white">{other.city}</span>
                       </div>
@@ -224,5 +342,32 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
         </section>
       )}
     </main>
+  )
+}
+
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-6">
+      {children}
+    </h2>
+  )
+}
+
+function StatBox({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) {
+  return (
+    <div className="text-center p-6 bg-[#0a1f0a] border border-[#d4a017]/15">
+      <div className="text-[#d4a017] mx-auto mb-2 flex justify-center">{icon}</div>
+      <span className="block font-serif text-lg font-bold text-foreground leading-tight">{value}</span>
+      <span className="block text-muted-foreground text-xs mt-1">{label}</span>
+    </div>
+  )
+}
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-white/50">{label}</span>
+      <span className="text-white font-medium text-right max-w-[60%]">{value}</span>
+    </div>
   )
 }

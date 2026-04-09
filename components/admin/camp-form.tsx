@@ -4,7 +4,12 @@ import { useState } from "react"
 import { ImagePicker } from "./image-picker"
 import { createCamp, updateCamp } from "@/lib/actions"
 import Link from "next/link"
-import { ArrowLeft, Plus, X } from "lucide-react"
+import Image from "next/image"
+import { ArrowLeft, Plus, X, Clock, GripVertical, ChevronDown, ChevronUp } from "lucide-react"
+
+type ScheduleItem = { time: string; activity: string }
+type CoachItem = { name: string; role: string; image: string; bio: string }
+type FaqItem = { question: string; answer: string }
 
 type CampData = {
   id: string
@@ -21,6 +26,12 @@ type CampData = {
   clubName: string
   ageRange: string
   includes: string[]
+  gallery: string[]
+  videoUrl: string | null
+  mapEmbedUrl: string | null
+  schedule: ScheduleItem[] | null
+  coaches: CoachItem[] | null
+  faq: FaqItem[] | null
 }
 
 const DEFAULT_INCLUDES = [
@@ -39,7 +50,27 @@ export function CampForm({ camp }: { camp?: CampData }) {
   )
   const [newItem, setNewItem] = useState("")
 
-  const addItem = () => {
+  // New fields
+  const [gallery, setGallery] = useState<string[]>(camp?.gallery || [])
+  const [videoUrl, setVideoUrl] = useState(camp?.videoUrl || "")
+  const [mapEmbedUrl, setMapEmbedUrl] = useState(camp?.mapEmbedUrl || "")
+  const [schedule, setSchedule] = useState<ScheduleItem[]>(
+    (camp?.schedule as ScheduleItem[]) || []
+  )
+  const [coaches, setCoaches] = useState<CoachItem[]>(
+    (camp?.coaches as CoachItem[]) || []
+  )
+  const [faq, setFaq] = useState<FaqItem[]>(
+    (camp?.faq as FaqItem[]) || []
+  )
+
+  // Collapsible sections
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    basic: true, media: false, schedule: false, coaches: false, faq: false,
+  })
+  const toggle = (key: string) => setOpenSections(p => ({ ...p, [key]: !p[key] }))
+
+  const addInclude = () => {
     const trimmed = newItem.trim()
     if (trimmed && !includes.includes(trimmed)) {
       setIncludes([...includes, trimmed])
@@ -47,14 +78,14 @@ export function CampForm({ camp }: { camp?: CampData }) {
     }
   }
 
-  const removeItem = (index: number) => {
-    setIncludes(includes.filter((_, i) => i !== index))
+  const addGalleryImage = (url: string) => {
+    if (url && !gallery.includes(url)) setGallery([...gallery, url])
   }
 
   const action = isEdit ? updateCamp.bind(null, camp.id) : createCamp
 
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="max-w-4xl space-y-6">
       <Link href="/admin/taborok" className="inline-flex items-center gap-2 text-white/40 hover:text-white text-sm transition-colors">
         <ArrowLeft className="w-4 h-4" /> Vissza
       </Link>
@@ -63,105 +94,311 @@ export function CampForm({ camp }: { camp?: CampData }) {
         {isEdit ? `Tabor szerkesztese: ${camp.city}` : "Uj tabor letrehozasa"}
       </h2>
 
-      <form action={action} className="bg-[#0a1f0a] border border-[#d4a017]/10 p-6 space-y-6">
+      <form action={action} className="space-y-4">
         {/* Hidden fields for state-managed values */}
         <input type="hidden" name="imageUrl" value={imageUrl} />
         <input type="hidden" name="description" value={description} />
         <input type="hidden" name="includes" value={includes.join("\n")} />
+        <input type="hidden" name="gallery" value={gallery.join("\n")} />
+        <input type="hidden" name="videoUrl" value={videoUrl} />
+        <input type="hidden" name="mapEmbedUrl" value={mapEmbedUrl} />
+        <input type="hidden" name="schedule" value={JSON.stringify(schedule)} />
+        <input type="hidden" name="coaches" value={JSON.stringify(coaches)} />
+        <input type="hidden" name="faq" value={JSON.stringify(faq)} />
 
-        {/* Image */}
-        <div>
-          <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Tabor kepe</label>
-          <ImagePicker value={imageUrl} onChange={setImageUrl} folder="camps" />
-        </div>
+        {/* ─── BASIC INFO ─── */}
+        <Section title="Alap adatok" id="basic" open={openSections.basic} onToggle={() => toggle("basic")}>
+          <div>
+            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Tabor kepe</label>
+            <ImagePicker value={imageUrl} onChange={setImageUrl} folder="camps" />
+          </div>
 
-        {/* City + Venue */}
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Field label="Varos" name="city" required defaultValue={camp?.city} placeholder="pl. Szeged" />
-          <Field label="Helyszin" name="venue" required defaultValue={camp?.venue} placeholder="pl. Szegedi Sportkozpont" />
-        </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Field label="Varos" name="city" required defaultValue={camp?.city} placeholder="pl. Szeged" />
+            <Field label="Helyszin" name="venue" required defaultValue={camp?.venue} placeholder="pl. Szegedi Sportkozpont" />
+          </div>
 
-        {/* Club + Age */}
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Field label="Klub neve" name="clubName" defaultValue={camp?.clubName || "SL Benfica"} placeholder="SL Benfica" />
-          <Field label="Korosztaly" name="ageRange" defaultValue={camp?.ageRange || "6-15"} placeholder="6-15" />
-        </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Field label="Klub neve" name="clubName" defaultValue={camp?.clubName || "SL Benfica"} placeholder="SL Benfica" />
+            <Field label="Korosztaly" name="ageRange" defaultValue={camp?.ageRange || "6-15"} placeholder="6-15" />
+          </div>
 
-        {/* Dates */}
-        <Field label="Datumok" name="dates" required defaultValue={camp?.dates} placeholder="pl. 2026. julius 7-11." />
+          <Field label="Datumok" name="dates" required defaultValue={camp?.dates} placeholder="pl. 2026. julius 7-11." />
 
-        {/* Prices */}
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Field label="Ar" name="price" required defaultValue={camp?.price} placeholder="pl. 159.000 Ft" />
-          <Field label="Early Bird ar" name="earlyBirdPrice" required defaultValue={camp?.earlyBirdPrice} placeholder="pl. 139.000 Ft" />
-        </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Field label="Ar" name="price" required defaultValue={camp?.price} placeholder="pl. 159.000 Ft" />
+            <Field label="Early Bird ar" name="earlyBirdPrice" required defaultValue={camp?.earlyBirdPrice} placeholder="pl. 139.000 Ft" />
+          </div>
 
-        {/* Spots */}
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Field label="Osszes hely" name="totalSpots" type="number" required defaultValue={String(camp?.totalSpots || "")} placeholder="40" />
-          {isEdit && (
-            <Field label="Szabad helyek" name="remainingSpots" type="number" required defaultValue={String(camp?.remainingSpots || "")} />
-          )}
-        </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Field label="Osszes hely" name="totalSpots" type="number" required defaultValue={String(camp?.totalSpots || "")} placeholder="40" />
+            {isEdit && (
+              <Field label="Szabad helyek" name="remainingSpots" type="number" required defaultValue={String(camp?.remainingSpots || "")} />
+            )}
+          </div>
 
-        {/* Description */}
-        <div>
-          <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Leiras</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={6}
-            className="w-full px-4 py-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm resize-none"
-            placeholder="A tabor reszletes leirasa..."
-          />
-        </div>
+          <div>
+            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Leiras</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={6}
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm resize-none"
+              placeholder="A tabor reszletes leirasa..."
+            />
+          </div>
 
-        {/* Includes */}
-        <div>
-          <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Mit tartalmaz a tabor</label>
-          <div className="space-y-2 mb-3">
-            {includes.map((item, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <span className="flex-1 px-3 py-2 bg-white/5 border border-white/10 text-white text-sm">{item}</span>
-                <button
-                  type="button"
-                  onClick={() => removeItem(i)}
-                  className="w-8 h-8 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                >
+          {/* Includes */}
+          <div>
+            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Mit tartalmaz a tabor</label>
+            <div className="space-y-2 mb-3">
+              {includes.map((item, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="flex-1 px-3 py-2 bg-white/5 border border-white/10 text-white text-sm">{item}</span>
+                  <button type="button" onClick={() => setIncludes(includes.filter((_, idx) => idx !== i))} className="w-8 h-8 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newItem}
+                onChange={(e) => setNewItem(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addInclude() } }}
+                placeholder="Uj elem hozzaadasa..."
+                className="flex-1 h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm"
+              />
+              <button type="button" onClick={addInclude} className="h-10 px-4 bg-[#d4a017]/20 text-[#d4a017] text-sm font-medium hover:bg-[#d4a017]/30 transition-colors flex items-center gap-1">
+                <Plus className="w-4 h-4" /> Hozzaad
+              </button>
+            </div>
+          </div>
+
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" name="active" defaultChecked={camp?.active ?? true} className="w-5 h-5 accent-[#d4a017]" />
+            <span className="text-white text-sm">Aktiv (megjelenik a publikus oldalon)</span>
+          </label>
+        </Section>
+
+        {/* ─── MEDIA ─── */}
+        <Section title="Media (galeria, video, terkep)" id="media" open={openSections.media} onToggle={() => toggle("media")}>
+          {/* Gallery */}
+          <div>
+            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Galeria kepek</label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-3">
+              {gallery.map((url, i) => (
+                <div key={i} className="relative aspect-video border border-white/10 overflow-hidden group">
+                  <Image src={url} alt={`Gallery ${i + 1}`} fill className="object-cover" sizes="200px" unoptimized={url.includes("b-cdn.net")} />
+                  <button
+                    type="button"
+                    onClick={() => setGallery(gallery.filter((_, idx) => idx !== i))}
+                    className="absolute top-1 right-1 w-6 h-6 bg-red-500/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+              <div className="aspect-video border border-dashed border-white/20 flex items-center justify-center">
+                <ImagePicker value="" onChange={addGalleryImage} folder="camps" />
+              </div>
+            </div>
+          </div>
+
+          {/* Video */}
+          <div>
+            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">YouTube video URL</label>
+            <input
+              type="url"
+              value={videoUrl}
+              onChange={(e) => setVideoUrl(e.target.value)}
+              placeholder="https://www.youtube.com/watch?v=..."
+              className="w-full h-11 px-4 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm"
+            />
+            {videoUrl && getYouTubeId(videoUrl) && (
+              <div className="mt-3 aspect-video max-w-md">
+                <iframe
+                  src={`https://www.youtube.com/embed/${getYouTubeId(videoUrl)}`}
+                  className="w-full h-full border border-white/10"
+                  allowFullScreen
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Map */}
+          <div>
+            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Google Maps Embed URL</label>
+            <input
+              type="url"
+              value={mapEmbedUrl}
+              onChange={(e) => setMapEmbedUrl(e.target.value)}
+              placeholder="https://www.google.com/maps/embed?pb=..."
+              className="w-full h-11 px-4 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm"
+            />
+            {mapEmbedUrl && (
+              <div className="mt-3 aspect-video max-w-md">
+                <iframe src={mapEmbedUrl} className="w-full h-full border border-white/10" allowFullScreen loading="lazy" />
+              </div>
+            )}
+          </div>
+        </Section>
+
+        {/* ─── SCHEDULE ─── */}
+        <Section title="Napi program" id="schedule" open={openSections.schedule} onToggle={() => toggle("schedule")}>
+          <div className="space-y-3">
+            {schedule.map((item, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <Clock className="w-4 h-4 text-[#d4a017]/40 shrink-0" />
+                <input
+                  type="text"
+                  value={item.time}
+                  onChange={(e) => { const s = [...schedule]; s[i] = { ...s[i], time: e.target.value }; setSchedule(s) }}
+                  placeholder="09:00"
+                  className="w-24 h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none text-sm text-center"
+                />
+                <input
+                  type="text"
+                  value={item.activity}
+                  onChange={(e) => { const s = [...schedule]; s[i] = { ...s[i], activity: e.target.value }; setSchedule(s) }}
+                  placeholder="Reggeli edzés, technikai gyakorlatok"
+                  className="flex-1 h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none text-sm"
+                />
+                <button type="button" onClick={() => setSchedule(schedule.filter((_, idx) => idx !== i))} className="w-8 h-8 flex items-center justify-center text-red-400/60 hover:text-red-400 transition-colors">
                   <X className="w-4 h-4" />
                 </button>
               </div>
             ))}
           </div>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={newItem}
-              onChange={(e) => setNewItem(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addItem() } }}
-              placeholder="Uj elem hozzaadasa..."
-              className="flex-1 h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm"
-            />
-            <button
-              type="button"
-              onClick={addItem}
-              className="h-10 px-4 bg-[#d4a017]/20 text-[#d4a017] text-sm font-medium hover:bg-[#d4a017]/30 transition-colors flex items-center gap-1"
-            >
-              <Plus className="w-4 h-4" /> Hozzaad
-            </button>
+          <button
+            type="button"
+            onClick={() => setSchedule([...schedule, { time: "", activity: "" }])}
+            className="mt-3 h-10 px-4 bg-[#d4a017]/20 text-[#d4a017] text-sm font-medium hover:bg-[#d4a017]/30 transition-colors flex items-center gap-1"
+          >
+            <Plus className="w-4 h-4" /> Programpont hozzaadasa
+          </button>
+        </Section>
+
+        {/* ─── COACHES ─── */}
+        <Section title="Edzok" id="coaches" open={openSections.coaches} onToggle={() => toggle("coaches")}>
+          <div className="space-y-4">
+            {coaches.map((coach, i) => (
+              <div key={i} className="bg-white/5 border border-white/10 p-4 space-y-3 relative">
+                <button type="button" onClick={() => setCoaches(coaches.filter((_, idx) => idx !== i))} className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                  <X className="w-4 h-4" />
+                </button>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[10px] text-white/40 uppercase tracking-wider mb-1">Nev</label>
+                    <input
+                      type="text"
+                      value={coach.name}
+                      onChange={(e) => { const c = [...coaches]; c[i] = { ...c[i], name: e.target.value }; setCoaches(c) }}
+                      placeholder="Kovacs Janos"
+                      className="w-full h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] text-white/40 uppercase tracking-wider mb-1">Szerep / Pozicio</label>
+                    <input
+                      type="text"
+                      value={coach.role}
+                      onChange={(e) => { const c = [...coaches]; c[i] = { ...c[i], role: e.target.value }; setCoaches(c) }}
+                      placeholder="Foedzo"
+                      className="w-full h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none text-sm"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[10px] text-white/40 uppercase tracking-wider mb-1">Kep</label>
+                  <ImagePicker value={coach.image} onChange={(url) => { const c = [...coaches]; c[i] = { ...c[i], image: url }; setCoaches(c) }} folder="coaches" />
+                </div>
+                <div>
+                  <label className="block text-[10px] text-white/40 uppercase tracking-wider mb-1">Bemutatkozas</label>
+                  <textarea
+                    value={coach.bio}
+                    onChange={(e) => { const c = [...coaches]; c[i] = { ...c[i], bio: e.target.value }; setCoaches(c) }}
+                    rows={3}
+                    placeholder="Rovid bemutatkozas..."
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none text-sm resize-none"
+                  />
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
+          <button
+            type="button"
+            onClick={() => setCoaches([...coaches, { name: "", role: "", image: "", bio: "" }])}
+            className="mt-3 h-10 px-4 bg-[#d4a017]/20 text-[#d4a017] text-sm font-medium hover:bg-[#d4a017]/30 transition-colors flex items-center gap-1"
+          >
+            <Plus className="w-4 h-4" /> Edzo hozzaadasa
+          </button>
+        </Section>
 
-        {/* Active */}
-        <label className="flex items-center gap-3 cursor-pointer">
-          <input type="checkbox" name="active" defaultChecked={camp?.active ?? true} className="w-5 h-5 accent-[#d4a017]" />
-          <span className="text-white text-sm">Aktiv (megjelenik a publikus oldalon)</span>
-        </label>
+        {/* ─── FAQ ─── */}
+        <Section title="Gyakran Ismételt Kerdesek (GYIK)" id="faq" open={openSections.faq} onToggle={() => toggle("faq")}>
+          <div className="space-y-3">
+            {faq.map((item, i) => (
+              <div key={i} className="bg-white/5 border border-white/10 p-4 space-y-3 relative">
+                <button type="button" onClick={() => setFaq(faq.filter((_, idx) => idx !== i))} className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                  <X className="w-4 h-4" />
+                </button>
+                <div>
+                  <label className="block text-[10px] text-white/40 uppercase tracking-wider mb-1">Kerdes</label>
+                  <input
+                    type="text"
+                    value={item.question}
+                    onChange={(e) => { const f = [...faq]; f[i] = { ...f[i], question: e.target.value }; setFaq(f) }}
+                    placeholder="Mi a tornacipo szabaly?"
+                    className="w-full h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] text-white/40 uppercase tracking-wider mb-1">Valasz</label>
+                  <textarea
+                    value={item.answer}
+                    onChange={(e) => { const f = [...faq]; f[i] = { ...f[i], answer: e.target.value }; setFaq(f) }}
+                    rows={3}
+                    placeholder="Valasz a kerdesre..."
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none text-sm resize-none"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => setFaq([...faq, { question: "", answer: "" }])}
+            className="mt-3 h-10 px-4 bg-[#d4a017]/20 text-[#d4a017] text-sm font-medium hover:bg-[#d4a017]/30 transition-colors flex items-center gap-1"
+          >
+            <Plus className="w-4 h-4" /> Kerdes hozzaadasa
+          </button>
+        </Section>
 
-        <button type="submit" className="w-full h-11 bg-[#d4a017] text-[#0a1f0a] font-semibold hover:bg-[#d4a017]/90 transition-colors">
+        {/* Submit */}
+        <button type="submit" className="w-full h-12 bg-[#d4a017] text-[#0a1f0a] font-bold text-base hover:bg-[#d4a017]/90 transition-colors">
           {isEdit ? "Mentes" : "Tabor letrehozasa"}
         </button>
       </form>
+    </div>
+  )
+}
+
+function Section({ title, id, open, onToggle, children }: {
+  title: string; id: string; open: boolean; onToggle: () => void; children: React.ReactNode
+}) {
+  return (
+    <div className="bg-[#0a1f0a] border border-[#d4a017]/10 overflow-hidden">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-white/5 transition-colors"
+      >
+        <span className="text-white font-semibold text-sm uppercase tracking-wider">{title}</span>
+        {open ? <ChevronUp className="w-5 h-5 text-[#d4a017]" /> : <ChevronDown className="w-5 h-5 text-white/40" />}
+      </button>
+      {open && <div className="px-6 pb-6 space-y-5">{children}</div>}
     </div>
   )
 }
@@ -182,4 +419,9 @@ function Field({ label, name, type = "text", required = false, defaultValue = ""
       />
     </div>
   )
+}
+
+function getYouTubeId(url: string): string | null {
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?\s]+)/)
+  return match?.[1] || null
 }
