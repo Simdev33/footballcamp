@@ -17,17 +17,24 @@ export default async function BlogDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const post = await db.blogPost.findUnique({
-    where: { slug },
-    include: { author: { select: { name: true } } },
-  })
-  if (!post || !post.published) notFound()
 
-  const relatedPosts = await db.blogPost.findMany({
-    where: { published: true, category: post.category, id: { not: post.id } },
-    take: 3,
-    orderBy: { createdAt: "desc" },
-  })
+  let post
+  let relatedPosts: Awaited<ReturnType<typeof db.blogPost.findMany>> = []
+  try {
+    post = await db.blogPost.findUnique({
+      where: { slug },
+      include: { author: { select: { name: true } } },
+    })
+    if (!post || !post.published) notFound()
+
+    relatedPosts = await db.blogPost.findMany({
+      where: { published: true, category: post.category, id: { not: post.id } },
+      take: 3,
+      orderBy: { createdAt: "desc" },
+    })
+  } catch {
+    notFound()
+  }
 
   return (
     <main>

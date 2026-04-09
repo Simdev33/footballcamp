@@ -11,11 +11,30 @@ function readingTime(text: string): number {
 }
 
 export default async function BlogPage() {
-  const posts = await db.blogPost.findMany({
-    where: { published: true },
-    orderBy: { createdAt: "desc" },
-    include: { author: { select: { name: true } } },
-  })
+  let posts: Awaited<ReturnType<typeof db.blogPost.findMany>> & { author: { name: string } }[] = []
+  try {
+    posts = await db.blogPost.findMany({
+      where: { published: true },
+      orderBy: { createdAt: "desc" },
+      include: { author: { select: { name: true } } },
+    }) as typeof posts
+  } catch {
+    return (
+      <main>
+        <SubpageHero
+          title="Blog"
+          subtitle="Cikkek, tippek és inspiráció a futball világából"
+        />
+        <section className="py-16 md:py-24 bg-background">
+          <div className="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-24">
+            <div className="text-center py-20 text-muted-foreground">
+              A blog jelenleg nem elérhető. Kérjük, próbáld újra később!
+            </div>
+          </div>
+        </section>
+      </main>
+    )
+  }
 
   const featured = posts[0]
   const rest = posts.slice(1)
