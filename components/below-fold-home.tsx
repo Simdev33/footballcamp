@@ -49,9 +49,9 @@ export default function BelowFoldHome() {
             </div>
           ))}
         </div>
-        <Link href="/taborok" className="inline-flex items-center gap-2 mt-6 text-sm font-semibold text-primary hover:text-primary/80 transition-colors">
+        <Link href="/taborok" className="inline-flex items-center gap-2 mt-6 px-7 py-3.5 bg-[#d4a017] text-[#0a1f0a] text-sm font-bold hover:shadow-[0_0_30px_#d4a01780] transition-all duration-300">
           {t.whySpecial.detailsCta}
-          <ArrowRight className="w-4 h-4" />
+          <ArrowRight className="w-5 h-5" />
         </Link>
       </ZigzagSection>
 
