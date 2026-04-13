@@ -5,6 +5,7 @@ import { useLanguage } from "@/lib/language-context"
 import Link from "next/link"
 import { ZigzagSection } from "@/components/zigzag-section"
 import { USPSection } from "@/components/usp-section"
+import { FAQSection } from "@/components/faq-section"
 import { LimitedSpots } from "@/components/limited-spots"
 import { TargetAudience } from "@/components/target-audience"
 import { LocationCards } from "@/components/location-cards"
@@ -132,7 +133,10 @@ export default function BelowFoldHome() {
       {/* 8. Helyszínek */}
       <LocationCards />
 
-      {/* 9. Záró CTA — Transfer window stílus */}
+      {/* 9. GYIK */}
+      <FAQSection />
+
+      {/* 10. Záró CTA — Transfer window stílus */}
       <ApplicationForm />
     </>
   )
