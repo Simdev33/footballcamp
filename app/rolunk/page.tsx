@@ -1,13 +1,8 @@
 "use client"
 
 import Image from "next/image"
-import { Check, Quote, Target, Heart } from "lucide-react"
+import { Check, Quote } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
-
-const STATS = [
-  { icon: Target, value: "15+", label: "Profi edző" },
-  { icon: Heart, value: "98%", label: "Elégedettség" },
-]
 
 export default function RolunkPage() {
   const { t } = useLanguage()
@@ -33,19 +28,6 @@ export default function RolunkPage() {
             </h1>
             <p className="mt-6 text-lg text-white/70 leading-relaxed max-w-2xl">{t.whySpecial.text}</p>
           </div>
-        </div>
-      </section>
-
-      {/* Stats Counter Bar */}
-      <section className="relative -mt-12 z-20 max-w-[1200px] mx-auto px-6 md:px-12 lg:px-24">
-        <div className="grid grid-cols-2 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.15)] max-w-lg mx-auto">
-          {STATS.map((stat) => (
-            <div key={stat.label} className="p-6 md:p-8 text-center border-r border-gray-100 last:border-r-0 group hover:bg-[#0a1f0a] transition-colors duration-300">
-              <stat.icon className="w-6 h-6 text-[#d4a017] mx-auto mb-3" />
-              <span className="block font-serif text-3xl md:text-4xl font-bold text-[#0a1f0a] group-hover:text-[#d4a017] transition-colors">{stat.value}</span>
-              <span className="block text-xs text-gray-500 group-hover:text-white/60 mt-1 uppercase tracking-wider transition-colors">{stat.label}</span>
-            </div>
-          ))}
         </div>
       </section>
 
