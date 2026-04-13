@@ -79,14 +79,6 @@ export function Hero() {
               {t.hero.campBadge}
             </span>
 
-            {/* Location tag */}
-            <div className="mb-5 md:mb-7 inline-flex items-center gap-2 md:gap-3 px-3 py-1.5 md:px-4 md:py-2 bg-white/[0.05] border border-white/10 backdrop-blur-sm rounded-full">
-              <div className="h-2 w-2 rounded-full bg-[#22c55e] animate-pulse" />
-              <span className="text-xs font-medium uppercase tracking-[0.2em] text-white/70 md:text-sm">
-                {t.hero.location}
-              </span>
-            </div>
-
             <h1 className="font-serif text-[clamp(1.8rem,5.5vw,4.2rem)] font-bold leading-[0.92] tracking-tight">
               <span className="block text-white">{t.hero.line1}</span>
               <span className="block text-[#d4a017] mt-1">{t.hero.line2}</span>
