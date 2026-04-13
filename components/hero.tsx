@@ -15,8 +15,7 @@ const AUTOPLAY_MS = 7000
 const CDN = "https://focis.b-cdn.net"
 
 const CAMP_IMAGES = [
-  `${CDN}/Post_1%20Camp/02%20Template%20Benfica%20Camp%202025_26-02.png`,
-  `${CDN}/Post_1%20Camp/01%20Template%20Benfica%20Camp%202025_26_FEED.png`,
+  "/benfica-camp.png",
 ] as const
 
 export function Hero() {
