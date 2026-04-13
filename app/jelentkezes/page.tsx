@@ -96,6 +96,13 @@ function JelentkezesForm() {
             <textarea name="notes" rows={3} className="w-full px-4 py-3 border border-border text-foreground focus:border-[#d4a017] focus:outline-none transition-colors text-sm bg-background resize-none" />
           </div>
 
+          <div className="flex items-start gap-3">
+            <input type="checkbox" name="privacy" id="privacy" required className="mt-1 w-4 h-4 accent-[#d4a017] cursor-pointer" />
+            <label htmlFor="privacy" className="text-sm text-muted-foreground cursor-pointer">
+              Elfogadom az <a href="#" className="text-[#d4a017] underline hover:text-[#d4a017]/80">adatvédelmi tájékoztatót</a> és hozzájárulok személyes adataim kezeléséhez. *
+            </label>
+          </div>
+
           <button
             type="submit"
             disabled={loading}

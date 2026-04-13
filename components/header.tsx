@@ -25,13 +25,13 @@ export function Header() {
   const isHome = pathname === "/"
 
   const navLinks = [
-    { href: "/rolunk", label: t.nav.about },
     { href: "/taborok", label: t.nav.camps, dropdown: CAMP_LOCATIONS },
     { href: "/klubok", label: t.nav.clubs, dropdown: CLUB_ITEMS },
-    { href: "/partnerprogram", label: t.nav.partnerProgram },
-    { href: "/kapcsolat", label: t.nav.contact },
     { href: "/gyik", label: t.nav.faq },
+    { href: "/galeria", label: t.nav.gallery },
     { href: "/blog", label: t.nav.blog },
+    { href: "/kapcsolat", label: t.nav.contact },
+    { href: "/rolunk", label: t.nav.about },
   ]
 
   useEffect(() => {
@@ -56,14 +56,14 @@ export function Header() {
         }`}
       >
         <div className="mx-auto max-w-[1800px] px-4 md:px-12 lg:px-16 xl:px-24">
-          <nav className="flex h-22 md:h-36 items-center justify-between">
+          <nav className="flex h-18 md:h-24 items-center justify-between">
             <Link href="/" className="flex items-center group flex-shrink-0">
               <Image
                 src="/kickoff-logo.png"
                 alt="Kickoff Elite Football Camps"
                 width={320}
                 height={128}
-                className={`h-18 md:h-28 w-auto object-contain transition-all duration-500 ${
+                className={`h-14 md:h-22 w-auto object-contain transition-all duration-500 ${
                   showSolid
                     ? "drop-shadow-md"
                     : "brightness-[1.8] drop-shadow-[0_0_12px_rgba(212,160,23,0.4)]"
@@ -142,8 +142,8 @@ export function Header() {
               </button>
 
               <Link href="/jelentkezes" className="hidden sm:block">
-                <span className={`inline-flex items-center gap-2 text-sm hover:text-primary transition-colors duration-300 font-medium ${showSolid ? "text-foreground" : "text-white"}`}>
-                  <PenLine className="w-4 h-4 text-primary" />
+                <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#d4a017] text-[#0a1f0a] text-sm font-bold hover:shadow-[0_0_30px_#d4a01780] transition-all duration-300 rounded-sm">
+                  <PenLine className="w-4 h-4" />
                   {t.nav.register}
                 </span>
               </Link>

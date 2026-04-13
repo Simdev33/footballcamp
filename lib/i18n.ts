@@ -4,8 +4,8 @@ export const translations = {
   hu: {
     nav: {
       about: "Rólunk",
-      camps: "Táborok",
-      clubs: "Klubok",
+      camps: "Tábor",
+      clubs: "Klub",
       partnerProgram: "Partnerprogram",
       gallery: "Galéria",
       contact: "Kapcsolat",
@@ -29,9 +29,9 @@ export const translations = {
       carouselNext: "Következő tábor",
     },
     usp: {
-      badge: "11 érv",
-      title: "A mi kezdőcsapatunk –",
-      titleHighlight: "11 érv,",
+      badge: "",
+      title: "A mi kezdőcsapatunk",
+      titleHighlight: "11 érv",
       subtitle: "amiért minket választanak",
       items: [
         { title: "Külföldi edzők, nemzetközi szemlélettel", desc: "" },
@@ -90,7 +90,7 @@ export const translations = {
       ],
     },
     coaches: {
-      badge: "Klubok",
+      badge: "Klub",
       title: "Kik",
       titleHighlight: "állnak",
       titleEnd: "mögöttünk?",
@@ -302,8 +302,8 @@ export const translations = {
       navTitle: "Navigáció",
       links: [
         { label: "Rólunk", href: "/rolunk" },
-        { label: "Táborok", href: "/taborok" },
-        { label: "Klubok", href: "/klubok" },
+        { label: "Tábor", href: "/taborok" },
+        { label: "Klub", href: "/klubok" },
         { label: "Partnerprogram", href: "/partnerprogram" },
         { label: "GYIK", href: "/gyik" },
         { label: "Adatvédelem", href: "#" },
@@ -320,8 +320,8 @@ export const translations = {
   en: {
     nav: {
       about: "About",
-      camps: "Camps",
-      clubs: "Clubs",
+      camps: "Camp",
+      clubs: "Club",
       partnerProgram: "Partner Program",
       gallery: "Gallery",
       contact: "Contact",
@@ -345,8 +345,8 @@ export const translations = {
       carouselNext: "Next camp",
     },
     usp: {
-      badge: "11 reasons",
-      title: "Our starting eleven –",
+      badge: "",
+      title: "Our starting eleven",
       titleHighlight: "11 reasons",
       subtitle: "why families choose us",
       items: [
@@ -406,7 +406,7 @@ export const translations = {
       ],
     },
     coaches: {
-      badge: "Clubs",
+      badge: "Club",
       title: "Who",
       titleHighlight: "stands",
       titleEnd: "behind us?",
@@ -618,8 +618,8 @@ export const translations = {
       navTitle: "Navigation",
       links: [
         { label: "About", href: "/rolunk" },
-        { label: "Camps", href: "/taborok" },
-        { label: "Clubs", href: "/klubok" },
+        { label: "Camp", href: "/taborok" },
+        { label: "Club", href: "/klubok" },
         { label: "Partner Program", href: "/partnerprogram" },
         { label: "FAQ", href: "/gyik" },
         { label: "Privacy", href: "#" },

@@ -25,11 +25,12 @@ export function USPSection() {
 
       <div className="relative z-10 max-w-[960px] mx-auto px-4 md:px-12">
         <div className="text-center mb-6 md:mb-10">
-          <h2 className="font-serif text-2xl md:text-4xl lg:text-5xl font-bold text-white">
-            {t.usp.title}{" "}
+          <h2 className="font-serif text-2xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
+            {t.usp.title}
+            <br />
             <span className="text-[#d4a017]">{t.usp.titleHighlight}</span>
           </h2>
-          <p className="mt-2 text-xs md:text-sm uppercase tracking-[0.2em] text-white/50">{t.usp.subtitle}</p>
+          <p className="mt-3 text-xs md:text-sm uppercase tracking-[0.2em] text-white/50">{t.usp.subtitle}</p>
         </div>
 
         {/* Desktop: focipálya felállás */}

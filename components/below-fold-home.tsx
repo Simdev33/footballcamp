@@ -4,7 +4,6 @@ import { Check, Plane, Dumbbell, Users, Languages, Utensils, Shirt, Heart, Arrow
 import { useLanguage } from "@/lib/language-context"
 import Link from "next/link"
 import { ZigzagSection } from "@/components/zigzag-section"
-import { WhyDifferent } from "@/components/why-different"
 import { USPSection } from "@/components/usp-section"
 import { LimitedSpots } from "@/components/limited-spots"
 import { TargetAudience } from "@/components/target-audience"
@@ -56,10 +55,7 @@ export default function BelowFoldHome() {
         </Link>
       </ZigzagSection>
 
-      {/* 2. Ezért más ez a focitábor — taktikai tábla stílus */}
-      <WhyDifferent />
-
-      {/* 3. USP – 11 érv, focipálya felállás */}
+      {/* 2. USP – 11 érv, focipálya felállás */}
       <USPSection />
 
       {/* 4. Korlátozott létszám CTA — stadion jegy stílus */}

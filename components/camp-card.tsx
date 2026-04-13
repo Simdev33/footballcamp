@@ -68,13 +68,11 @@ export function CampCard({ camp, imageSrc, className, priority }: CampCardProps)
             </div>
           </div>
 
-          <div className="flex items-end justify-between border-t border-white/10 pt-3 md:pt-4">
-            <div>
-              <p className="mb-1.5 md:mb-2 text-[10px] md:text-xs font-medium uppercase tracking-widest text-primary">{t.locations.earlyBirdLabel}</p>
-              <div className="flex items-baseline gap-3 md:gap-4">
-                <span className="font-serif text-xl font-bold text-white md:text-3xl">{camp.earlyBird}</span>
-                <span className="text-sm md:text-base text-white/50 line-through decoration-primary/50">{camp.price}</span>
-              </div>
+          <div className="border-t border-white/10 pt-4 md:pt-5">
+            <p className="mb-2 md:mb-3 text-xs md:text-sm font-bold uppercase tracking-widest text-primary">{t.locations.earlyBirdLabel}</p>
+            <div className="flex items-baseline gap-4 md:gap-5">
+              <span className="font-serif text-3xl font-bold text-white md:text-4xl">{camp.earlyBird}</span>
+              <span className="text-base md:text-lg text-white/50 line-through decoration-primary/50">{camp.price}</span>
             </div>
           </div>
 

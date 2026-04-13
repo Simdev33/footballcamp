@@ -6,7 +6,16 @@ import { useLanguage } from "@/lib/language-context"
 
 export function FAQSection() {
   const { t } = useLanguage()
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [openIndices, setOpenIndices] = useState<Set<number>>(new Set([0, 1, 2, 3, 4]))
+
+  const toggleIndex = (index: number) => {
+    setOpenIndices(prev => {
+      const next = new Set(prev)
+      if (next.has(index)) next.delete(index)
+      else next.add(index)
+      return next
+    })
+  }
 
   return (
     <section className="relative py-20 md:py-28 overflow-hidden">
@@ -14,10 +23,7 @@ export function FAQSection() {
 
       <div className="relative z-10 max-w-[1000px] mx-auto px-6 md:px-12">
         <div className="text-center mb-14">
-          <span className="inline-block px-6 py-2 bg-[#0a1f0a] text-[#d4a017] text-sm tracking-[0.3em] uppercase font-medium">
-            {t.faq.badge}
-          </span>
-          <h2 className="mt-5 font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
+          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
             {t.faq.title}{" "}
             <span className="text-primary">{t.faq.titleHighlight}</span>
           </h2>
@@ -25,7 +31,7 @@ export function FAQSection() {
 
         <div className="space-y-3">
           {t.faq.items.map((item, index) => {
-            const isOpen = openIndex === index
+            const isOpen = openIndices.has(index)
             return (
               <div
                 key={index}
@@ -34,7 +40,7 @@ export function FAQSection() {
                 }`}
               >
                 <button
-                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  onClick={() => toggleIndex(index)}
                   className="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left"
                 >
                   <span className="flex items-center gap-4">
