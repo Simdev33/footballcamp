@@ -18,10 +18,7 @@ export function TargetAudience() {
 
       <div className="relative z-10 max-w-[900px] mx-auto px-4 md:px-12 lg:px-24">
         <div className="text-center mb-10 md:mb-14">
-          <span className="inline-block px-4 py-1.5 md:px-5 md:py-2 bg-[#d4a017] text-[#0a1f0a] text-xs tracking-[0.3em] uppercase font-bold">
-            {t.targetAudience.badge}
-          </span>
-          <h2 className="mt-4 font-serif text-xl md:text-3xl lg:text-4xl font-bold text-white">
+          <h2 className="font-serif text-xl md:text-3xl lg:text-4xl font-bold text-white">
             {t.targetAudience.title}{" "}
             <span className="text-[#d4a017]">{t.targetAudience.titleHighlight}</span>
           </h2>

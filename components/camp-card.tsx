@@ -78,7 +78,7 @@ export function CampCard({ camp, imageSrc, className, priority }: CampCardProps)
             </div>
           </div>
 
-          <Link href="/jelentkezes" className="mt-3 md:mt-4 block">
+          <Link href="/taborok" className="mt-3 md:mt-4 block">
             <span className="flex w-full items-center justify-center gap-2 border-2 border-[#d4a017] px-4 py-2.5 md:px-6 md:py-3 text-xs md:text-sm font-semibold text-[#d4a017] transition-colors duration-300 hover:bg-[#d4a017] hover:text-[#0a1f0a]">
               {camp.cta}
               <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />

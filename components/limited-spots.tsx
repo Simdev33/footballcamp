@@ -10,9 +10,6 @@ export function LimitedSpots() {
     <section className="relative py-0 overflow-hidden">
       {/* Stadium ticket design */}
       <div className="relative bg-[#0a1f0a]">
-        {/* Top grass edge */}
-        <div className="h-2 md:h-3 bg-gradient-to-r from-[#1e6b1e] via-[#2d7a2d] to-[#1e6b1e]" />
-
         <div className="relative py-10 md:py-16">
           {/* Dotted perforation lines (ticket style) */}
           <div className="absolute top-0 left-[10%] right-[10%] border-t-2 border-dashed border-[#d4a017]/20" />
@@ -60,8 +57,6 @@ export function LimitedSpots() {
           </div>
         </div>
 
-        {/* Bottom grass edge */}
-        <div className="h-2 md:h-3 bg-gradient-to-r from-[#1e6b1e] via-[#2d7a2d] to-[#1e6b1e]" />
       </div>
     </section>
   )

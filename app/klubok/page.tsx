@@ -38,11 +38,9 @@ export default function KlubokPage() {
         <div className="relative z-10 max-w-[1400px] mx-auto px-4 md:px-12 lg:px-24 text-center">
           <Image src={BENFICA_LOGO} alt="SL Benfica" width={100} height={100} className="w-20 h-20 md:w-24 md:h-24 object-contain mx-auto mb-6" />
           <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-white">
-            {t.coaches.title}{" "}
-            <span className="text-[#d4a017]">{t.coaches.titleHighlight}</span>{" "}
-            {t.coaches.titleEnd}
+            Kik <span className="text-[#d4a017]">állnak</span> mögöttünk?
           </h1>
-          <p className="mt-6 text-sm md:text-lg text-white/60 max-w-2xl mx-auto">{t.coaches.subtitle}</p>
+          <p className="mt-6 text-sm md:text-lg text-white/60 max-w-2xl mx-auto">Külföldi partner egyesületeink</p>
         </div>
       </section>
 

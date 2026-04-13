@@ -25,10 +25,7 @@ export function USPSection() {
 
       <div className="relative z-10 max-w-[960px] mx-auto px-4 md:px-12">
         <div className="text-center mb-6 md:mb-10">
-          <span className="inline-block px-5 py-1.5 bg-[#d4a017] text-[#0a1f0a] text-xs tracking-[0.3em] uppercase font-bold">
-            {t.usp.badge}
-          </span>
-          <h2 className="mt-4 font-serif text-2xl md:text-4xl lg:text-5xl font-bold text-white">
+          <h2 className="font-serif text-2xl md:text-4xl lg:text-5xl font-bold text-white">
             {t.usp.title}{" "}
             <span className="text-[#d4a017]">{t.usp.titleHighlight}</span>
           </h2>

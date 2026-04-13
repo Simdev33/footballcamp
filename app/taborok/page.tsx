@@ -1,20 +1,10 @@
 import Image from "next/image"
 import Link from "next/link"
 import { db } from "@/lib/db"
-import { MapPin, Calendar, Users, ArrowRight, Tag, Shirt, Utensils, Dumbbell, Heart, Clock, Sun, Sunset, Moon } from "lucide-react"
+import { MapPin, Calendar, Users, ArrowRight, Tag, Shirt, Utensils, Dumbbell, Heart, Clock } from "lucide-react"
 import { SubpageHero } from "@/components/subpage-hero"
 
 export const dynamic = "force-dynamic"
-
-const SCHEDULE = [
-  { time: "08:00", title: "Reggeli", desc: "Tápláló reggeli a szálláshelyen", icon: Sun, color: "bg-amber-500" },
-  { time: "09:00", title: "Délelőtti edzés", desc: "Technikai alapok, labdaérzék fejlesztés", icon: Dumbbell, color: "bg-emerald-600" },
-  { time: "11:00", title: "Taktikai tréning", desc: "Pozíciós játék, csapatmunka", icon: Dumbbell, color: "bg-emerald-700" },
-  { time: "12:30", title: "Ebéd & pihenő", desc: "Kiegyensúlyozott ebéd és szabad idő", icon: Utensils, color: "bg-orange-500" },
-  { time: "14:00", title: "Délutáni foglalkozás", desc: "Speciális készségfejlesztés", icon: Sunset, color: "bg-blue-600" },
-  { time: "16:00", title: "Mérkőzések", desc: "Kis pályás meccsek, versenyhelyzetek", icon: Heart, color: "bg-red-500" },
-  { time: "18:00", title: "Vacsora & program", desc: "Közös program, csapatépítés", icon: Moon, color: "bg-indigo-600" },
-]
 
 const KID_ICONS = [Shirt, Utensils, Dumbbell, Heart]
 const KID_ITEMS = [
@@ -77,35 +67,6 @@ export default async function TaborokPage() {
                 </div>
               )
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* Daily Schedule */}
-      <section className="py-20 md:py-28 bg-background">
-        <div className="max-w-[900px] mx-auto px-6 md:px-12">
-          <div className="text-center mb-14">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              Egy napod <span className="text-[#d4a017]">nálunk</span>
-            </h2>
-            <div className="w-20 h-1 bg-[#d4a017] mx-auto mt-5" />
-          </div>
-          <div className="relative">
-            <div className="absolute left-[27px] md:left-[31px] top-0 bottom-0 w-px bg-gradient-to-b from-[#d4a017] via-[#d4a017]/40 to-transparent" />
-            <div className="space-y-6">
-              {SCHEDULE.map((item) => (
-                <div key={item.time} className="relative flex gap-5 md:gap-8 group">
-                  <div className={`relative z-10 w-14 md:w-16 h-14 md:h-16 shrink-0 ${item.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                    <item.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1 pb-6 border-b border-border/30 group-last:border-b-0">
-                    <span className="text-xs text-[#d4a017] font-bold tracking-wider">{item.time}</span>
-                    <h3 className="font-serif text-lg font-bold text-foreground mt-1 group-hover:text-[#d4a017] transition-colors">{item.title}</h3>
-                    <p className="text-muted-foreground text-sm mt-1">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>

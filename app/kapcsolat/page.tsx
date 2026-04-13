@@ -1,6 +1,6 @@
 "use client"
 
-import { Mail, Phone, Facebook, Instagram, Youtube, ArrowRight } from "lucide-react"
+import { Mail, Phone, Facebook, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
 
@@ -10,9 +10,7 @@ const CONTACT_CARDS = [
 ]
 
 const SOCIALS = [
-  { icon: Facebook, label: "Facebook", href: "#", color: "hover:bg-[#1877F2]" },
-  { icon: Instagram, label: "Instagram", href: "#", color: "hover:bg-[#E4405F]" },
-  { icon: Youtube, label: "YouTube", href: "#", color: "hover:bg-[#FF0000]" },
+  { icon: Facebook, label: "Facebook", href: "https://www.facebook.com/kickoffelite", color: "hover:bg-[#1877F2]" },
 ]
 
 export default function KapcsolatPage() {
@@ -85,7 +83,7 @@ export default function KapcsolatPage() {
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-white mb-3">
             Kövess a <span className="text-[#d4a017]">közösségi médiában!</span>
           </h2>
-          <p className="text-white/50 text-sm mb-10">Kövesd oldalainkat a legfrissebb hírekért, képekért és videókért.</p>
+          <p className="text-white/50 text-sm mb-10">Kövesd oldalunkat a legfrissebb hírekért, képekért és videókért.</p>
           <div className="flex justify-center gap-5">
             {SOCIALS.map((social) => (
               <a

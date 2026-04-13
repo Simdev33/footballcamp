@@ -30,10 +30,7 @@ export function LocationCards() {
               <circle cx="12" cy="10" r="3" />
             </svg>
           </div>
-          <span className="inline-block bg-[#0a1f0a] px-4 py-1.5 md:px-6 md:py-2 text-xs md:text-sm font-medium uppercase tracking-[0.3em] text-[#d4a017]">
-            {t.locations.badge}
-          </span>
-          <h2 className="mt-4 md:mt-5 font-serif text-xl md:text-4xl lg:text-5xl font-bold text-foreground">
+          <h2 className="font-serif text-xl md:text-4xl lg:text-5xl font-bold text-foreground">
             {t.locations.title}{" "}
             <span className="text-primary">{t.locations.titleHighlight}</span>
           </h2>

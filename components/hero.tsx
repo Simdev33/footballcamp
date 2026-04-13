@@ -152,22 +152,26 @@ export function Hero() {
             </div>
 
             <div className="relative px-0 sm:px-10 lg:px-12">
-              <button
-                type="button"
-                onClick={() => api?.scrollPrev()}
-                className="absolute left-0 top-[42%] z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60 sm:flex"
-                aria-label={t.hero.carouselPrev}
-              >
-                <ChevronLeft className="h-6 w-6" />
-              </button>
-              <button
-                type="button"
-                onClick={() => api?.scrollNext()}
-                className="absolute right-0 top-[42%] z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60 sm:flex"
-                aria-label={t.hero.carouselNext}
-              >
-                <ChevronRight className="h-6 w-6" />
-              </button>
+              {camps.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => api?.scrollPrev()}
+                    className="absolute left-0 top-[42%] z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60 sm:flex"
+                    aria-label={t.hero.carouselPrev}
+                  >
+                    <ChevronLeft className="h-6 w-6" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => api?.scrollNext()}
+                    className="absolute right-0 top-[42%] z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60 sm:flex"
+                    aria-label={t.hero.carouselNext}
+                  >
+                    <ChevronRight className="h-6 w-6" />
+                  </button>
+                </>
+              )}
 
               <Carousel
                 className="w-full"
@@ -197,21 +201,23 @@ export function Hero() {
               </Carousel>
             </div>
 
-            <div className="mt-8 flex justify-center gap-2.5 lg:justify-start" aria-label={t.hero.pickLocation}>
-              {camps.map((camp, i) => (
-                <button
-                  key={camp.city}
-                  type="button"
-                  onClick={() => api?.scrollTo(i)}
-                  className={cn(
-                    "h-2.5 rounded-full transition-[width,background-color] duration-300",
-                    current === i ? "w-10 bg-[#d4a017]" : "w-2.5 bg-white/35 hover:bg-white/55",
-                  )}
-                  aria-label={camp.city}
-                  aria-current={current === i ? "true" : undefined}
-                />
-              ))}
-            </div>
+            {camps.length > 1 && (
+              <div className="mt-8 flex justify-center gap-2.5 lg:justify-start" aria-label={t.hero.pickLocation}>
+                {camps.map((camp, i) => (
+                  <button
+                    key={camp.city}
+                    type="button"
+                    onClick={() => api?.scrollTo(i)}
+                    className={cn(
+                      "h-2.5 rounded-full transition-[width,background-color] duration-300",
+                      current === i ? "w-10 bg-[#d4a017]" : "w-2.5 bg-white/35 hover:bg-white/55",
+                    )}
+                    aria-label={camp.city}
+                    aria-current={current === i ? "true" : undefined}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -228,8 +234,7 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Bottom grass edge */}
-      <div className="absolute bottom-0 left-0 right-0 h-1.5 md:h-2 bg-gradient-to-r from-[#1e6b1e] via-[#2d7a2d] to-[#1e6b1e] z-10" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-[#d4a017]/20 z-10" />
     </section>
   )
 }

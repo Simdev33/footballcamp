@@ -1,12 +1,10 @@
 "use client"
 
 import Image from "next/image"
-import { Check, Quote, Trophy, Users, Target, Heart } from "lucide-react"
+import { Check, Quote, Target, Heart } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
 const STATS = [
-  { icon: Trophy, value: "2024", label: "Alapítás éve" },
-  { icon: Users, value: "500+", label: "Gyerek eddig" },
   { icon: Target, value: "15+", label: "Profi edző" },
   { icon: Heart, value: "98%", label: "Elégedettség" },
 ]
@@ -40,9 +38,9 @@ export default function RolunkPage() {
 
       {/* Stats Counter Bar */}
       <section className="relative -mt-12 z-20 max-w-[1200px] mx-auto px-6 md:px-12 lg:px-24">
-        <div className="grid grid-cols-2 md:grid-cols-4 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.15)]">
+        <div className="grid grid-cols-2 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.15)] max-w-lg mx-auto">
           {STATS.map((stat) => (
-            <div key={stat.label} className="p-6 md:p-8 text-center border-r border-b border-gray-100 last:border-r-0 md:[&:nth-child(n+3)]:border-b-0 group hover:bg-[#0a1f0a] transition-colors duration-300">
+            <div key={stat.label} className="p-6 md:p-8 text-center border-r border-gray-100 last:border-r-0 group hover:bg-[#0a1f0a] transition-colors duration-300">
               <stat.icon className="w-6 h-6 text-[#d4a017] mx-auto mb-3" />
               <span className="block font-serif text-3xl md:text-4xl font-bold text-[#0a1f0a] group-hover:text-[#d4a017] transition-colors">{stat.value}</span>
               <span className="block text-xs text-gray-500 group-hover:text-white/60 mt-1 uppercase tracking-wider transition-colors">{stat.label}</span>
@@ -56,8 +54,11 @@ export default function RolunkPage() {
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
           <div className="text-center mb-14">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              Miért vagyunk <span className="text-[#d4a017]">különlegesek?</span>
+              <span className="text-[#d4a017]">Céljaink</span>
             </h2>
+            <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
+              Azért csináljuk, amit csinálunk, mert hiszünk benne, hogy a magyar gyerekek is megérdemlik a legjobb európai futballképzést. Célunk, hogy minél több külföldi edzőt és akadémiát hozzunk el Magyarországra, és megismertessük a gyerekekkel a nemzetközi futball világát.
+            </p>
             <div className="w-20 h-1 bg-[#d4a017] mx-auto mt-5" />
           </div>
 

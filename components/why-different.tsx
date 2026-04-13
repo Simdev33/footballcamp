@@ -2,7 +2,7 @@
 
 import { useLanguage } from "@/lib/language-context"
 
-const JERSEY_COLORS = ["#d4a017", "#22c55e", "#3b82f6", "#ef4444", "#8b5cf6"]
+const JERSEY_COLORS = ["#d4a017", "#22c55e", "#3b82f6", "#ef4444", "#8b5cf6", "#ec4899"]
 
 export function WhyDifferent() {
   const { t } = useLanguage()
@@ -26,15 +26,21 @@ export function WhyDifferent() {
       </svg>
 
       <div className="relative z-10 max-w-[1200px] mx-auto px-4 md:px-12 lg:px-24">
-        <div className="text-center mb-10 md:mb-14">
-          <span className="inline-block px-4 py-1.5 md:px-5 md:py-2 bg-white/10 backdrop-blur-sm text-white text-xs tracking-[0.3em] uppercase font-bold border border-white/20">
-            {t.whyDifferent.badge}
-          </span>
-          <h2 className="mt-4 font-serif text-xl md:text-3xl lg:text-4xl font-bold text-white">
-            {t.whyDifferent.title}{" "}
-            <span className="text-[#d4a017]">{t.whyDifferent.titleHighlight}</span>
-          </h2>
-        </div>
+        {(t.whyDifferent.badge || t.whyDifferent.title) && (
+          <div className="text-center mb-10 md:mb-14">
+            {t.whyDifferent.badge && (
+              <span className="inline-block px-4 py-1.5 md:px-5 md:py-2 bg-white/10 backdrop-blur-sm text-white text-xs tracking-[0.3em] uppercase font-bold border border-white/20">
+                {t.whyDifferent.badge}
+              </span>
+            )}
+            {t.whyDifferent.title && (
+              <h2 className="mt-4 font-serif text-xl md:text-3xl lg:text-4xl font-bold text-white">
+                {t.whyDifferent.title}{" "}
+                <span className="text-[#d4a017]">{t.whyDifferent.titleHighlight}</span>
+              </h2>
+            )}
+          </div>
+        )}
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {t.whyDifferent.items.map((item, i) => {

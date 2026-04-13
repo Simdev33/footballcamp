@@ -3,23 +3,32 @@
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { useState, useEffect } from "react"
-import { PenLine, Globe } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import { PenLine, Globe, ChevronDown } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+
+const CAMP_LOCATIONS = [
+  { label: "Algyő (Szeged)", href: "/taborok" },
+]
+
+const CLUB_ITEMS = [
+  { label: "SL Benfica", href: "/klubok" },
+]
 
 export function Header() {
   const { locale, t, toggleLocale } = useLanguage()
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const dropdownTimeout = useRef<ReturnType<typeof setTimeout>>()
   const isHome = pathname === "/"
 
   const navLinks = [
     { href: "/rolunk", label: t.nav.about },
-    { href: "/taborok", label: t.nav.camps },
-    { href: "/klubok", label: t.nav.clubs },
+    { href: "/taborok", label: t.nav.camps, dropdown: CAMP_LOCATIONS },
+    { href: "/klubok", label: t.nav.clubs, dropdown: CLUB_ITEMS },
     { href: "/partnerprogram", label: t.nav.partnerProgram },
-    { href: "/galeria", label: t.nav.gallery },
     { href: "/kapcsolat", label: t.nav.contact },
     { href: "/gyik", label: t.nav.faq },
     { href: "/blog", label: t.nav.blog },
@@ -65,10 +74,27 @@ export function Header() {
 
             <ul className="hidden lg:flex items-center gap-5 xl:gap-7">
               {navLinks.map((link) => {
-                const isActive = pathname === link.href
+                const isActive = pathname === link.href || pathname.startsWith(link.href + "/")
+                const hasDropdown = !!(link as { dropdown?: unknown[] }).dropdown
+                const dd = (link as { dropdown?: { label: string; href: string }[] }).dropdown
+
                 return (
-                  <li key={link.href}>
-                    <Link href={link.href} className="group relative py-3 block">
+                  <li
+                    key={link.href}
+                    className="relative"
+                    onMouseEnter={() => {
+                      if (hasDropdown) {
+                        clearTimeout(dropdownTimeout.current)
+                        setOpenDropdown(link.href)
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (hasDropdown) {
+                        dropdownTimeout.current = setTimeout(() => setOpenDropdown(null), 150)
+                      }
+                    }}
+                  >
+                    <Link href={link.href} className="group relative py-3 flex items-center gap-1">
                       <span className={`transition-colors duration-300 text-[13px] tracking-wide font-medium whitespace-nowrap ${
                         isActive
                           ? "text-primary"
@@ -78,8 +104,25 @@ export function Header() {
                       }`}>
                         {link.label}
                       </span>
+                      {hasDropdown && <ChevronDown className={`w-3.5 h-3.5 transition-colors duration-300 ${isActive ? "text-primary" : showSolid ? "text-muted-foreground" : "text-white/60"}`} />}
                       <span className={`absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-secondary origin-left transition-transform duration-300 ${isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`} />
                     </Link>
+
+                    {hasDropdown && dd && openDropdown === link.href && (
+                      <div className="absolute top-full left-0 pt-2 z-50">
+                        <div className="bg-white shadow-xl border border-border/50 min-w-[200px] py-2">
+                          {dd.map((item) => (
+                            <Link
+                              key={item.href + item.label}
+                              href={item.href}
+                              className="block px-5 py-2.5 text-sm text-foreground hover:bg-[#d4a017]/10 hover:text-primary transition-colors"
+                            >
+                              {item.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </li>
                 )
               })}

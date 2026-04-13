@@ -10,7 +10,7 @@ import { LimitedSpots } from "@/components/limited-spots"
 import { TargetAudience } from "@/components/target-audience"
 import { LocationCards } from "@/components/location-cards"
 import { ApplicationForm } from "@/components/application-form"
-import { FootballDivider, GrassStrip } from "@/components/football-divider"
+import { FootballDivider } from "@/components/football-divider"
 
 const CDN = "https://focis.b-cdn.net"
 
@@ -31,7 +31,6 @@ export default function BelowFoldHome() {
     <>
       {/* 1. WhySpecial – bevezető szekció */}
       <ZigzagSection
-        badge={t.whySpecial.badge}
         title={t.whySpecial.title}
         titleHighlight={t.whySpecial.titleHighlight}
         titleEnd={t.whySpecial.titleEnd}
@@ -57,13 +56,8 @@ export default function BelowFoldHome() {
         </Link>
       </ZigzagSection>
 
-      {/* Grass transition → tactic board */}
-      <GrassStrip />
-
       {/* 2. Ezért más ez a focitábor — taktikai tábla stílus */}
       <WhyDifferent />
-
-      <GrassStrip />
 
       {/* 3. USP – 11 érv, focipálya felállás */}
       <USPSection />
@@ -74,7 +68,6 @@ export default function BelowFoldHome() {
       {/* 5. Mit kapsz a táborban? */}
       <ZigzagSection
         reversed
-        badge={t.whatKidsGet.badge}
         title={t.whatKidsGet.title}
         titleHighlight={t.whatKidsGet.titleHighlight}
         titleEnd={t.whatKidsGet.titleEnd}
@@ -114,7 +107,6 @@ export default function BelowFoldHome() {
       {/* 7. Több mint edzés */}
       <ZigzagSection
         dark
-        badge={t.experience.badge}
         title={t.experience.title}
         titleHighlight={t.experience.titleHighlight}
         titleEnd={t.experience.titleEnd}
@@ -124,7 +116,7 @@ export default function BelowFoldHome() {
       >
         <div className="grid grid-cols-3 gap-2 md:gap-4 mb-4 md:mb-6">
           {[
-            { value: "15", label: "fő / csoport", color: "#22c55e" },
+            { value: "15", label: "fő / korosztály", color: "#22c55e" },
             { value: "4", label: "edzés / nap", color: "#3b82f6" },
             { value: "5", label: "nap / turnus", color: "#d4a017" },
           ].map((stat) => (
@@ -140,8 +132,6 @@ export default function BelowFoldHome() {
           </p>
         </blockquote>
       </ZigzagSection>
-
-      <GrassStrip />
 
       {/* 8. Helyszínek */}
       <LocationCards />
