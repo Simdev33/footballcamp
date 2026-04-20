@@ -70,18 +70,26 @@ model Camp {
 }
 
 model Application {
-  id          String   @id @default(cuid())
-  parentName  String
-  parentEmail String
-  parentPhone String
-  childName   String
-  childAge    Int
-  campId      String
-  camp        Camp     @relation(fields: [campId], references: [id])
-  status      String   @default("new")
-  notes       String   @default("")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String   @id @default(cuid())
+  parentName      String
+  parentEmail     String
+  parentPhone     String
+  childName       String
+  childBirthDate  DateTime
+  childCity       String   @default("")
+  currentClub     String   @default("")
+  jerseySize      String   @default("")
+  shortsSize      String   @default("")
+  socksSize       String   @default("")
+  campId          String
+  camp            Camp     @relation(fields: [campId], references: [id])
+  status          String   @default("new")
+  notes           String   @default("")
+  siblingGroupId  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([siblingGroupId])
 }
 
 model BlogPost {

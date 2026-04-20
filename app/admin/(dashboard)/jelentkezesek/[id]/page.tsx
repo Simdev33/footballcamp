@@ -2,7 +2,7 @@ import { db } from "@/lib/db"
 import { updateApplicationStatus, updateApplicationNotes } from "@/lib/actions"
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, User, Mail, Phone, Calendar, MapPin } from "lucide-react"
+import { ArrowLeft, User, Mail, Phone, Calendar, MapPin, Shirt, Home, Trophy, Users } from "lucide-react"
 
 export const dynamic = 'force-dynamic'
 
@@ -19,6 +19,17 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
   const app = await db.application.findUnique({ where: { id }, include: { camp: true } })
   if (!app) notFound()
 
+  const siblings = app.siblingGroupId
+    ? await db.application.findMany({
+        where: { siblingGroupId: app.siblingGroupId, NOT: { id: app.id } },
+        include: { camp: true },
+      })
+    : []
+
+  const ageYears = Math.floor(
+    (Date.now() - app.childBirthDate.getTime()) / (1000 * 60 * 60 * 24 * 365.25),
+  )
+
   return (
     <div className="max-w-2xl space-y-6">
       <Link href="/admin/jelentkezesek" className="inline-flex items-center gap-2 text-white/40 hover:text-white text-sm transition-colors">
@@ -29,13 +40,36 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
 
       <div className="bg-[#0a1f0a] border border-[#d4a017]/10 p-6 space-y-4">
         <h3 className="text-white/40 text-xs uppercase tracking-wider font-medium border-b border-white/10 pb-2">Adatok</h3>
-        <InfoRow icon={User} label="Gyermek" value={`${app.childName} (${app.childAge} éves)`} />
-        <InfoRow icon={User} label="Szülő" value={app.parentName} />
-        <InfoRow icon={Mail} label="Email" value={app.parentEmail} />
-        <InfoRow icon={Phone} label="Telefon" value={app.parentPhone} />
-        <InfoRow icon={MapPin} label="Tábor" value={`${app.camp.city} – ${app.camp.dates}`} />
-        <InfoRow icon={Calendar} label="Jelentkezés" value={app.createdAt.toLocaleDateString("hu-HU")} />
+        <InfoRow icon={User} label="Gyermek" value={`${app.childName} (${ageYears} éves)`} />
+        <InfoRow icon={Calendar} label="Szül. dátum" value={app.childBirthDate.toLocaleDateString("hu-HU")} />
+        <InfoRow icon={Home} label="Lakhely" value={app.childCity || "—"} />
+        <InfoRow icon={Trophy} label="Jelenlegi egyesület" value={app.currentClub || "Jelenleg nem focizik"} />
+        <InfoRow icon={Shirt} label="Méretek (mez / rövidnadrág / sportszár)" value={`${app.jerseySize || "—"} / ${app.shortsSize || "—"} / ${app.socksSize || "—"}`} />
+        <div className="border-t border-white/10 pt-4 space-y-4">
+          <InfoRow icon={User} label="Szülő" value={app.parentName} />
+          <InfoRow icon={Mail} label="Email" value={app.parentEmail} />
+          <InfoRow icon={Phone} label="Telefon" value={app.parentPhone} />
+          <InfoRow icon={MapPin} label="Tábor" value={`${app.camp.city} – ${app.camp.dates}`} />
+          <InfoRow icon={Calendar} label="Jelentkezés" value={app.createdAt.toLocaleDateString("hu-HU")} />
+        </div>
       </div>
+
+      {siblings.length > 0 && (
+        <div className="bg-[#0a1f0a] border border-[#d4a017]/10 p-6">
+          <h3 className="text-white/40 text-xs uppercase tracking-wider font-medium mb-4 flex items-center gap-2">
+            <Users className="w-4 h-4" /> Testvérek ugyanebből a jelentkezésből
+          </h3>
+          <ul className="space-y-2">
+            {siblings.map((s) => (
+              <li key={s.id}>
+                <Link href={`/admin/jelentkezesek/${s.id}`} className="text-[#d4a017] hover:underline text-sm">
+                  {s.childName} – {s.camp.city} ({s.camp.dates})
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Status change */}
       <div className="bg-[#0a1f0a] border border-[#d4a017]/10 p-6">
@@ -80,7 +114,7 @@ function InfoRow({ icon: Icon, label, value }: { icon: any; label: string; value
   return (
     <div className="flex items-center gap-3">
       <Icon className="w-4 h-4 text-[#d4a017]" />
-      <span className="text-white/40 text-sm w-24">{label}</span>
+      <span className="text-white/40 text-sm w-56 shrink-0">{label}</span>
       <span className="text-white text-sm">{value}</span>
     </div>
   )

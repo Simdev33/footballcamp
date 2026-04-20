@@ -46,7 +46,7 @@ export default async function AdminApplicationsPage({ searchParams }: { searchPa
                 <th className="text-left px-4 py-3 text-white/40 text-xs uppercase tracking-wider font-medium">Gyermek</th>
                 <th className="text-left px-4 py-3 text-white/40 text-xs uppercase tracking-wider font-medium">Szulo</th>
                 <th className="text-left px-4 py-3 text-white/40 text-xs uppercase tracking-wider font-medium">Tabor</th>
-                <th className="text-left px-4 py-3 text-white/40 text-xs uppercase tracking-wider font-medium">Kor</th>
+                <th className="text-left px-4 py-3 text-white/40 text-xs uppercase tracking-wider font-medium">Szul. datum</th>
                 <th className="text-left px-4 py-3 text-white/40 text-xs uppercase tracking-wider font-medium">Statusz</th>
                 <th className="text-left px-4 py-3 text-white/40 text-xs uppercase tracking-wider font-medium">Datum</th>
                 <th className="px-4 py-3"></th>
@@ -59,13 +59,16 @@ export default async function AdminApplicationsPage({ searchParams }: { searchPa
                   <tr key={app.id} className="hover:bg-white/5 transition-colors">
                     <td className="px-4 py-3">
                       <p className="text-white font-medium">{app.childName}</p>
+                      {app.siblingGroupId && (
+                        <p className="text-[10px] text-[#d4a017]/70 uppercase tracking-wider mt-0.5">Testvér csoport</p>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <p className="text-white/70">{app.parentName}</p>
                       <p className="text-white/30 text-xs">{app.parentEmail}</p>
                     </td>
                     <td className="px-4 py-3 text-white/50">{app.camp.city}</td>
-                    <td className="px-4 py-3 text-white/50">{app.childAge} ev</td>
+                    <td className="px-4 py-3 text-white/50">{app.childBirthDate.toLocaleDateString("hu-HU")}</td>
                     <td className="px-4 py-3">
                       <span className={`text-xs px-2 py-1 font-medium ${status.class}`}>{status.label}</span>
                     </td>

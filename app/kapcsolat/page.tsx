@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
 
 const CONTACT_CARDS = [
-  { icon: Mail, label: "Email", value: "info@benficacamp.hu", href: "mailto:info@benficacamp.hu", color: "bg-blue-600" },
+  { icon: Mail, label: "Email", value: "kickoff.focitabor@gmail.com", href: "mailto:kickoff.focitabor@gmail.com", color: "bg-blue-600" },
   { icon: Phone, label: "Telefon", value: "+36 30 123 4567", href: "tel:+36301234567", color: "bg-emerald-600" },
 ]
 
@@ -66,11 +66,11 @@ export default function KapcsolatPage() {
           </p>
           <div className="mt-10">
             <a
-              href="mailto:info@benficacamp.hu"
+              href="mailto:kickoff.focitabor@gmail.com"
               className="inline-flex items-center gap-3 px-10 py-5 bg-[#d4a017] text-[#0a1f0a] text-lg font-semibold hover:shadow-[0_20px_50px_#d4a0174d] transition-shadow duration-300"
             >
               <Mail className="w-6 h-6" />
-              info@benficacamp.hu
+              kickoff.focitabor@gmail.com
               <ArrowRight className="w-6 h-6" />
             </a>
           </div>

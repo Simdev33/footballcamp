@@ -1,7 +1,7 @@
 "use client"
 
 import { Input } from "@/components/ui/input"
-import { Facebook, Instagram, Youtube, ArrowRight, CheckCircle } from "lucide-react"
+import { Facebook, Instagram, Youtube, ArrowRight, CheckCircle, Mail } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
@@ -49,7 +49,14 @@ export function Footer() {
                 loading="lazy"
               />
             </Link>
-            <p className="text-white/60 max-w-sm leading-relaxed mb-8 text-sm">{t.footer.desc}</p>
+            <p className="text-white/60 max-w-sm leading-relaxed mb-6 text-sm">{t.footer.desc}</p>
+            <a
+              href="mailto:kickoff.focitabor@gmail.com"
+              className="inline-flex items-center gap-2 text-white/80 hover:text-[#d4a017] text-sm mb-8 transition-colors"
+            >
+              <Mail className="w-4 h-4" />
+              kickoff.focitabor@gmail.com
+            </a>
             <div className="flex gap-4">
               {socialLinks.map((social) => (
                 <a
