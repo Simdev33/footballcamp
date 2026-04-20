@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import Script from 'next/script'
 import { LayoutWrapper } from '@/components/layout-wrapper'
+import { CookieBanner } from '@/components/cookie-banner'
 import { getSiteContent } from '@/lib/content'
 import './globals.css'
 
@@ -51,9 +53,23 @@ export default async function RootLayout({
       <head>
         <link rel="preconnect" href="https://focis.b-cdn.net" />
         <link rel="dns-prefetch" href="https://focis.b-cdn.net" />
+        <Script id="gtag-consent-default" strategy="beforeInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);} window.gtag = gtag;
+gtag('consent', 'default', {
+  ad_storage: 'denied',
+  ad_user_data: 'denied',
+  ad_personalization: 'denied',
+  analytics_storage: 'denied',
+  functionality_storage: 'granted',
+  security_storage: 'granted',
+  wait_for_update: 500,
+});`}
+        </Script>
       </head>
       <body className={`${playfair.variable} ${inter.variable} font-sans antialiased`}>
         <LayoutWrapper dbContent={dbContent}>{children}</LayoutWrapper>
+        <CookieBanner />
         <Analytics />
       </body>
     </html>

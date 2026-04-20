@@ -1,7 +1,8 @@
 "use client"
 
 import { Input } from "@/components/ui/input"
-import { Facebook, Instagram, Youtube, ArrowRight, CheckCircle, Mail } from "lucide-react"
+import { Facebook, Instagram, Youtube, ArrowRight, CheckCircle, Mail, Cookie } from "lucide-react"
+import { reopenCookieBanner } from "@/components/cookie-banner"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
@@ -82,6 +83,16 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <button
+                  type="button"
+                  onClick={reopenCookieBanner}
+                  className="text-white/60 hover:text-white transition-colors inline-flex items-center gap-2 text-sm"
+                >
+                  <Cookie className="w-3.5 h-3.5" />
+                  {(t as unknown as { cookieBanner: { reopen: string } }).cookieBanner.reopen}
+                </button>
+              </li>
             </ul>
           </div>
 

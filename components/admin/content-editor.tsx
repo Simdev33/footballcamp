@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react"
 import {
   Save, Pencil, X, Plus, Trash2, Globe, RotateCcw, Check, Eye,
-  Home, MapPin, Shield, Handshake, HelpCircle, ImageIcon, Settings, Loader2,
+  Home, MapPin, Shield, Handshake, HelpCircle, ImageIcon, Settings, Loader2, FileText,
   ArrowRight, ChevronDown,
 } from "lucide-react"
 import { updateSiteContent, resetSiteContent } from "@/lib/actions"
@@ -54,6 +54,12 @@ const PAGES = [
     icon: Settings,
     sections: ["nav", "footer"],
   },
+  {
+    id: "jogi",
+    label: "Jogi (ÁSZF & Cookie)",
+    icon: FileText,
+    sections: ["aszf", "cookiePolicy", "cookieBanner"],
+  },
 ]
 
 const SECTION_INFO: Record<string, { label: string; desc: string; theme: string }> = {
@@ -73,6 +79,9 @@ const SECTION_INFO: Record<string, { label: string; desc: string; theme: string 
   gallery:         { label: "Galéria feliratok",         desc: "Galéria szekció szövegei",           theme: "light" },
   nav:             { label: "Navigáció",                 desc: "Menüpontok elnevezései",             theme: "light" },
   footer:          { label: "Lábléc",                    desc: "Footer tartalom és linkek",          theme: "dark" },
+  aszf:            { label: "ÁSZF",                       desc: "Általános Szerződési Feltételek – szekciónként szerkeszthető", theme: "light" },
+  cookiePolicy:    { label: "Cookie tájékoztató",          desc: "Süti-tájékoztató aloldal tartalma",  theme: "light" },
+  cookieBanner:    { label: "Cookie sáv",                  desc: "A cookie-elfogadó sáv és kategóriák szövegei", theme: "light" },
 }
 
 const FIELD_LABELS: Record<string, string> = {
@@ -99,6 +108,13 @@ const FIELD_LABELS: Record<string, string> = {
   benefitTitle: "Előny cím", benefitItems: "Előny pontok",
   ctaTitle: "CTA cím", ctaText: "CTA szöveg",
   question: "Kérdés", answer: "Válasz",
+  heading: "Szekció címe", paragraphs: "Bekezdések",
+  backToRegister: "Vissza a jelentkezéshez gomb", downloadLabel: "Letöltés gomb felirat",
+  placeholder: "Ideiglenes jelzés (üres = elrejtve)",
+  acceptAll: "Minden elfogadása gomb", rejectAll: "Csak szükséges gomb",
+  customize: "Beállítások gomb", save: "Mentés gomb", more: "Részletek link",
+  reopen: "Újranyitás link felirat", categories: "Kategóriák",
+  necessary: "Szükséges", analytics: "Statisztikai", marketing: "Marketing",
   navTitle: "Navigáció cím", links: "Linkek",
   newsletterTitle: "Hírlevél cím", newsletterDesc: "Hírlevél leírás",
   emailPlaceholder: "Email placeholder", subscribed: "Feliratkozott szöveg",

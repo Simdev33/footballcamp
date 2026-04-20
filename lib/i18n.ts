@@ -382,7 +382,8 @@ export const translations = {
         { label: "Partnerprogram", href: "/partnerprogram" },
         { label: "GYIK", href: "/gyik" },
         { label: "Adatvédelem", href: "/adatkezelesi-tajekoztato" },
-        { label: "ÁSZF", href: "#" },
+        { label: "Cookie tájékoztató", href: "/cookie-policy" },
+        { label: "ÁSZF", href: "/aszf" },
       ],
       newsletterTitle: "Hírlevél",
       newsletterDesc: "Iratkozz fel hírlevelünkre a legfrissebb hírekért és ajánlatokért.",
@@ -390,6 +391,176 @@ export const translations = {
       subscribed: "Sikeresen feliratkoztál!",
       copyright: "© 2026 Kickoff Elite Football Camps. Minden jog fenntartva.",
       motto: "\u201CA futball több, mint sport – egy életforma\u201D",
+    },
+    aszf: {
+      title: "Általános Szerződési Feltételek",
+      subtitle: "Hatályos: 2026. április 01-től visszavonásig",
+      intro:
+        "Jelen Általános Szerződési Feltételek (a továbbiakban: ÁSZF) a Tireksz Nonprofit Kft. (a továbbiakban: Szolgáltató) által KICKOFF Elite Football Camps márkanév alatt szervezett futballtáborokra történő jelentkezésre és a szolgáltatás igénybevételére vonatkoznak.",
+      sections: [
+        {
+          heading: "1. Szolgáltató adatai",
+          paragraphs: [
+            "Név: Tireksz Nonprofit Kft.",
+            "Székhely: 6728 Szeged, Felsőnyomás út 47.",
+            "Cégjegyzékszám: 06-09-028994",
+            "Adószám: 32342651-1-06",
+            "Képviselő: Rozinka Arnold, ügyvezető",
+            "Telefonszám: +36 30 755 1110",
+            "E-mail: kickoff.focitabor@gmail.com",
+            "Honlap: https://kickoffcamps.hu",
+          ],
+        },
+        {
+          heading: "2. A szerződés tárgya",
+          paragraphs: [
+            "A Szolgáltató által meghirdetett futballtáborokban való részvétel, az ahhoz kapcsolódó sportszakmai és kiegészítő szolgáltatások nyújtása a jelentkező gyermek részére.",
+            "A szerződés a jelentkezési űrlap kitöltésével és a Szolgáltató visszaigazolásával jön létre.",
+          ],
+        },
+        {
+          heading: "3. Jelentkezés és visszaigazolás",
+          paragraphs: [
+            "A jelentkezés elektronikus úton, a honlapon elérhető jelentkezési űrlap kitöltésével történik.",
+            "A jelentkezést a Szolgáltató e-mailben visszaigazolja. A visszaigazolás tartalmazza a részvételi díj, az 1. részletfizetés és a fennmaradó díj befizetésének határidejét.",
+          ],
+        },
+        {
+          heading: "4. Részvételi díj és fizetési feltételek",
+          paragraphs: [
+            "A tábor részvételi díja az adott tábor oldalán feltüntetett összeg.",
+            "Az 1. részletfizetés (korábban: előleg) a jelentkezés visszaigazolásától számított 8 napon belül esedékes, a fennmaradó összeg a tábor kezdete előtt legalább 14 nappal fizetendő.",
+            "A befizetés banki átutalással történik, a visszaigazoló e-mailben megküldött adatok szerint.",
+          ],
+        },
+        {
+          heading: "5. Lemondási feltételek",
+          paragraphs: [
+            "A tábor kezdete előtt legalább 30 nappal történő lemondás esetén a befizetett összeg 100%-a visszajár.",
+            "A tábor kezdete előtt 15–29 nappal történő lemondás esetén az 1. részletfizetés nem jár vissza, a fennmaradó befizetett összeg visszajár.",
+            "A tábor kezdete előtt 14 napon belüli lemondás esetén a befizetett teljes összeg nem jár vissza, kivéve igazolt egészségügyi okot, amely esetben a Szolgáltató a befizetett összeget részben vagy egészben visszatérítheti.",
+          ],
+        },
+        {
+          heading: "6. A résztvevő kötelezettségei",
+          paragraphs: [
+            "A résztvevő szülője/törvényes képviselője köteles a jelentkezéskor valós adatokat megadni, a gyermek egészségi állapotára vonatkozó egészségügyi nyilatkozatot hiánytalanul kitölteni és elfogadni.",
+            "A gyermek köteles betartani a tábor házirendjét, az edzők utasításait és a csapat többi tagjával szembeni tiszteletet.",
+          ],
+        },
+        {
+          heading: "7. A Szolgáltató felelőssége",
+          paragraphs: [
+            "A Szolgáltató felelős a tábor programjának szakmai színvonaláért és a meghirdetett szolgáltatás nyújtásáért.",
+            "A Szolgáltató nem vállal felelősséget a tábor sporttevékenységéből eredő, sportsérülésnek minősülő események következményeiért, amennyiben azok a szokásos gondosság mellett is bekövetkeztek.",
+            "A táborba hozott személyes tárgyak eltűnéséért vagy megrongálódásáért a Szolgáltató nem vállal felelősséget.",
+          ],
+        },
+        {
+          heading: "8. Vis maior",
+          paragraphs: [
+            "A Szolgáltató fenntartja a jogot, hogy vis maior (pl. hatósági intézkedés, rendkívüli időjárás, járványügyi helyzet) esetén a tábort lemondja vagy elhalassza. Ilyen esetben a befizetett összeget a Szolgáltató visszatéríti, vagy a résztvevő kérésére más időpontra átcsoportosítja.",
+          ],
+        },
+        {
+          heading: "9. Képmás- és hangfelvétel",
+          paragraphs: [
+            "A Szolgáltató a táborban képmás- és hangfelvételeket készíthet, melyeket marketing célból a honlapján és közösségi média felületein felhasználhat. A felhasználás ellen a szülő/törvényes képviselő a kickoff.focitabor@gmail.com e-mail címen bármikor tiltakozhat.",
+          ],
+        },
+        {
+          heading: "10. Adatkezelés",
+          paragraphs: [
+            "Az adatkezelés részleteit külön Adatkezelési Tájékoztató tartalmazza, amely a honlapon elérhető.",
+          ],
+        },
+        {
+          heading: "11. Panaszkezelés és jogorvoslat",
+          paragraphs: [
+            "Panaszt a Szolgáltató e-mail címén, illetve postai úton a székhelyére küldve lehet benyújtani. A Szolgáltató a panaszokat 30 napon belül megvizsgálja és megválaszolja.",
+            "A fogyasztó a lakóhelye szerint illetékes békéltető testülethez fordulhat, továbbá bírósági eljárást kezdeményezhet.",
+          ],
+        },
+        {
+          heading: "12. Záró rendelkezések",
+          paragraphs: [
+            "Jelen ÁSZF-ben nem szabályozott kérdésekben a Polgári Törvénykönyv (2013. évi V. tv.) és a vonatkozó magyar jogszabályok rendelkezései az irányadóak.",
+            "A Szolgáltató fenntartja a jogot az ÁSZF egyoldalú módosítására, amelyről a honlapon ad tájékoztatást.",
+          ],
+        },
+      ],
+      downloadLabel: "Letöltés PDF-ben",
+      backToRegister: "Tovább a jelentkezésre",
+      contact: "Kapcsolat",
+      placeholder:
+        "Ez egy ideiglenes szöveg. A végleges, ügyvéd által ellenőrzött változat az admin felületről bármikor frissíthető.",
+    },
+    cookiePolicy: {
+      title: "Cookie (süti) tájékoztató",
+      subtitle: "Hatályos: 2026. április 01-től visszavonásig",
+      intro:
+        "Ez a tájékoztató a kickoffcamps.hu weboldalon használt cookie-k (sütik) típusairól, céljáról és az Ön választási lehetőségeiről ad tájékoztatást. A Tireksz Nonprofit Kft. (a továbbiakban: Társaság) kizárólag a jogszabályok és az Ön hozzájárulása alapján kezel cookie-kat.",
+      sections: [
+        {
+          heading: "Mi az a cookie?",
+          paragraphs: [
+            "A cookie egy kis szöveges fájl, amelyet a meglátogatott weboldal a böngészőjében tárol. Segítségével a weboldal felismeri a visszatérő látogatókat, megjegyzi a beállításokat, és mér statisztikákat.",
+          ],
+        },
+        {
+          heading: "Milyen cookie-kat használunk?",
+          paragraphs: [
+            "Szigorúan szükséges cookie-k: ezek a weboldal alapvető működéséhez szükségesek (pl. munkamenet kezelése, nyelv választása, cookie hozzájárulás tárolása). Ezek nélkül a weboldal nem működik megfelelően, ezért nem igényelnek külön hozzájárulást.",
+            "Statisztikai cookie-k: anonim módon gyűjtenek információt arról, hogyan használja Ön a weboldalt (pl. látogatottság, leggyakrabban nézett oldalak). Ezeket csak az Ön hozzájárulásával aktiváljuk. (Szolgáltató: Vercel Analytics, esetenként Google Analytics.)",
+            "Marketing / hirdetési cookie-k: célzott hirdetések kiszolgálását és teljesítményük mérését teszik lehetővé. Csak kifejezett hozzájárulással aktiváljuk. (Lehetséges szolgáltatók: Google Ads, Meta (Facebook/Instagram) Pixel.)",
+          ],
+        },
+        {
+          heading: "Hozzájárulás kezelése",
+          paragraphs: [
+            "A weboldal első látogatásakor egy cookie-sávban döntheti el, hogy milyen cookie-kat enged. A választása a böngészőjében tárolódik 12 hónapig, vagy amíg törli.",
+            "Döntését bármikor módosíthatja az oldal alján található „Cookie-beállítások" linkre kattintva.",
+          ],
+        },
+        {
+          heading: "Cookie-k tiltása a böngészőben",
+          paragraphs: [
+            "A cookie-k használatát bármikor le lehet tiltani a böngésző beállításaiban is. Ebben az esetben előfordulhat, hogy a weboldal egyes funkciói nem működnek megfelelően.",
+          ],
+        },
+        {
+          heading: "Kapcsolat",
+          paragraphs: [
+            "Cookie-kkal kapcsolatos kérdéseit a kickoff.focitabor@gmail.com e-mail címen teheti fel. Bővebb információt az Adatkezelési Tájékoztatónk tartalmaz.",
+          ],
+        },
+      ],
+      placeholder: "",
+    },
+    cookieBanner: {
+      title: "Sütiket (cookie-kat) használunk",
+      description:
+        "Az oldal működéséhez szükséges cookie-kat minden esetben használjuk. Az Ön hozzájárulásával statisztikai és marketing cookie-kat is beállítunk, hogy jobb élményt és célzottabb tartalmakat biztosítsunk.",
+      acceptAll: "Minden elfogadása",
+      rejectAll: "Csak szükségesek",
+      customize: "Beállítások",
+      save: "Beállítások mentése",
+      more: "Részletes tájékoztató",
+      categories: {
+        necessary: {
+          name: "Szigorúan szükséges",
+          desc: "A weboldal működéséhez elengedhetetlenek. Nem tilthatók le.",
+        },
+        analytics: {
+          name: "Statisztika",
+          desc: "Anonim látogatottsági és használati adatok mérése.",
+        },
+        marketing: {
+          name: "Marketing",
+          desc: "Célzott hirdetések és azok hatékonyságának mérése.",
+        },
+      },
+      reopen: "Cookie-beállítások",
     },
   },
   en: {
@@ -773,7 +944,8 @@ export const translations = {
         { label: "Partner Program", href: "/partnerprogram" },
         { label: "FAQ", href: "/gyik" },
         { label: "Privacy", href: "/adatkezelesi-tajekoztato" },
-        { label: "Terms", href: "#" },
+        { label: "Cookie policy", href: "/cookie-policy" },
+        { label: "Terms", href: "/aszf" },
       ],
       newsletterTitle: "Newsletter",
       newsletterDesc: "Subscribe to our newsletter for the latest news and offers.",
@@ -781,6 +953,176 @@ export const translations = {
       subscribed: "Successfully subscribed!",
       copyright: "© 2026 Kickoff Elite Football Camps. All rights reserved.",
       motto: '"Football is more than a sport – it\'s a way of life"',
+    },
+    aszf: {
+      title: "General Terms and Conditions",
+      subtitle: "Effective from 1 April 2026 until revocation",
+      intro:
+        "These General Terms and Conditions (hereinafter: GTC) apply to registration and participation in the football camps organised by Tireksz Nonprofit Kft. (hereinafter: Service Provider) under the KICKOFF Elite Football Camps brand name.",
+      sections: [
+        {
+          heading: "1. Service Provider details",
+          paragraphs: [
+            "Name: Tireksz Nonprofit Kft.",
+            "Registered office: 6728 Szeged, Felsőnyomás út 47., Hungary",
+            "Company registration number: 06-09-028994",
+            "Tax number: 32342651-1-06",
+            "Represented by: Arnold Rozinka, Managing Director",
+            "Phone: +36 30 755 1110",
+            "E-mail: kickoff.focitabor@gmail.com",
+            "Website: https://kickoffcamps.hu",
+          ],
+        },
+        {
+          heading: "2. Subject of the contract",
+          paragraphs: [
+            "Participation of the registered child in the football camps organised by the Service Provider, and the related professional and supplementary services.",
+            "The contract is established upon completion of the registration form and confirmation by the Service Provider.",
+          ],
+        },
+        {
+          heading: "3. Registration and confirmation",
+          paragraphs: [
+            "Registration takes place electronically via the registration form available on the website.",
+            "The Service Provider confirms the registration by e-mail, including the participation fee, the 1st instalment and the remaining payment deadlines.",
+          ],
+        },
+        {
+          heading: "4. Participation fee and payment terms",
+          paragraphs: [
+            "The participation fee is the amount indicated on the respective camp page.",
+            "The 1st instalment (formerly: deposit) is due within 8 days of the registration confirmation; the remaining amount must be paid at least 14 days before the start of the camp.",
+            "Payment is made by bank transfer, according to the details provided in the confirmation e-mail.",
+          ],
+        },
+        {
+          heading: "5. Cancellation terms",
+          paragraphs: [
+            "If cancelled at least 30 days before the start of the camp, 100% of the paid amount is refundable.",
+            "If cancelled 15–29 days before the start, the 1st instalment is non-refundable; the remaining paid amount is refundable.",
+            "If cancelled within 14 days before the start, the full paid amount is non-refundable, except for documented medical reasons, in which case the Service Provider may partially or fully refund the amount at its discretion.",
+          ],
+        },
+        {
+          heading: "6. Participant obligations",
+          paragraphs: [
+            "The parent/legal representative must provide truthful information upon registration and complete and accept the health declaration regarding the child.",
+            "The child is required to observe the camp's house rules, the coaches' instructions and show respect towards fellow participants.",
+          ],
+        },
+        {
+          heading: "7. Liability of the Service Provider",
+          paragraphs: [
+            "The Service Provider is responsible for the professional quality of the camp programme and for providing the advertised service.",
+            "The Service Provider is not liable for consequences of sports-related injuries arising from the camp's sports activities, if these occur despite usual due care.",
+            "The Service Provider is not liable for loss or damage to personal items brought to the camp.",
+          ],
+        },
+        {
+          heading: "8. Force majeure",
+          paragraphs: [
+            "The Service Provider reserves the right to cancel or postpone the camp in case of force majeure (e.g. authority measures, extreme weather, epidemic situation). In such cases, the paid amount shall be refunded or, at the participant's request, reallocated to another date.",
+          ],
+        },
+        {
+          heading: "9. Image and audio recordings",
+          paragraphs: [
+            "The Service Provider may take image and audio recordings at the camp, which may be used for marketing purposes on its website and social media. The parent/legal representative may object to such use at any time by e-mail to kickoff.focitabor@gmail.com.",
+          ],
+        },
+        {
+          heading: "10. Data processing",
+          paragraphs: [
+            "Details of data processing are set out in the separate Privacy Notice available on the website.",
+          ],
+        },
+        {
+          heading: "11. Complaints and legal remedies",
+          paragraphs: [
+            "Complaints can be submitted via the Service Provider's e-mail address or by post to the registered office. The Service Provider will examine and respond to complaints within 30 days.",
+            "Consumers may turn to the conciliation body competent at their place of residence, or initiate court proceedings.",
+          ],
+        },
+        {
+          heading: "12. Final provisions",
+          paragraphs: [
+            "In matters not regulated in these GTC, the provisions of the Hungarian Civil Code (Act V of 2013) and other applicable Hungarian law shall apply.",
+            "The Service Provider reserves the right to unilaterally amend these GTC; notice of such amendments will be published on the website.",
+          ],
+        },
+      ],
+      downloadLabel: "Download PDF",
+      backToRegister: "Continue to registration",
+      contact: "Contact",
+      placeholder:
+        "This is a provisional text. The final, lawyer-reviewed version can be updated at any time from the admin panel.",
+    },
+    cookiePolicy: {
+      title: "Cookie Policy",
+      subtitle: "Effective from 1 April 2026 until revocation",
+      intro:
+        "This policy informs you about the types and purposes of cookies used on the kickoffcamps.hu website and your choices regarding them. Tireksz Nonprofit Kft. (hereinafter: Company) only uses cookies based on legal grounds and, where required, your consent.",
+      sections: [
+        {
+          heading: "What is a cookie?",
+          paragraphs: [
+            "A cookie is a small text file stored in your browser by the website you visit. It allows the website to recognise returning visitors, remember settings and measure statistics.",
+          ],
+        },
+        {
+          heading: "What cookies do we use?",
+          paragraphs: [
+            "Strictly necessary cookies: required for the basic operation of the website (e.g. session handling, language selection, storing your cookie consent). These do not require separate consent.",
+            "Analytics cookies: anonymously collect information about how you use the website (e.g. visits, most viewed pages). Activated only with your consent. (Providers: Vercel Analytics, optionally Google Analytics.)",
+            "Marketing / advertising cookies: enable the delivery of targeted ads and measurement of their performance. Activated only with explicit consent. (Possible providers: Google Ads, Meta (Facebook/Instagram) Pixel.)",
+          ],
+        },
+        {
+          heading: "Managing consent",
+          paragraphs: [
+            "On your first visit you can decide which cookies to allow via the cookie bar. Your choice is stored in your browser for 12 months or until you clear it.",
+            "You can change your choice anytime by clicking the \u201CCookie settings\u201D link at the bottom of the page.",
+          ],
+        },
+        {
+          heading: "Disabling cookies in the browser",
+          paragraphs: [
+            "You can always disable cookies in your browser settings. Please note that some features of the website may not work properly in that case.",
+          ],
+        },
+        {
+          heading: "Contact",
+          paragraphs: [
+            "For cookie-related questions please contact kickoff.focitabor@gmail.com. Further information is available in our Privacy Notice.",
+          ],
+        },
+      ],
+      placeholder: "",
+    },
+    cookieBanner: {
+      title: "We use cookies",
+      description:
+        "We always use cookies necessary for the operation of the site. With your consent we also set analytics and marketing cookies to provide a better experience and more relevant content.",
+      acceptAll: "Accept all",
+      rejectAll: "Necessary only",
+      customize: "Customise",
+      save: "Save settings",
+      more: "Detailed policy",
+      categories: {
+        necessary: {
+          name: "Strictly necessary",
+          desc: "Essential for the website to function. Cannot be disabled.",
+        },
+        analytics: {
+          name: "Analytics",
+          desc: "Anonymous measurement of visits and usage.",
+        },
+        marketing: {
+          name: "Marketing",
+          desc: "Targeted ads and measuring their performance.",
+        },
+      },
+      reopen: "Cookie settings",
     },
   },
 };

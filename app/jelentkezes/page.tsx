@@ -474,9 +474,9 @@ function JelentkezesForm() {
                 {f.privacyLink}
               </Link>{" "}
               {f.privacyAnd}{" "}
-              <a href="#" className="text-[#d4a017] underline hover:no-underline">
+              <Link href="/aszf" target="_blank" className="text-[#d4a017] underline hover:no-underline">
                 {f.termsLink}
-              </a>
+              </Link>
               {f.privacyEnd}
             </span>
           </label>
