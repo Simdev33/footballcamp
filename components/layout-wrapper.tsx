@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation"
 import { LanguageProvider } from "@/lib/language-context"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { CookieBanner } from "@/components/cookie-banner"
 
 interface LayoutWrapperProps {
   children: React.ReactNode
@@ -25,6 +26,7 @@ export function LayoutWrapper({ children, dbContent }: LayoutWrapperProps) {
         {children}
         <Footer />
       </div>
+      <CookieBanner />
     </LanguageProvider>
   )
 }
