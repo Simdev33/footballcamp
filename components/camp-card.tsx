@@ -7,7 +7,9 @@ import { useLanguage } from "@/lib/language-context"
 import type { Translations } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 
-export type CampCardCamp = Translations["locations"]["camps"][number]
+export type CampCardCamp = Translations["locations"]["camps"][number] & {
+  slug?: string
+}
 
 type CampCardProps = {
   camp: CampCardCamp
@@ -76,7 +78,7 @@ export function CampCard({ camp, imageSrc, className, priority }: CampCardProps)
             </div>
           </div>
 
-          <Link href="/taborok" className="mt-3 md:mt-4 block">
+          <Link href={camp.slug ? `/taborok/${camp.slug}` : "/taborok"} className="mt-3 md:mt-4 block">
             <span className="flex w-full items-center justify-center gap-2 bg-[#d4a017] px-4 py-3 md:px-6 md:py-3.5 text-xs md:text-sm font-bold text-[#0a1f0a] transition-all duration-300 hover:shadow-[0_0_30px_#d4a01780]">
               {camp.cta}
               <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />

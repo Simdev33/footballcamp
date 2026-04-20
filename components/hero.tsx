@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/carousel"
 import { CampCard } from "@/components/camp-card"
 import { cn } from "@/lib/utils"
+import { useDynamicCamps } from "@/lib/use-dynamic-camps"
 const AUTOPLAY_MS = 7000
 const CDN = "https://focis.b-cdn.net"
 
@@ -20,7 +21,7 @@ const CAMP_IMAGES = [
 
 export function Hero() {
   const { t } = useLanguage()
-  const camps = t.locations.camps
+  const { camps } = useDynamicCamps()
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
 
@@ -178,7 +179,7 @@ export function Hero() {
                       <div className="box-border pb-1 pl-4 pr-6 pt-7 md:pl-5 md:pr-7 md:pt-8">
                         <div className="relative isolate">
                           <div className="relative z-10">
-                            <CampCard camp={camp} imageSrc={CAMP_IMAGES[index] ?? CAMP_IMAGES[0]} priority={index === 0} />
+                            <CampCard camp={camp} imageSrc={camp.imageUrl || CAMP_IMAGES[index] || CAMP_IMAGES[0]} priority={index === 0} />
                           </div>
                           <div
                             className="pointer-events-none absolute inset-0 -z-10 translate-x-2.5 -translate-y-2.5 border-2 border-[#d4a017]/35 md:translate-x-3 md:-translate-y-3"

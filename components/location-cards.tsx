@@ -2,17 +2,17 @@
 
 import { useLanguage } from "@/lib/language-context"
 import { CampCard } from "@/components/camp-card"
+import { useDynamicCamps } from "@/lib/use-dynamic-camps"
 
-const CAMP_IMAGES = [
-  "/benfica-camp.png",
-] as const
+const FALLBACK_IMAGE = "/benfica-camp.png"
 
 export function LocationCards() {
   const { t } = useLanguage()
+  const { camps } = useDynamicCamps()
 
-  const locations = t.locations.camps.map((camp, index) => ({
+  const locations = camps.map((camp) => ({
     ...camp,
-    image: CAMP_IMAGES[index] ?? CAMP_IMAGES[0],
+    image: camp.imageUrl || FALLBACK_IMAGE,
   }))
 
   return (
