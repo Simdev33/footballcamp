@@ -519,7 +519,7 @@ export const translations = {
           heading: "Hozzájárulás kezelése",
           paragraphs: [
             "A weboldal első látogatásakor egy cookie-sávban döntheti el, hogy milyen cookie-kat enged. A választása a böngészőjében tárolódik 12 hónapig, vagy amíg törli.",
-            "Döntését bármikor módosíthatja az oldal alján található „Cookie-beállítások" linkre kattintva.",
+            "Döntését bármikor módosíthatja az oldal alján található \u201ECookie-beállítások\u201D linkre kattintva.",
           ],
         },
         {
