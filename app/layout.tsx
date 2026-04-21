@@ -3,8 +3,9 @@ import { Playfair_Display, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import Script from 'next/script'
 import { LayoutWrapper } from '@/components/layout-wrapper'
-import { GoogleTag } from '@/components/google-tag'
 import { getSiteContent } from '@/lib/content'
+
+const GOOGLE_ADS_ID = 'AW-18106758812'
 import './globals.css'
 
 const playfair = Playfair_Display({ 
@@ -64,12 +65,18 @@ gtag('consent', 'default', {
   functionality_storage: 'granted',
   security_storage: 'granted',
   wait_for_update: 500,
-});`}
+});
+gtag('js', new Date());
+gtag('config', '${GOOGLE_ADS_ID}', { allow_enhanced_conversions: true });`}
         </Script>
+        <Script
+          id="gtag-js"
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+        />
       </head>
       <body className={`${playfair.variable} ${inter.variable} font-sans antialiased`}>
         <LayoutWrapper dbContent={dbContent}>{children}</LayoutWrapper>
-        <GoogleTag />
         <Analytics />
       </body>
     </html>
