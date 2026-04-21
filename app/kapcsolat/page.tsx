@@ -1,16 +1,12 @@
 "use client"
 
-import { Mail, Phone, Facebook, ArrowRight } from "lucide-react"
+import { Mail, Phone, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
 
 const CONTACT_CARDS = [
   { icon: Mail, label: "Email", value: "kickoff.focitabor@gmail.com", href: "mailto:kickoff.focitabor@gmail.com", color: "bg-blue-600" },
-  { icon: Phone, label: "Telefon", value: "+36 30 123 4567", href: "tel:+36301234567", color: "bg-emerald-600" },
-]
-
-const SOCIALS = [
-  { icon: Facebook, label: "Facebook", href: "https://www.facebook.com/kickoffelite", color: "hover:bg-[#1877F2]" },
+  { icon: Phone, label: "Telefon", value: "+36 30 755 1110", href: "tel:+36307551110", color: "bg-emerald-600" },
 ]
 
 export default function KapcsolatPage() {
@@ -73,28 +69,6 @@ export default function KapcsolatPage() {
               kickoff.focitabor@gmail.com
               <ArrowRight className="w-6 h-6" />
             </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Social Media */}
-      <section className="py-16 bg-[#0a1f0a]">
-        <div className="max-w-[700px] mx-auto px-6 md:px-12 text-center">
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-white mb-3">
-            Kövess a <span className="text-[#d4a017]">közösségi médiában!</span>
-          </h2>
-          <p className="text-white/50 text-sm mb-10">Kövesd oldalunkat a legfrissebb hírekért, képekért és videókért.</p>
-          <div className="flex justify-center gap-5">
-            {SOCIALS.map((social) => (
-              <a
-                key={social.label}
-                href={social.href}
-                className={`group flex items-center gap-3 px-8 py-4 bg-white/10 border border-white/10 text-white font-medium transition-all duration-300 ${social.color} hover:text-white hover:border-transparent`}
-              >
-                <social.icon className="w-6 h-6" />
-                <span className="text-sm">{social.label}</span>
-              </a>
-            ))}
           </div>
         </div>
       </section>

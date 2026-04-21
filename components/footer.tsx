@@ -1,28 +1,13 @@
 "use client"
 
-import { Input } from "@/components/ui/input"
-import { Facebook, Instagram, Youtube, ArrowRight, CheckCircle, Mail, Cookie } from "lucide-react"
+import { Cookie, Mail, Phone } from "lucide-react"
 import { reopenCookieBanner } from "@/components/cookie-banner"
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
 import { useLanguage } from "@/lib/language-context"
-
-const socialLinks = [
-  { icon: Facebook, href: "#", label: "Facebook" },
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Youtube, href: "#", label: "YouTube" },
-]
 
 export function Footer() {
   const { t } = useLanguage()
-  const [email, setEmail] = useState("")
-  const [subscribed, setSubscribed] = useState(false)
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (email) setSubscribed(true)
-  }
 
   return (
     <footer className="relative bg-[#0a1f0a] text-white overflow-hidden">
@@ -36,11 +21,12 @@ export function Footer() {
         <line x1="400" y1="0" x2="400" y2="400" stroke="white" strokeWidth="2" />
         <circle cx="400" cy="200" r="60" stroke="white" strokeWidth="2" fill="none" />
       </svg>
-      <div className="relative z-10 max-w-[1800px] mx-auto px-4 md:px-12 lg:px-24 py-10 lg:py-20">
+
+      <div className="relative z-10 max-w-[1800px] mx-auto px-4 md:px-12 lg:px-24 py-10 lg:py-16">
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-8">
           {/* Brand */}
-          <div className="lg:col-span-5">
-            <Link href="/" className="flex items-center mb-8">
+          <div className="lg:col-span-6">
+            <Link href="/" className="flex items-center mb-6">
               <Image
                 src="/kickoff-logo.png"
                 alt="Kickoff Elite Football Camps"
@@ -50,32 +36,29 @@ export function Footer() {
                 loading="lazy"
               />
             </Link>
-            <p className="text-white/60 max-w-sm leading-relaxed mb-6 text-sm">{t.footer.desc}</p>
-            <a
-              href="mailto:kickoff.focitabor@gmail.com"
-              className="inline-flex items-center gap-2 text-white/80 hover:text-[#d4a017] text-sm mb-8 transition-colors"
-            >
-              <Mail className="w-4 h-4" />
-              kickoff.focitabor@gmail.com
-            </a>
-            <div className="flex gap-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  className="w-10 h-10 bg-white/10 flex items-center justify-center text-white/60 hover:bg-[#d4a017] hover:text-[#0a1f0a] transition-all duration-300"
-                  aria-label={social.label}
-                >
-                  <social.icon className="w-5 h-5" />
-                </a>
-              ))}
+            <p className="text-white/60 max-w-md leading-relaxed mb-6 text-sm">{t.footer.desc}</p>
+            <div className="flex flex-col gap-2">
+              <a
+                href="mailto:kickoff.focitabor@gmail.com"
+                className="inline-flex items-center gap-2 text-white/80 hover:text-[#d4a017] text-sm transition-colors"
+              >
+                <Mail className="w-4 h-4" />
+                kickoff.focitabor@gmail.com
+              </a>
+              <a
+                href="tel:+36307551110"
+                className="inline-flex items-center gap-2 text-white/80 hover:text-[#d4a017] text-sm transition-colors"
+              >
+                <Phone className="w-4 h-4" />
+                +36 30 755 1110
+              </a>
             </div>
           </div>
 
           {/* Links */}
-          <div className="lg:col-span-3 lg:col-start-7">
+          <div className="lg:col-span-6 lg:col-start-7 lg:pl-10">
             <h3 className="text-xs text-[#d4a017] tracking-[0.3em] uppercase mb-6 font-medium">{t.footer.navTitle}</h3>
-            <ul className="space-y-3">
+            <ul className="grid grid-cols-2 gap-x-6 gap-y-3">
               {t.footer.links.map((link) => (
                 <li key={link.label}>
                   <Link href={link.href} className="text-white/60 hover:text-white transition-colors inline-flex items-center gap-2 text-sm">
@@ -95,36 +78,13 @@ export function Footer() {
               </li>
             </ul>
           </div>
-
-          {/* Newsletter */}
-          <div className="lg:col-span-4">
-            <h3 className="text-xs text-[#d4a017] tracking-[0.3em] uppercase mb-6 font-medium">{t.footer.newsletterTitle}</h3>
-            <p className="text-white/60 mb-6 text-sm">{t.footer.newsletterDesc}</p>
-            {subscribed ? (
-              <div className="flex items-center gap-4 p-6 bg-[#d4a017]/10 text-[#d4a017] border border-[#d4a017]/30">
-                <CheckCircle className="w-6 h-6" />
-                <span className="font-semibold text-base">{t.footer.subscribed}</span>
-              </div>
-            ) : (
-              <form onSubmit={handleSubscribe} className="flex">
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t.footer.emailPlaceholder}
-                  className="bg-white/10 border-white/20 focus:border-[#d4a017] h-14 flex-1 rounded-none text-base text-white placeholder:text-white/40"
-                  required
-                />
-                <button type="submit" className="px-6 h-14 bg-[#d4a017] text-[#0a1f0a] font-semibold hover:bg-[#d4a017]/90 transition-colors">
-                  <ArrowRight className="w-6 h-6" />
-                </button>
-              </form>
-            )}
-          </div>
         </div>
 
-        {/* Scoreboard-style copyright */}
-        <div className="mt-14 pt-6 border-t border-white/10">
+        {/* Legal / imprint line */}
+        <div className="mt-12 pt-6 border-t border-white/10">
+          <p className="text-white/40 text-xs leading-relaxed mb-4">
+            Tireksz Nonprofit Kft. · 6728 Szeged, Felsőnyomás út 47. · Cégjegyzékszám: 06-09-028994 · Adószám: 32342651-1-06
+          </p>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 px-4 py-3 md:px-6 md:py-4 bg-[#0d260d] border border-[#d4a017]/15 rounded-lg">
             <div className="flex items-center gap-3">
               <svg viewBox="0 0 24 24" className="w-4 h-4 text-[#d4a017]/50" fill="none">

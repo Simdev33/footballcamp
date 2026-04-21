@@ -3,6 +3,7 @@ import { Playfair_Display, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import Script from 'next/script'
 import { LayoutWrapper } from '@/components/layout-wrapper'
+import { GoogleTag } from '@/components/google-tag'
 import { getSiteContent } from '@/lib/content'
 import './globals.css'
 
@@ -68,6 +69,7 @@ gtag('consent', 'default', {
       </head>
       <body className={`${playfair.variable} ${inter.variable} font-sans antialiased`}>
         <LayoutWrapper dbContent={dbContent}>{children}</LayoutWrapper>
+        <GoogleTag />
         <Analytics />
       </body>
     </html>

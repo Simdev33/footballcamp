@@ -8,6 +8,7 @@ import { Send, CheckCircle, Loader2, Plus, Trash2, HeartPulse, ChevronDown, Chev
 import { useSearchParams } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { getHealthDeclaration } from "@/lib/health-declaration"
+import { fireApplyConversion, storePendingConversion } from "@/lib/google-ads-conversion"
 
 interface Camp {
   id: string
@@ -75,6 +76,12 @@ function JelentkezesForm() {
       .catch(() => setCamps([]))
   }, [])
 
+  useEffect(() => {
+    if (success) {
+      void fireApplyConversion()
+    }
+  }, [success])
+
   if (success) {
     return (
       <section className="py-20 bg-background">
@@ -122,6 +129,10 @@ function JelentkezesForm() {
     }
 
     setLoading(true)
+    storePendingConversion({
+      email: parent.parentEmail,
+      phone: parent.parentPhone,
+    })
     try {
       const res = await fetch("/api/apply", {
         method: "POST",
@@ -150,6 +161,9 @@ function JelentkezesForm() {
   return (
     <section className="py-14 md:py-20 bg-background">
       <div className="max-w-2xl mx-auto px-6">
+        <div className="mb-8 p-5 md:p-6 border-l-4 border-[#d4a017] bg-[#d4a017]/5 rounded-md">
+          <p className="text-[15px] leading-relaxed text-foreground">{f.intro}</p>
+        </div>
         <form
           onSubmit={handleSubmit}
           className="space-y-10 bg-white p-6 md:p-10 border border-border/50 shadow-sm rounded-lg"
