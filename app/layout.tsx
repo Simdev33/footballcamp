@@ -25,20 +25,13 @@ export const metadata: Metadata = {
   description: 'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény a legjobb európai akadémiák módszereivel.',
   icons: {
     icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
+      { url: '/kickoff-logo.png', type: 'image/png', sizes: '512x512' },
+      { url: '/kickoff-logo.png', type: 'image/png', sizes: '192x192' },
+      { url: '/kickoff-logo.png', type: 'image/png', sizes: '32x32' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
     ],
-    apple: '/apple-icon.png',
+    shortcut: '/kickoff-logo.png',
+    apple: [{ url: '/kickoff-logo.png', sizes: '180x180', type: 'image/png' }],
   },
 }
 
