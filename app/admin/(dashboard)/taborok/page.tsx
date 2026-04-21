@@ -2,6 +2,7 @@ import { db } from "@/lib/db"
 import { deleteCamp } from "@/lib/actions"
 import Link from "next/link"
 import { Plus, MapPin, Calendar, Users, Pencil, Trash2 } from "lucide-react"
+import { formatPrice } from "@/lib/pricing"
 
 export const dynamic = 'force-dynamic'
 
@@ -47,9 +48,12 @@ export default async function AdminCampsPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-[#d4a017] font-bold">{camp.earlyBirdPrice}</span>
-                <span className="text-white/30 line-through text-sm">{camp.price}</span>
+              <div className="flex items-center gap-2 mb-4 flex-wrap">
+                <span className="text-[#d4a017] font-bold">{formatPrice(camp.earlyBirdPriceHuf, "HUF") || camp.earlyBirdPrice}</span>
+                <span className="text-white/30 line-through text-sm">{formatPrice(camp.priceHuf, "HUF") || camp.price}</span>
+                {camp.priceEur > 0 && (
+                  <span className="text-white/40 text-xs">/ {formatPrice(camp.earlyBirdPriceEur || camp.priceEur, "EUR")}</span>
+                )}
                 <span className="ml-auto text-xs text-white/30">{camp._count.applications} jelentkező</span>
               </div>
 

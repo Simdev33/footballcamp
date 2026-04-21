@@ -4,6 +4,7 @@ import { db } from "@/lib/db"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { hash } from "bcryptjs"
+import { formatPrice } from "@/lib/pricing"
 
 // ─── Camps ───
 
@@ -22,6 +23,42 @@ function parseJson(formData: FormData, key: string) {
   try { return JSON.parse(raw) } catch { return undefined }
 }
 
+function parseIntField(formData: FormData, key: string, fallback = 0): number {
+  const raw = formData.get(key)
+  if (raw == null || raw === "") return fallback
+  const n = Number(raw)
+  return Number.isFinite(n) ? Math.round(n) : fallback
+}
+
+function parseDateField(formData: FormData, key: string): Date | null {
+  const raw = formData.get(key) as string
+  if (!raw) return null
+  const d = new Date(raw)
+  return isNaN(d.getTime()) ? null : d
+}
+
+function buildCampPriceData(formData: FormData) {
+  const priceHuf = parseIntField(formData, "priceHuf")
+  const priceEur = parseIntField(formData, "priceEur")
+  const earlyBirdPriceHuf = parseIntField(formData, "earlyBirdPriceHuf")
+  const earlyBirdPriceEur = parseIntField(formData, "earlyBirdPriceEur")
+  const earlyBirdUntil = parseDateField(formData, "earlyBirdUntil")
+  const depositPercent = parseIntField(formData, "depositPercent", 40)
+
+  // Keep legacy string columns in sync so the public site (which still reads
+  // `price` / `earlyBirdPrice`) stays on the same values.
+  return {
+    priceHuf,
+    priceEur,
+    earlyBirdPriceHuf,
+    earlyBirdPriceEur,
+    earlyBirdUntil,
+    depositPercent,
+    price: formatPrice(priceHuf, "HUF"),
+    earlyBirdPrice: formatPrice(earlyBirdPriceHuf, "HUF"),
+  }
+}
+
 export async function createCamp(formData: FormData) {
   const city = formData.get("city") as string
   await db.camp.create({
@@ -30,8 +67,7 @@ export async function createCamp(formData: FormData) {
       city,
       venue: formData.get("venue") as string,
       dates: formData.get("dates") as string,
-      price: formData.get("price") as string,
-      earlyBirdPrice: formData.get("earlyBirdPrice") as string,
+      ...buildCampPriceData(formData),
       totalSpots: Number(formData.get("totalSpots")),
       remainingSpots: Number(formData.get("totalSpots")),
       active: formData.get("active") === "on",
@@ -60,8 +96,7 @@ export async function updateCamp(id: string, formData: FormData) {
       city: formData.get("city") as string,
       venue: formData.get("venue") as string,
       dates: formData.get("dates") as string,
-      price: formData.get("price") as string,
-      earlyBirdPrice: formData.get("earlyBirdPrice") as string,
+      ...buildCampPriceData(formData),
       totalSpots: Number(formData.get("totalSpots")),
       remainingSpots: Number(formData.get("remainingSpots")),
       active: formData.get("active") === "on",

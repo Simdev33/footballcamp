@@ -16,8 +16,12 @@ type CampData = {
   city: string
   venue: string
   dates: string
-  price: string
-  earlyBirdPrice: string
+  priceHuf: number
+  priceEur: number
+  earlyBirdPriceHuf: number
+  earlyBirdPriceEur: number
+  earlyBirdUntil: Date | string | null
+  depositPercent: number
   totalSpots: number
   remainingSpots: number
   active: boolean
@@ -32,6 +36,13 @@ type CampData = {
   schedule: ScheduleItem[] | null
   coaches: CoachItem[] | null
   faq: FaqItem[] | null
+}
+
+function toDateInput(value: Date | string | null | undefined): string {
+  if (!value) return ""
+  const d = typeof value === "string" ? new Date(value) : value
+  if (isNaN(d.getTime())) return ""
+  return d.toISOString().slice(0, 10)
 }
 
 const DEFAULT_INCLUDES = [
@@ -126,8 +137,18 @@ export function CampForm({ camp }: { camp?: CampData }) {
           <Field label="Datumok" name="dates" required defaultValue={camp?.dates} placeholder="pl. 2026. julius 7-11." />
 
           <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Ar" name="price" required defaultValue={camp?.price} placeholder="pl. 159.000 Ft" />
-            <Field label="Early Bird ar" name="earlyBirdPrice" required defaultValue={camp?.earlyBirdPrice} placeholder="pl. 139.000 Ft" />
+            <Field label="Ar (HUF)" name="priceHuf" type="number" required defaultValue={String(camp?.priceHuf || "")} placeholder="159000" />
+            <Field label="Early Bird ar (HUF)" name="earlyBirdPriceHuf" type="number" required defaultValue={String(camp?.earlyBirdPriceHuf || "")} placeholder="139000" />
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Field label="Ar (EUR)" name="priceEur" type="number" defaultValue={String(camp?.priceEur || "")} placeholder="pl. 420" />
+            <Field label="Early Bird ar (EUR)" name="earlyBirdPriceEur" type="number" defaultValue={String(camp?.earlyBirdPriceEur || "")} placeholder="pl. 370" />
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Field label="Early Bird lejarati datum" name="earlyBirdUntil" type="date" defaultValue={toDateInput(camp?.earlyBirdUntil)} placeholder="" />
+            <Field label="Foglalo % (reszletfizetesnel)" name="depositPercent" type="number" defaultValue={String(camp?.depositPercent || 40)} placeholder="40" />
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
