@@ -76,9 +76,9 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   const paymentMode = (session.metadata?.paymentMode as "full" | "deposit" | "remainder") || "full"
   const currency = (session.metadata?.currency as "HUF" | "EUR") || "HUF"
   const paidAmountTotal = session.amount_total ?? 0
-  // For EUR the amount is in cents — normalize to human-visible EUR so our
-  // DB "amount" fields stay in the same unit as Camp.priceEur.
-  const paidAmount = currency === "EUR" ? Math.round(paidAmountTotal / 100) : paidAmountTotal
+  // Stripe returns amounts in the smallest currency unit. Both HUF (special
+  // two-decimal case) and EUR are ×100 compared to the human-visible value.
+  const paidAmount = Math.round(paidAmountTotal / 100)
 
   const paymentIntentId = typeof session.payment_intent === "string" ? session.payment_intent : session.payment_intent?.id ?? null
   const customerId = typeof session.customer === "string" ? session.customer : session.customer?.id ?? null

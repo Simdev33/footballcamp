@@ -77,9 +77,19 @@ export function formatPrice(amount: number, currency: Currency): string {
 
 /**
  * Converts a price to the Stripe unit amount.
- *  - HUF: zero-decimal currency, unit_amount == forints
- *  - EUR: Stripe expects cents, so multiply by 100
+ *
+ * Stripe's "special case" currencies (HUF, TWD, UGX) are internally treated as
+ * two-decimal, but only whole-unit amounts are accepted — we must multiply by
+ * 100 AND the result must be a multiple of 100 (no fractional forints).
+ * EUR is a regular two-decimal currency, so cents = amount * 100.
+ *
+ * See: https://docs.stripe.com/currencies#special-cases
  */
 export function toStripeUnitAmount(amount: number, currency: Currency): number {
-  return currency === "EUR" ? Math.round(amount * 100) : Math.round(amount)
+  if (currency === "HUF") {
+    // Round to whole forints first, then scale to the two-decimal representation.
+    return Math.round(amount) * 100
+  }
+  // EUR (and any other normal two-decimal currency)
+  return Math.round(amount * 100)
 }
