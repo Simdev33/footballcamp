@@ -199,17 +199,7 @@ export const translations = {
       earlyBirdLabel: "Early bird ár május 31-ig",
       earlyBirdBadge: "KORAI ÁR",
       spots: "fő",
-      camps: [
-        {
-          city: "Algyő (Szeged)",
-          venue: "Algyői Sportközpont",
-          dates: "2026. július 6-10.",
-          price: "159.000 Ft",
-          earlyBird: "139.000 Ft",
-          spots: "40",
-          cta: "Érdekel a tábor",
-        },
-      ],
+      camps: [],
     },
     limitedSpots: {
       title: "Korlátozott létszám, biztosítsd a helyed időben!",
@@ -820,17 +810,7 @@ export const translations = {
       earlyBirdLabel: "Early bird price until May 31",
       earlyBirdBadge: "EARLY BIRD",
       spots: "spots",
-      camps: [
-        {
-          city: "Algyő (Szeged)",
-          venue: "Algyő Sports Center",
-          dates: "July 6-10, 2026",
-          price: "€429",
-          earlyBird: "€379",
-          spots: "40",
-          cta: "I'm interested in this camp",
-        },
-      ],
+      camps: [],
     },
     limitedSpots: {
       title: "Limited spots – secure your place in time!",
