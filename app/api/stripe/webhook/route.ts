@@ -71,7 +71,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     return
   }
 
-  const paymentMode = (session.metadata?.paymentMode as "full" | "deposit") || "full"
+  const paymentMode = (session.metadata?.paymentMode as "full" | "deposit" | "remainder") || "full"
   const currency = (session.metadata?.currency as "HUF" | "EUR") || "HUF"
   const paidAmountTotal = session.amount_total ?? 0
   // For EUR the amount is in cents — normalize to human-visible EUR so our
@@ -91,8 +91,19 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   // amounts live in totalAmount / depositAmount).
   await db.$transaction(async (tx) => {
     for (const app of applications) {
-      const perAppExpected = paymentMode === "deposit" ? app.depositAmount : app.totalAmount
-      const already = paymentMode === "deposit" ? app.depositPaidAmount : app.depositPaidAmount + app.remainderPaidAmount
+      const remainderExpected = Math.max(0, app.totalAmount - app.depositAmount)
+      const perAppExpected =
+        paymentMode === "deposit"
+          ? app.depositAmount
+          : paymentMode === "remainder"
+            ? remainderExpected
+            : app.totalAmount
+      const already =
+        paymentMode === "deposit"
+          ? app.depositPaidAmount
+          : paymentMode === "remainder"
+            ? app.remainderPaidAmount
+            : app.depositPaidAmount + app.remainderPaidAmount
       if (already >= perAppExpected && perAppExpected > 0) {
         // Already settled for this mode — skip duplicate webhook delivery.
         continue
@@ -110,6 +121,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         data.remainderPaidAmount = Math.max(0, (app.totalAmount || perAppExpected) - (app.depositAmount || 0))
         data.depositPaidAt = app.depositPaidAt ?? now
         data.fullyPaidAt = now
+      } else if (paymentMode === "remainder") {
+        data.paymentStatus = "FULLY_PAID"
+        data.remainderPaidAmount = perAppExpected
+        data.fullyPaidAt = now
       } else {
         data.paymentStatus = "DEPOSIT_PAID"
         data.depositPaidAmount = perAppExpected
@@ -121,7 +136,12 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       await tx.paymentEvent.create({
         data: {
           applicationId: app.id,
-          type: paymentMode === "deposit" ? "deposit_paid" : "full_paid",
+          type:
+            paymentMode === "deposit"
+              ? "deposit_paid"
+              : paymentMode === "remainder"
+                ? "remainder_paid"
+                : "full_paid",
           amount: perAppExpected,
           currency,
           stripeId: session.id,

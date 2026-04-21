@@ -1,6 +1,9 @@
 import { db } from "@/lib/db"
 import Link from "next/link"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { PAYMENT_STATUS_CONFIG } from "@/lib/payment-status"
+import { formatPrice } from "@/lib/pricing"
+import type { PaymentStatus } from "@prisma/client"
 
 export const dynamic = "force-dynamic"
 
@@ -48,6 +51,7 @@ export default async function AdminApplicationsPage({ searchParams }: { searchPa
                 <th className="text-left px-4 py-3 text-white/40 text-xs uppercase tracking-wider font-medium">Tabor</th>
                 <th className="text-left px-4 py-3 text-white/40 text-xs uppercase tracking-wider font-medium">Szul. datum</th>
                 <th className="text-left px-4 py-3 text-white/40 text-xs uppercase tracking-wider font-medium">Statusz</th>
+                <th className="text-left px-4 py-3 text-white/40 text-xs uppercase tracking-wider font-medium">Fizetes</th>
                 <th className="text-left px-4 py-3 text-white/40 text-xs uppercase tracking-wider font-medium">Datum</th>
                 <th className="px-4 py-3"></th>
               </tr>
@@ -55,6 +59,9 @@ export default async function AdminApplicationsPage({ searchParams }: { searchPa
             <tbody className="divide-y divide-white/5">
               {applications.map((app) => {
                 const status = STATUS_CONFIG[app.status] || STATUS_CONFIG.new
+                const pay = PAYMENT_STATUS_CONFIG[app.paymentStatus as PaymentStatus]
+                const currency = (app.currency as "HUF" | "EUR") || "HUF"
+                const paid = app.depositPaidAmount + app.remainderPaidAmount
                 return (
                   <tr key={app.id} className="hover:bg-white/5 transition-colors">
                     <td className="px-4 py-3">
@@ -71,6 +78,14 @@ export default async function AdminApplicationsPage({ searchParams }: { searchPa
                     <td className="px-4 py-3 text-white/50">{app.childBirthDate.toLocaleDateString("hu-HU")}</td>
                     <td className="px-4 py-3">
                       <span className={`text-xs px-2 py-1 font-medium ${status.class}`}>{status.label}</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`text-xs px-2 py-1 font-medium ${pay.class}`}>{pay.label}</span>
+                      {app.totalAmount > 0 && (
+                        <div className="text-[10px] text-white/40 mt-1">
+                          {formatPrice(paid, currency)} / {formatPrice(app.totalAmount, currency)}
+                        </div>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-white/30 text-xs">{app.createdAt.toLocaleDateString("hu-HU")}</td>
                     <td className="px-4 py-3">

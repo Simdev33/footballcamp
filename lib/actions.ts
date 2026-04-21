@@ -160,6 +160,93 @@ export async function updateApplicationNotes(id: string, notes: string) {
   revalidatePath("/admin/jelentkezesek")
 }
 
+export async function sendRemainderLink(id: string, opts: { send: boolean }) {
+  const { stripe } = await import("@/lib/stripe")
+  const { toStripeUnitAmount, formatPrice: fp } = await import("@/lib/pricing")
+  const { sendEmail, renderRemainderEmail } = await import("@/lib/email")
+
+  const app = await db.application.findUnique({ where: { id }, include: { camp: true } })
+  if (!app) return { ok: false, error: "Jelentkezés nem található." }
+  if (!app.isInstallment) return { ok: false, error: "Nem részletfizetéses." }
+  if (app.paymentStatus === "FULLY_PAID") return { ok: false, error: "Már ki van fizetve." }
+
+  const currency = (app.currency as "HUF" | "EUR") || "HUF"
+  const remainder = Math.max(0, app.totalAmount - app.depositPaidAmount)
+  if (remainder <= 0) return { ok: false, error: "Nincs hátralévő összeg." }
+
+  const origin = process.env.NEXT_PUBLIC_SITE_URL || "https://kickoffcamps.hu"
+
+  const session = await stripe.checkout.sessions.create({
+    mode: "payment",
+    payment_method_types: currency === "EUR" ? ["card", "sepa_debit"] : ["card"],
+    customer_email: app.parentEmail,
+    locale: "hu",
+    line_items: [
+      {
+        price_data: {
+          currency: currency.toLowerCase(),
+          product_data: {
+            name: `Hátralévő összeg - ${app.camp.city} - ${app.childName}`,
+            description: `${app.camp.venue} • ${app.camp.dates}`,
+          },
+          unit_amount: toStripeUnitAmount(remainder, currency),
+        },
+        quantity: 1,
+      },
+    ],
+    success_url: `${origin}/jelentkezes/sikeres?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${origin}/`,
+    metadata: { applicationIds: app.id, paymentMode: "remainder", currency },
+    payment_intent_data: {
+      metadata: { applicationIds: app.id, paymentMode: "remainder", currency },
+    },
+  })
+
+  await db.application.update({
+    where: { id: app.id },
+    data: {
+      stripeRemainderPaymentLinkId: session.id,
+      stripeRemainderPaymentLinkUrl: session.url,
+    },
+  })
+
+  await db.paymentEvent.create({
+    data: {
+      applicationId: app.id,
+      type: "link_sent",
+      amount: remainder,
+      currency,
+      stripeId: session.id,
+      note: "Hátralévő link (admin)",
+    },
+  })
+
+  let emailed = false
+  let emailError: string | undefined
+  if (opts.send && session.url) {
+    const { subject, html } = renderRemainderEmail({
+      parentName: app.parentName,
+      childName: app.childName,
+      campCity: app.camp.city,
+      campDates: app.camp.dates,
+      amount: fp(remainder, currency),
+      paymentUrl: session.url,
+    })
+    const r = await sendEmail({ to: app.parentEmail, subject, html, replyTo: "info@kickoffcamps.hu" })
+    emailed = r.sent
+    emailError = r.error
+    if (emailed) {
+      await db.application.update({
+        where: { id: app.id },
+        data: { remainderReminderSentAt: new Date() },
+      })
+    }
+  }
+
+  revalidatePath(`/admin/jelentkezesek/${id}`)
+  return { ok: true, url: session.url, emailed, emailError, amount: remainder, currency }
+}
+
 // ─── News ───
 
 function slugify(text: string): string {
