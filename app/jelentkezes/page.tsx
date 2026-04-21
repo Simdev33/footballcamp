@@ -4,11 +4,12 @@ import { Suspense, useState, useEffect } from "react"
 import Link from "next/link"
 import { SubpageHero } from "@/components/subpage-hero"
 import { SizeChart, SIZE_OPTIONS } from "@/components/size-chart"
-import { Send, CheckCircle, Loader2, Plus, Trash2, HeartPulse, ChevronDown, ChevronUp } from "lucide-react"
+import { Send, Loader2, Plus, Trash2, HeartPulse, ChevronDown, ChevronUp } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { getHealthDeclaration } from "@/lib/health-declaration"
-import { fireApplyConversion, storePendingConversion } from "@/lib/google-ads-conversion"
+import { storePendingConversion } from "@/lib/google-ads-conversion"
+import { formatPrice, splitInstallment, type Currency } from "@/lib/pricing"
 
 interface Camp {
   id: string
@@ -17,6 +18,14 @@ interface Camp {
   dates: string
   earlyBirdPrice: string
   remainingSpots: number
+  priceHuf: number
+  priceEur: number
+  earlyBirdPriceHuf: number
+  earlyBirdPriceEur: number
+  earlyBirdUntil: string | null
+  depositPercent: number
+  effectiveHuf: number
+  effectiveEur: number
 }
 
 interface ChildForm {
@@ -49,7 +58,7 @@ const labelClass = "block text-sm font-medium text-foreground mb-1.5"
 
 function JelentkezesForm() {
   const searchParams = useSearchParams()
-  const success = searchParams.get("success")
+  const canceled = searchParams.get("canceled")
   const { t, locale } = useLanguage()
   const f = t.applyForm
   const hd = getHealthDeclaration(locale)
@@ -68,6 +77,8 @@ function JelentkezesForm() {
   const [children, setChildren] = useState<ChildForm[]>([emptyChild()])
   const [privacyAccepted, setPrivacyAccepted] = useState(false)
   const [healthAccepted, setHealthAccepted] = useState(false)
+  const [currency, setCurrency] = useState<Currency>("HUF")
+  const [paymentMode, setPaymentMode] = useState<"full" | "deposit">("full")
 
   useEffect(() => {
     fetch("/api/camps")
@@ -76,23 +87,20 @@ function JelentkezesForm() {
       .catch(() => setCamps([]))
   }, [])
 
-  useEffect(() => {
-    if (success) {
-      void fireApplyConversion()
-    }
-  }, [success])
+  const campMap = new Map(camps.map((c) => [c.id, c]))
+  const selectedCamps = children
+    .map((child) => campMap.get(child.campId))
+    .filter((c): c is Camp => Boolean(c))
 
-  if (success) {
-    return (
-      <section className="py-20 bg-background">
-        <div className="max-w-lg mx-auto px-6 text-center">
-          <CheckCircle className="w-16 h-16 text-emerald-500 mx-auto mb-6" />
-          <h2 className="font-serif text-2xl font-bold text-foreground mb-4">{f.successTitle}</h2>
-          <p className="text-muted-foreground">{f.successDesc}</p>
-        </div>
-      </section>
-    )
-  }
+  const effectivePerChild = selectedCamps.map((c) => (currency === "HUF" ? c.effectiveHuf : c.effectiveEur))
+  const hasEurPrices = selectedCamps.every((c) => c.priceEur > 0)
+  const totalFull = effectivePerChild.reduce((s, v) => s + v, 0)
+  const totalDeposit = selectedCamps.reduce((s, c) => {
+    const amount = currency === "HUF" ? c.effectiveHuf : c.effectiveEur
+    return s + splitInstallment(amount, c.depositPercent).deposit
+  }, 0)
+  const dueNow = paymentMode === "full" ? totalFull : totalDeposit
+  const remainderAfterDeposit = totalFull - totalDeposit
 
   const updateChild = (index: number, patch: Partial<ChildForm>) => {
     setChildren((prev) => prev.map((c, i) => (i === index ? { ...c, ...patch } : c)))
@@ -128,6 +136,11 @@ function JelentkezesForm() {
       }
     }
 
+    if (currency === "EUR" && !hasEurPrices) {
+      setError("A kiválasztott táborok egyikéhez nincs EUR ár beállítva. Válassz HUF-ot.")
+      return
+    }
+
     setLoading(true)
     storePendingConversion({
       email: parent.parentEmail,
@@ -151,7 +164,21 @@ function JelentkezesForm() {
         setLoading(false)
         return
       }
-      window.location.href = "/jelentkezes?success=true"
+      const { applicationIds } = (await res.json()) as { applicationIds: string[] }
+
+      const checkoutRes = await fetch("/api/stripe/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ applicationIds, currency, paymentMode }),
+      })
+      if (!checkoutRes.ok) {
+        const text = await checkoutRes.text()
+        setError(text || "Nem sikerült a fizetés elindítása.")
+        setLoading(false)
+        return
+      }
+      const { url } = (await checkoutRes.json()) as { url: string }
+      window.location.href = url
     } catch {
       setError(f.errNetwork)
       setLoading(false)
@@ -164,6 +191,11 @@ function JelentkezesForm() {
         <div className="mb-8 p-5 md:p-6 border-l-4 border-[#d4a017] bg-[#d4a017]/5 rounded-md">
           <p className="text-[15px] leading-relaxed text-foreground">{f.intro}</p>
         </div>
+        {canceled && (
+          <div className="mb-6 p-4 border border-amber-300 bg-amber-50 text-amber-800 text-sm rounded-md">
+            A fizetés megszakadt. Próbáld újra — a jelentkezésed addig is rögzítve van.
+          </div>
+        )}
         <form
           onSubmit={handleSubmit}
           className="space-y-10 bg-white p-6 md:p-10 border border-border/50 shadow-sm rounded-lg"
@@ -494,6 +526,83 @@ function JelentkezesForm() {
               {f.privacyEnd}
             </span>
           </label>
+
+          {/* Payment section */}
+          {selectedCamps.length > 0 && (
+            <div className="border border-[#d4a017]/30 bg-[#d4a017]/5 p-5 space-y-5 rounded-md">
+              <div>
+                <h3 className="font-serif text-lg font-bold text-foreground">Fizetés</h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  A jelentkezést követően biztonságos Stripe oldalra irányítunk. Bankkártya, Apple Pay, Google Pay{currency === "EUR" ? ", SEPA átutalás" : ""} fogadva.
+                </p>
+              </div>
+
+              <div>
+                <label className={labelClass}>Valuta</label>
+                <div className="flex gap-3">
+                  {(["HUF", "EUR"] as Currency[]).map((cur) => (
+                    <button
+                      key={cur}
+                      type="button"
+                      onClick={() => setCurrency(cur)}
+                      className={`flex-1 h-11 border text-sm font-medium rounded-md transition-colors ${
+                        currency === cur
+                          ? "bg-[#d4a017] border-[#d4a017] text-[#0a1f0a]"
+                          : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
+                      }`}
+                    >
+                      {cur}
+                    </button>
+                  ))}
+                </div>
+                {currency === "EUR" && !hasEurPrices && (
+                  <p className="text-xs text-amber-700 mt-2">
+                    Az egyik kiválasztott táborhoz nincs EUR ár. Válassz HUF-ot vagy másik tábort.
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className={labelClass}>Fizetési mód</label>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMode("full")}
+                    className={`p-4 border text-left rounded-md transition-colors ${
+                      paymentMode === "full"
+                        ? "bg-[#d4a017] border-[#d4a017] text-[#0a1f0a]"
+                        : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
+                    }`}
+                  >
+                    <div className="font-semibold text-sm">Egyben</div>
+                    <div className="text-xs mt-1 opacity-80">A teljes összeget most fizeted.</div>
+                    <div className="mt-2 font-bold text-base">{formatPrice(totalFull, currency)}</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMode("deposit")}
+                    className={`p-4 border text-left rounded-md transition-colors ${
+                      paymentMode === "deposit"
+                        ? "bg-[#d4a017] border-[#d4a017] text-[#0a1f0a]"
+                        : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
+                    }`}
+                  >
+                    <div className="font-semibold text-sm">Részletfizetés (foglaló)</div>
+                    <div className="text-xs mt-1 opacity-80">Most a foglaló, a hátralévőt a tábor előtt.</div>
+                    <div className="mt-2 font-bold text-base">{formatPrice(totalDeposit, currency)}</div>
+                    <div className="text-xs mt-0.5 opacity-70">+ {formatPrice(remainderAfterDeposit, currency)} később</div>
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-baseline justify-between border-t border-[#d4a017]/20 pt-3">
+                <span className="text-sm text-muted-foreground">Most fizetendő</span>
+                <span className="font-serif text-2xl font-bold text-foreground">
+                  {formatPrice(dueNow, currency)}
+                </span>
+              </div>
+            </div>
+          )}
 
           {error && (
             <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md">

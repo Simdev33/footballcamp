@@ -102,7 +102,7 @@ model Application {
   depositAmount                 Int            @default(0)
   depositPaidAmount             Int            @default(0)
   remainderPaidAmount           Int            @default(0)
-  stripeCheckoutSessionId       String?        @unique
+  stripeCheckoutSessionId       String?
   stripePaymentIntentId         String?
   stripeCustomerId              String?
   stripeRemainderPaymentLinkId  String?
@@ -117,6 +117,7 @@ model Application {
 
   @@index([siblingGroupId])
   @@index([paymentStatus])
+  @@index([stripeCheckoutSessionId])
 }
 
 enum PaymentStatus {

@@ -77,9 +77,10 @@ export async function POST(request: Request) {
 
   const siblingGroupId = children.length > 1 ? randomUUID() : null
 
-  await db.$transaction(async (tx) => {
+  const applicationIds = await db.$transaction(async (tx) => {
+    const ids: string[] = []
     for (const c of children) {
-      await tx.application.create({
+      const created = await tx.application.create({
         data: {
           parentName,
           parentEmail,
@@ -95,7 +96,9 @@ export async function POST(request: Request) {
           notes: notes || "",
           siblingGroupId,
         },
+        select: { id: true },
       })
+      ids.push(created.id)
     }
 
     for (const [campId, needed] of requiredPerCamp) {
@@ -104,7 +107,8 @@ export async function POST(request: Request) {
         data: { remainingSpots: { decrement: needed } },
       })
     }
+    return ids
   })
 
-  return NextResponse.json({ success: true })
+  return NextResponse.json({ success: true, applicationIds })
 }

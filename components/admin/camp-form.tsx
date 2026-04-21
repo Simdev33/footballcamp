@@ -33,9 +33,9 @@ type CampData = {
   gallery: string[]
   videoUrl: string | null
   mapEmbedUrl: string | null
-  schedule: ScheduleItem[] | null
-  coaches: CoachItem[] | null
-  faq: FaqItem[] | null
+  schedule: unknown
+  coaches: unknown
+  faq: unknown
 }
 
 function toDateInput(value: Date | string | null | undefined): string {

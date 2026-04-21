@@ -85,3 +85,58 @@ export async function fireApplyConversion() {
     // ignore
   }
 }
+
+/**
+ * Fires a Google Ads purchase conversion with the actual paid amount
+ * (e.g. from a Stripe Checkout Session). Safe to call multiple times —
+ * guards against double-firing using sessionStorage per transactionId.
+ */
+export async function firePurchaseConversion(args: {
+  value: number
+  currency: string
+  transactionId: string
+}) {
+  if (typeof window === "undefined") return
+  if (!APPLY_CONVERSION_SEND_TO) return
+
+  const w = window as GtagWindow
+  if (typeof w.gtag !== "function") return
+
+  const dedupeKey = `kickoff.fired-conversion:${args.transactionId}`
+  try {
+    if (sessionStorage.getItem(dedupeKey)) return
+    sessionStorage.setItem(dedupeKey, "1")
+  } catch {
+    // ignore
+  }
+
+  let pending: PendingConversion | null = null
+  try {
+    const raw = sessionStorage.getItem(PENDING_KEY)
+    if (raw) pending = JSON.parse(raw) as PendingConversion
+  } catch {
+    // ignore
+  }
+
+  if (pending?.email || pending?.phone) {
+    const email = pending.email ? await sha256(normalizeEmail(pending.email)) : undefined
+    const phone = pending.phone ? await sha256(normalizePhone(pending.phone)) : undefined
+    w.gtag("set", "user_data", {
+      sha256_email_address: email,
+      sha256_phone_number: phone,
+    })
+  }
+
+  w.gtag("event", "conversion", {
+    send_to: APPLY_CONVERSION_SEND_TO,
+    value: args.value,
+    currency: args.currency,
+    transaction_id: args.transactionId,
+  })
+
+  try {
+    sessionStorage.removeItem(PENDING_KEY)
+  } catch {
+    // ignore
+  }
+}
