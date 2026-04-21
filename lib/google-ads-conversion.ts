@@ -2,7 +2,7 @@
 
 // Google Ads konverziós címke - töltsd ki miután létrehoztad a konverziót
 // Formátum: "AW-18106758812/XXXXXXXXXXX"
-export const APPLY_CONVERSION_SEND_TO = ""
+export const APPLY_CONVERSION_SEND_TO = "AW-18106758812/fKL9CO6HhqAcEJzt_LlD"
 
 const PENDING_KEY = "kickoff.pending-conversion"
 
