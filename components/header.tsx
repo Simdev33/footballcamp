@@ -7,13 +7,11 @@ import { useState, useEffect, useRef } from "react"
 import { PenLine, Globe, ChevronDown } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
-const CAMP_LOCATIONS = [
-  { label: "Algyő (Szeged)", href: "/taborok" },
-]
-
 const CLUB_ITEMS = [
   { label: "SL Benfica", href: "/klubok" },
 ]
+
+type CampNavItem = { label: string; href: string }
 
 export function Header() {
   const { locale, t, toggleLocale } = useLanguage()
@@ -21,15 +19,36 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [campItems, setCampItems] = useState<CampNavItem[]>([])
   const dropdownTimeout = useRef<ReturnType<typeof setTimeout>>()
   const isHome = pathname === "/"
 
+  useEffect(() => {
+    let cancelled = false
+    fetch("/api/camps-public")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data: Array<{ city: string; venue?: string; slug: string }>) => {
+        if (cancelled || !Array.isArray(data)) return
+        setCampItems(
+          data.map((c) => ({
+            label: c.venue ? `${c.city} (${c.venue})` : c.city,
+            href: `/taborok/${c.slug}`,
+          }))
+        )
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   const navLinks = [
-    { href: "/taborok", label: t.nav.camps, dropdown: CAMP_LOCATIONS },
+    { href: "/taborok", label: t.nav.camps, dropdown: campItems.length > 0 ? campItems : undefined },
     { href: "/klubok", label: t.nav.clubs, dropdown: CLUB_ITEMS },
     { href: "/gyik", label: t.nav.faq },
     { href: "/galeria", label: t.nav.gallery },
     { href: "/blog", label: t.nav.blog },
+    { href: "/partnerprogram", label: t.nav.partnerProgram },
     { href: "/kapcsolat", label: t.nav.contact },
     { href: "/rolunk", label: t.nav.about },
   ]

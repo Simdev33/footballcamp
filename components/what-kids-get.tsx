@@ -3,11 +3,13 @@
 import Image from "next/image"
 import { Shirt, Utensils, Dumbbell, Heart } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import { useSiteImage } from "@/lib/site-images-context"
 
 const ICONS = [Shirt, Utensils, Dumbbell, Heart]
 
 export function WhatKidsGet() {
   const { t } = useLanguage()
+  const image = useSiteImage("whatKidsGet.image")
 
   return (
     <section className="relative py-20 md:py-28 overflow-hidden">
@@ -30,12 +32,13 @@ export function WhatKidsGet() {
           <div className="relative">
             <div className="relative aspect-[4/3] overflow-hidden">
               <Image
-                src="https://focis.b-cdn.net/site/edzes-kozben.jpg"
+                src={image}
                 alt="Gyerekek a focitáborban"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
                 loading="lazy"
+                unoptimized={image.includes("b-cdn.net")}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0a1f0a] via-transparent to-transparent" />
             </div>

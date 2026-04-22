@@ -10,11 +10,9 @@ type PaymentMethodType = NonNullable<CreateParams["payment_method_types"]>[numbe
 export const dynamic = "force-dynamic"
 
 type PaymentMode = "full" | "deposit"
-type Currency = "HUF" | "EUR"
 
 interface CreateCheckoutBody {
   applicationIds?: string[]
-  currency?: Currency
   paymentMode?: PaymentMode
 }
 
@@ -26,12 +24,10 @@ export async function POST(request: Request) {
     return new NextResponse("Érvénytelen kérés.", { status: 400 })
   }
 
-  const { applicationIds, currency, paymentMode } = body
+  const { applicationIds, paymentMode } = body
+  const currency = "HUF" as const
   if (!applicationIds?.length) {
     return new NextResponse("Hiányzó applicationIds.", { status: 400 })
-  }
-  if (currency !== "HUF" && currency !== "EUR") {
-    return new NextResponse("Érvénytelen valuta.", { status: 400 })
   }
   if (paymentMode !== "full" && paymentMode !== "deposit") {
     return new NextResponse("Érvénytelen fizetési mód.", { status: 400 })
@@ -85,10 +81,10 @@ export async function POST(request: Request) {
 
   const origin = request.headers.get("origin") || process.env.NEXT_PUBLIC_SITE_URL || "https://kickoffcamps.hu"
 
-  const paymentMethodTypes: PaymentMethodType[] =
-    currency === "EUR"
-      ? ["card", "sepa_debit"]
-      : ["card"] // SEPA not available for HUF
+  // "card" automatically enables Apple Pay & Google Pay on supported devices.
+  // SEPA Direct Debit only works in EUR, so we skip it (we charge in HUF).
+  // LinkPay is NOT enabled — we only want card + wallets.
+  const paymentMethodTypes: PaymentMethodType[] = ["card"]
 
   try {
     const session = await stripe.checkout.sessions.create({

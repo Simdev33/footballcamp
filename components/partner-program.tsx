@@ -3,11 +3,13 @@
 import { Users, Building2, Heart, ArrowRight, Handshake } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import Image from "next/image"
+import { useSiteImage } from "@/lib/site-images-context"
 
 const ICONS = [Users, Building2, Heart]
 
 export function PartnerProgram() {
   const { t } = useLanguage()
+  const image = useSiteImage("experience.image")
 
   return (
     <section className="relative py-20 md:py-28 overflow-hidden">
@@ -55,7 +57,7 @@ export function PartnerProgram() {
 
           <div className="relative">
             <div className="relative aspect-[4/3] overflow-hidden">
-              <Image src="https://focis.b-cdn.net/site/gyerekcsapat.jpg" alt="Gyerekcsapat" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" loading="lazy" />
+              <Image src={image} alt="Gyerekcsapat" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" loading="lazy" unoptimized={image.includes("b-cdn.net")} />
             </div>
             <div className="absolute -bottom-4 -left-4 w-full h-full border-2 border-primary/30 -z-10" />
           </div>

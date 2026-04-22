@@ -1,32 +1,39 @@
-"use client"
-
 import Image from "next/image"
 import { Check, Quote } from "lucide-react"
-import { useLanguage } from "@/lib/language-context"
+import { getRolunkContent } from "@/lib/rolunk-content"
+import { getSiteImages, resolveSiteImage } from "@/lib/site-images"
+import { translations } from "@/lib/i18n"
 
-export default function RolunkPage() {
-  const { t } = useLanguage()
+export const dynamic = "force-dynamic"
+
+export default async function RolunkPage() {
+  const [content, images] = await Promise.all([getRolunkContent(), getSiteImages()])
+  const t = translations.hu
+
+  const heroImg = resolveSiteImage("rolunk.hero", images)
+  const missionImg = resolveSiteImage("rolunk.mission", images)
 
   return (
     <main>
       {/* Hero with background image */}
       <section className="relative pt-36 pb-24 md:pt-44 md:pb-32 overflow-hidden">
         <div className="absolute inset-0">
-          <Image src="https://focis.b-cdn.net/site/gyerekek-edzovel.jpg" alt="" fill className="object-cover" priority />
+          <Image src={heroImg} alt="" fill className="object-cover" priority unoptimized={heroImg.includes("b-cdn.net")} />
           <div className="absolute inset-0 bg-[#0a1f0a]/85" />
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a1f0a]/40 via-transparent to-[#0a1f0a]" />
         </div>
         <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
           <div className="max-w-3xl">
             <span className="inline-block px-5 py-2 bg-[#d4a017] text-[#0a1f0a] text-xs tracking-[0.3em] uppercase font-bold mb-6">
-              Rólunk
+              {content.badge}
             </span>
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.05]">
-              {t.whySpecial.title}{" "}
-              <span className="text-[#d4a017]">{t.whySpecial.titleHighlight}</span>{" "}
-              {t.whySpecial.titleEnd}
+              {content.heroTitle}
             </h1>
-            <p className="mt-6 text-lg text-white/70 leading-relaxed max-w-2xl">{t.whySpecial.text}</p>
+            <div
+              className="prose prose-invert prose-lg mt-6 text-white/70 leading-relaxed max-w-2xl"
+              dangerouslySetInnerHTML={{ __html: content.heroText }}
+            />
           </div>
         </div>
       </section>
@@ -36,11 +43,12 @@ export default function RolunkPage() {
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
           <div className="text-center mb-14">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              <span className="text-[#d4a017]">Céljaink</span>
+              <span className="text-[#d4a017]">{content.missionTitle}</span>
             </h2>
-            <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
-              Azért csináljuk, amit csinálunk, mert hiszünk benne, hogy a magyar gyerekek is megérdemlik a legjobb európai futballképzést. Célunk, hogy minél több külföldi edzőt és akadémiát hozzunk el Magyarországra, és megismertessük a gyerekekkel a nemzetközi futball világát.
-            </p>
+            <div
+              className="prose prose-sm md:prose-base mt-4 text-muted-foreground max-w-2xl mx-auto"
+              dangerouslySetInnerHTML={{ __html: content.missionText }}
+            />
             <div className="w-20 h-1 bg-[#d4a017] mx-auto mt-5" />
           </div>
 
@@ -63,12 +71,11 @@ export default function RolunkPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#d4a01712_0%,transparent_60%)]" />
         <div className="relative z-10 max-w-[900px] mx-auto px-6 md:px-12 text-center">
           <Quote className="w-10 h-10 text-[#d4a017] mx-auto mb-8" />
-          <blockquote className="font-serif text-2xl md:text-3xl lg:text-4xl text-white italic leading-snug">
-            &ldquo;{t.experience.text1}{" "}
-            <span className="text-[#d4a017] not-italic font-bold">{t.experience.textHighlight}</span>{" "}
-            {t.experience.text1End}&rdquo;
-          </blockquote>
-          <p className="mt-8 text-[#d4a017] font-medium text-lg">{t.experience.text2}</p>
+          <blockquote
+            className="font-serif text-2xl md:text-3xl lg:text-4xl text-white italic leading-snug [&_p]:m-0"
+            dangerouslySetInnerHTML={{ __html: `&ldquo;${content.quote}&rdquo;` }}
+          />
+          <p className="mt-8 text-[#d4a017] font-medium text-lg">{content.quoteAuthor}</p>
           <div className="w-20 h-1 bg-[#d4a017] mx-auto mt-8" />
         </div>
       </section>
@@ -79,7 +86,7 @@ export default function RolunkPage() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="relative">
               <div className="relative aspect-[4/3] overflow-hidden">
-                <Image src="https://focis.b-cdn.net/Post_1%20Camp/01%20Template%20Benfica%20Camp%202025_26_FEED.png" alt="Kickoff" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" loading="lazy" />
+                <Image src={missionImg} alt="Kickoff" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" loading="lazy" unoptimized={missionImg.includes("b-cdn.net")} />
               </div>
               <div className="absolute -bottom-4 -right-4 w-full h-full border-2 border-[#d4a017]/30 -z-10" />
             </div>
@@ -88,7 +95,7 @@ export default function RolunkPage() {
                 {t.usp.badge}
               </span>
               <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-                {t.usp.title} <span className="text-[#d4a017]">{t.usp.titleHighlight}</span>
+                {content.uspTitle} <span className="text-[#d4a017]">{content.uspText}</span>
               </h2>
               <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {t.usp.items.map((item) => (

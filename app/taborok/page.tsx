@@ -1,8 +1,9 @@
 import Image from "next/image"
 import Link from "next/link"
 import { db } from "@/lib/db"
-import { MapPin, Calendar, Users, ArrowRight, Tag, Shirt, Utensils, Dumbbell, Heart, Clock } from "lucide-react"
+import { MapPin, Calendar, ArrowRight, Tag, Shirt, Utensils, Dumbbell, Heart, Clock } from "lucide-react"
 import { SubpageHero } from "@/components/subpage-hero"
+import { getSiteImages, resolveSiteImage } from "@/lib/site-images"
 
 export const dynamic = "force-dynamic"
 
@@ -14,13 +15,15 @@ const KID_ITEMS = [
   { title: "Életre szóló élmény", desc: "Kiemelkedő hangulat, biztonságos környezet, felejthetetlen élmény" },
 ]
 
-const CDN = "https://focis.b-cdn.net"
-
 export default async function TaborokPage() {
-  const camps = await db.camp.findMany({
-    where: { active: true },
-    orderBy: { createdAt: "asc" },
-  })
+  const [camps, images] = await Promise.all([
+    db.camp.findMany({
+      where: { active: true },
+      orderBy: { createdAt: "asc" },
+    }),
+    getSiteImages(),
+  ])
+  const heroImg = resolveSiteImage("taborok.hero", images)
 
   return (
     <main>
@@ -28,11 +31,12 @@ export default async function TaborokPage() {
       <section className="relative pt-36 pb-24 md:pt-44 md:pb-32 overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src={`${CDN}/Post_1%20Camp/04%20Template%20Benfica%20Camp%202025_26_Banner.png`}
+            src={heroImg}
             alt="Kickoff"
             fill
             className="object-cover"
             priority
+            unoptimized={heroImg.includes("b-cdn.net")}
           />
           <div className="absolute inset-0 bg-[#0a1f0a]/80" />
         </div>
@@ -122,7 +126,7 @@ export default async function TaborokPage() {
                     </div>
 
                     <div className="p-5 lg:p-6">
-                      <div className="grid grid-cols-3 gap-4 mb-4">
+                      <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
                           <div className="flex items-center gap-2 text-white/50 mb-2">
                             <Calendar className="w-4 h-4 text-[#d4a017]" />
@@ -132,17 +136,10 @@ export default async function TaborokPage() {
                         </div>
                         <div>
                           <div className="flex items-center gap-2 text-white/50 mb-2">
-                            <Users className="w-4 h-4 text-[#d4a017]" />
-                            <span className="text-xs uppercase tracking-wider font-medium">Férőhely</span>
-                          </div>
-                          <p className="font-semibold text-white text-sm">{camp.remainingSpots}/{camp.totalSpots} fő</p>
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2 text-white/50 mb-2">
                             <Clock className="w-4 h-4 text-[#d4a017]" />
                             <span className="text-xs uppercase tracking-wider font-medium">Korosztály</span>
                           </div>
-                          <p className="font-semibold text-white text-sm">{camp.ageRange} év</p>
+                          <p className="font-semibold text-white text-sm">7-15 éves korosztályig</p>
                         </div>
                       </div>
 

@@ -42,17 +42,22 @@ export async function POST(request: Request) {
   if (!app.isInstallment) return new NextResponse("Ez a jelentkezés nem részletfizetéses.", { status: 400 })
   if (app.paymentStatus === "FULLY_PAID") return new NextResponse("Már ki van fizetve.", { status: 400 })
 
-  const currency = (app.currency as "HUF" | "EUR") || "HUF"
+  const currency = "HUF" as const
   const remainder = Math.max(0, app.totalAmount - app.depositPaidAmount)
   if (remainder <= 0) return new NextResponse("Nincs hátralévő összeg.", { status: 400 })
 
   const origin = request.headers.get("origin") || process.env.NEXT_PUBLIC_SITE_URL || "https://kickoffcamps.hu"
 
+  // Stripe Checkout session expires 14 days from now (Stripe max is 30 days).
+  // Parents receive the reminder 30 days before camp, have 2 weeks to pay.
+  const expiresAt = Math.floor(Date.now() / 1000) + 14 * 24 * 3600
+
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
-    payment_method_types: currency === "EUR" ? ["card", "sepa_debit"] : ["card"],
+    payment_method_types: ["card"],
     customer_email: app.parentEmail,
     locale: "hu",
+    expires_at: expiresAt,
     line_items: [
       {
         price_data: {

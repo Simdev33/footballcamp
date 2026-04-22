@@ -1,9 +1,10 @@
 import { db } from "@/lib/db"
 import Link from "next/link"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, ClipboardList } from "lucide-react"
 import { PAYMENT_STATUS_CONFIG } from "@/lib/payment-status"
 import { formatPrice } from "@/lib/pricing"
 import type { PaymentStatus } from "@prisma/client"
+import { PageHeader } from "@/components/admin/page-header"
 
 export const dynamic = "force-dynamic"
 
@@ -35,9 +36,11 @@ export default async function AdminApplicationsPage({ searchParams }: { searchPa
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Jelentkezesek ({total})</h2>
-      </div>
+      <PageHeader
+        icon={ClipboardList}
+        title={`Jelentkezések (${total})`}
+        description="A weboldalon keresztül érkezett összes jelentkezés. Kattints egy sorra a részletekhez, státusz és fizetési állapot módosításához."
+      />
 
       {applications.length === 0 ? (
         <div className="text-center py-20 text-white/30">Meg nincs jelentkezes</div>

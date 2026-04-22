@@ -63,7 +63,7 @@ model Camp {
   description       String        @default("")
   imageUrl          String?
   clubName          String        @default("SL Benfica")
-  ageRange          String        @default("6-15")
+  ageRange          String        @default("7-15")
   includes          String[]
   gallery           String[]
   videoUrl          String?

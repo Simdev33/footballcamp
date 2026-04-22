@@ -136,7 +136,7 @@ function SikeresContent() {
                     <li key={a.id} className="flex items-center justify-between">
                       <span>{a.childName} — {a.camp.city}</span>
                       <span className="text-xs uppercase tracking-wider text-[#d4a017]">
-                        {a.paymentStatus === "FULLY_PAID" ? "Kifizetve" : a.paymentStatus === "DEPOSIT_PAID" ? "Foglaló fizetve" : "Feldolgozás alatt"}
+                        {a.paymentStatus === "FULLY_PAID" ? "Kifizetve" : a.paymentStatus === "DEPOSIT_PAID" ? "Első részlet fizetve" : "Feldolgozás alatt"}
                       </span>
                     </li>
                   ))}

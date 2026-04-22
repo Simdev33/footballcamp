@@ -9,7 +9,7 @@ import { useSearchParams } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { getHealthDeclaration } from "@/lib/health-declaration"
 import { storePendingConversion } from "@/lib/google-ads-conversion"
-import { formatPrice, splitInstallment, type Currency } from "@/lib/pricing"
+import { formatPrice, splitInstallment } from "@/lib/pricing"
 
 interface Camp {
   id: string
@@ -19,13 +19,10 @@ interface Camp {
   earlyBirdPrice: string
   remainingSpots: number
   priceHuf: number
-  priceEur: number
   earlyBirdPriceHuf: number
-  earlyBirdPriceEur: number
   earlyBirdUntil: string | null
   depositPercent: number
   effectiveHuf: number
-  effectiveEur: number
 }
 
 interface ChildForm {
@@ -52,9 +49,14 @@ const emptyChild = (): ChildForm => ({
   campId: "",
 })
 
-const inputClass =
-  "w-full h-11 px-4 border border-border text-foreground focus:border-[#d4a017] focus:outline-none transition-colors text-[15px] bg-background rounded-md"
+const inputBase =
+  "w-full h-11 px-4 border text-foreground focus:outline-none transition-colors text-[15px] bg-background rounded-md"
+const inputClass = `${inputBase} border-border focus:border-[#d4a017]`
+const inputErr = `${inputBase} border-red-500 focus:border-red-600`
 const labelClass = "block text-sm font-medium text-foreground mb-1.5"
+const cls = (err?: string) => (err ? inputErr : inputClass)
+const FieldError = ({ msg }: { msg?: string }) =>
+  msg ? <p className="mt-1 text-xs text-red-600">{msg}</p> : null
 
 function JelentkezesForm() {
   const searchParams = useSearchParams()
@@ -77,7 +79,7 @@ function JelentkezesForm() {
   const [children, setChildren] = useState<ChildForm[]>([emptyChild()])
   const [privacyAccepted, setPrivacyAccepted] = useState(false)
   const [healthAccepted, setHealthAccepted] = useState(false)
-  const [currency, setCurrency] = useState<Currency>("HUF")
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [paymentMode, setPaymentMode] = useState<"full" | "deposit">("full")
 
   useEffect(() => {
@@ -92,12 +94,10 @@ function JelentkezesForm() {
     .map((child) => campMap.get(child.campId))
     .filter((c): c is Camp => Boolean(c))
 
-  const effectivePerChild = selectedCamps.map((c) => (currency === "HUF" ? c.effectiveHuf : c.effectiveEur))
-  const hasEurPrices = selectedCamps.every((c) => c.priceEur > 0)
+  const effectivePerChild = selectedCamps.map((c) => c.effectiveHuf)
   const totalFull = effectivePerChild.reduce((s, v) => s + v, 0)
   const totalDeposit = selectedCamps.reduce((s, c) => {
-    const amount = currency === "HUF" ? c.effectiveHuf : c.effectiveEur
-    return s + splitInstallment(amount, c.depositPercent).deposit
+    return s + splitInstallment(c.effectiveHuf, c.depositPercent).deposit
   }, 0)
   const dueNow = paymentMode === "full" ? totalFull : totalDeposit
   const remainderAfterDeposit = totalFull - totalDeposit
@@ -110,37 +110,64 @@ function JelentkezesForm() {
   const removeChild = (index: number) =>
     setChildren((prev) => (prev.length <= 1 ? prev : prev.filter((_, i) => i !== index)))
 
-  const formatErr = (template: string, n: number) => template.replace("{n}", String(n))
+  const scrollToFirstError = (errs: Record<string, string>) => {
+    const firstKey = Object.keys(errs)[0]
+    if (!firstKey) return
+    const el = document.querySelector(`[data-field="${firstKey}"]`)
+    if (el && "scrollIntoView" in el) {
+      ;(el as HTMLElement).scrollIntoView({ behavior: "smooth", block: "center" })
+      const focusable = (el as HTMLElement).querySelector("input,select,textarea,button") as HTMLElement | null
+      focusable?.focus()
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
 
-    for (const [i, c] of children.entries()) {
-      const n = i + 1
-      if (!c.childName || !c.childBirthDate || !c.childCity || !c.campId) {
-        setError(formatErr(f.errChildMissing, n))
-        return
-      }
-      if (!c.playsFootball) {
-        setError(formatErr(f.errPlaysMissing, n))
-        return
-      }
-      if (!c.jerseySize || !c.shortsSize || !c.socksSize) {
-        setError(formatErr(f.errSizesMissing, n))
-        return
-      }
-      if (c.playsFootball === "yes" && !c.currentClub.trim()) {
-        setError(formatErr(f.errClubMissing, n))
-        return
-      }
-    }
+    const errs: Record<string, string> = {}
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const phoneRe = /^[+0-9 ()/.-]{7,}$/
 
-    if (currency === "EUR" && !hasEurPrices) {
-      setError("A kiválasztott táborok egyikéhez nincs EUR ár beállítva. Válassz HUF-ot.")
+    if (!parent.parentName.trim()) errs["parentName"] = "Kötelező mező"
+    if (!parent.parentEmail.trim()) errs["parentEmail"] = "Kötelező mező"
+    else if (!emailRe.test(parent.parentEmail.trim())) errs["parentEmail"] = "Érvénytelen email cím"
+    if (!parent.parentPhone.trim()) errs["parentPhone"] = "Kötelező mező"
+    else if (!phoneRe.test(parent.parentPhone.trim())) errs["parentPhone"] = "Érvénytelen telefonszám"
+
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    for (const [i, c] of children.entries()) {
+      if (!c.childName.trim()) errs[`child-${i}-childName`] = "Kötelező mező"
+      if (!c.childBirthDate) errs[`child-${i}-childBirthDate`] = "Kötelező mező"
+      else {
+        const bd = new Date(c.childBirthDate)
+        if (isNaN(bd.getTime())) errs[`child-${i}-childBirthDate`] = "Érvénytelen dátum"
+        else if (bd > today) errs[`child-${i}-childBirthDate`] = "A születési dátum nem lehet jövőbeli"
+        else {
+          const age = (today.getTime() - bd.getTime()) / (365.25 * 24 * 3600 * 1000)
+          if (age < 5 || age > 17) errs[`child-${i}-childBirthDate`] = "A tábor 7-15 éves korosztálynak szól"
+        }
+      }
+      if (!c.childCity.trim()) errs[`child-${i}-childCity`] = "Kötelező mező"
+      if (!c.campId) errs[`child-${i}-campId`] = "Válassz tábort"
+      if (!c.playsFootball) errs[`child-${i}-playsFootball`] = "Válassz egy opciót"
+      if (c.playsFootball === "yes" && !c.currentClub.trim()) errs[`child-${i}-currentClub`] = "Add meg az egyesület nevét"
+      if (!c.jerseySize) errs[`child-${i}-jerseySize`] = "Válassz méretet"
+      if (!c.shortsSize) errs[`child-${i}-shortsSize`] = "Válassz méretet"
+      if (!c.socksSize) errs[`child-${i}-socksSize`] = "Kötelező mező"
+    }
+    if (!privacyAccepted) errs["privacy"] = "Fogadd el az adatvédelmi tájékoztatót és az ÁSZF-et"
+    if (!healthAccepted) errs["health"] = "Fogadd el az egészségügyi nyilatkozatot"
+
+    if (Object.keys(errs).length > 0) {
+      setFieldErrors(errs)
+      setError("Kérjük, javítsd a pirossal jelölt mezőket.")
+      scrollToFirstError(errs)
       return
     }
 
+    setFieldErrors({})
     setLoading(true)
     storePendingConversion({
       email: parent.parentEmail,
@@ -169,7 +196,7 @@ function JelentkezesForm() {
       const checkoutRes = await fetch("/api/stripe/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ applicationIds, currency, paymentMode }),
+        body: JSON.stringify({ applicationIds, currency: "HUF", paymentMode }),
       })
       if (!checkoutRes.ok) {
         const text = await checkoutRes.text()
@@ -208,40 +235,43 @@ function JelentkezesForm() {
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
-              <div>
+              <div data-field="parentName">
                 <label className={labelClass}>{f.parentName}</label>
                 <input
                   type="text"
-                  required
                   placeholder={f.parentNamePh}
                   value={parent.parentName}
                   onChange={(e) => setParent({ ...parent, parentName: e.target.value })}
-                  className={inputClass}
+                  aria-invalid={!!fieldErrors.parentName}
+                  className={cls(fieldErrors.parentName)}
                 />
+                <FieldError msg={fieldErrors.parentName} />
               </div>
-              <div>
+              <div data-field="parentEmail">
                 <label className={labelClass}>{f.parentEmail}</label>
                 <input
                   type="email"
-                  required
                   placeholder={f.parentEmailPh}
                   value={parent.parentEmail}
                   onChange={(e) => setParent({ ...parent, parentEmail: e.target.value })}
-                  className={inputClass}
+                  aria-invalid={!!fieldErrors.parentEmail}
+                  className={cls(fieldErrors.parentEmail)}
                 />
+                <FieldError msg={fieldErrors.parentEmail} />
               </div>
             </div>
 
-            <div>
+            <div data-field="parentPhone">
               <label className={labelClass}>{f.parentPhone}</label>
               <input
                 type="tel"
-                required
                 placeholder={f.parentPhonePh}
                 value={parent.parentPhone}
                 onChange={(e) => setParent({ ...parent, parentPhone: e.target.value })}
-                className={inputClass}
+                aria-invalid={!!fieldErrors.parentPhone}
+                className={cls(fieldErrors.parentPhone)}
               />
+              <FieldError msg={fieldErrors.parentPhone} />
             </div>
           </div>
 
@@ -270,42 +300,45 @@ function JelentkezesForm() {
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
-                <div>
+                <div data-field={`child-${index}-childName`}>
                   <label className={labelClass}>{f.childName}</label>
                   <input
                     type="text"
-                    required
                     placeholder={f.childNamePh}
                     value={child.childName}
                     onChange={(e) => updateChild(index, { childName: e.target.value })}
-                    className={inputClass}
+                    aria-invalid={!!fieldErrors[`child-${index}-childName`]}
+                    className={cls(fieldErrors[`child-${index}-childName`])}
                   />
+                  <FieldError msg={fieldErrors[`child-${index}-childName`]} />
                 </div>
-                <div>
+                <div data-field={`child-${index}-childBirthDate`}>
                   <label className={labelClass}>{f.childBirth}</label>
                   <input
                     type="date"
-                    required
                     value={child.childBirthDate}
                     onChange={(e) => updateChild(index, { childBirthDate: e.target.value })}
-                    className={inputClass}
+                    aria-invalid={!!fieldErrors[`child-${index}-childBirthDate`]}
+                    className={cls(fieldErrors[`child-${index}-childBirthDate`])}
                   />
+                  <FieldError msg={fieldErrors[`child-${index}-childBirthDate`]} />
                 </div>
               </div>
 
-              <div>
+              <div data-field={`child-${index}-childCity`}>
                 <label className={labelClass}>{f.childCity}</label>
                 <input
                   type="text"
-                  required
                   placeholder={f.childCityPh}
                   value={child.childCity}
                   onChange={(e) => updateChild(index, { childCity: e.target.value })}
-                  className={inputClass}
+                  aria-invalid={!!fieldErrors[`child-${index}-childCity`]}
+                  className={cls(fieldErrors[`child-${index}-childCity`])}
                 />
+                <FieldError msg={fieldErrors[`child-${index}-childCity`]} />
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-3" data-field={`child-${index}-playsFootball`}>
                 <label className={labelClass}>{f.playsQuestion}</label>
                 <div className="flex gap-3">
                   <button
@@ -314,7 +347,9 @@ function JelentkezesForm() {
                     className={`flex-1 h-11 border text-sm font-medium rounded-md transition-colors ${
                       child.playsFootball === "yes"
                         ? "bg-[#d4a017] border-[#d4a017] text-[#0a1f0a]"
-                        : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
+                        : fieldErrors[`child-${index}-playsFootball`]
+                          ? "bg-background border-red-500 text-foreground"
+                          : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
                     }`}
                   >
                     {f.yes}
@@ -325,23 +360,27 @@ function JelentkezesForm() {
                     className={`flex-1 h-11 border text-sm font-medium rounded-md transition-colors ${
                       child.playsFootball === "no"
                         ? "bg-[#d4a017] border-[#d4a017] text-[#0a1f0a]"
-                        : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
+                        : fieldErrors[`child-${index}-playsFootball`]
+                          ? "bg-background border-red-500 text-foreground"
+                          : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
                     }`}
                   >
                     {f.no}
                   </button>
                 </div>
+                <FieldError msg={fieldErrors[`child-${index}-playsFootball`]} />
                 {child.playsFootball === "yes" && (
-                  <div className="pt-1">
+                  <div className="pt-1" data-field={`child-${index}-currentClub`}>
                     <label className={labelClass}>{f.clubLabel}</label>
                     <input
                       type="text"
-                      required
                       placeholder={f.clubPh}
                       value={child.currentClub}
                       onChange={(e) => updateChild(index, { currentClub: e.target.value })}
-                      className={inputClass}
+                      aria-invalid={!!fieldErrors[`child-${index}-currentClub`]}
+                      className={cls(fieldErrors[`child-${index}-currentClub`])}
                     />
+                    <FieldError msg={fieldErrors[`child-${index}-currentClub`]} />
                   </div>
                 )}
               </div>
@@ -357,65 +396,69 @@ function JelentkezesForm() {
                 </div>
 
                 <div className="grid sm:grid-cols-3 gap-4">
-                  <div>
+                  <div data-field={`child-${index}-jerseySize`}>
                     <label className="block text-xs text-muted-foreground mb-1.5">{f.jerseySize}</label>
                     <select
-                      required
                       value={child.jerseySize}
                       onChange={(e) => updateChild(index, { jerseySize: e.target.value })}
-                      className={inputClass}
+                      aria-invalid={!!fieldErrors[`child-${index}-jerseySize`]}
+                      className={cls(fieldErrors[`child-${index}-jerseySize`])}
                     >
                       <option value="">{f.selectPlaceholder}</option>
                       {SIZE_OPTIONS.map((s) => (
                         <option key={s} value={s}>{s}</option>
                       ))}
                     </select>
+                    <FieldError msg={fieldErrors[`child-${index}-jerseySize`]} />
                   </div>
-                  <div>
+                  <div data-field={`child-${index}-shortsSize`}>
                     <label className="block text-xs text-muted-foreground mb-1.5">{f.shortsSize}</label>
                     <select
-                      required
                       value={child.shortsSize}
                       onChange={(e) => updateChild(index, { shortsSize: e.target.value })}
-                      className={inputClass}
+                      aria-invalid={!!fieldErrors[`child-${index}-shortsSize`]}
+                      className={cls(fieldErrors[`child-${index}-shortsSize`])}
                     >
                       <option value="">{f.selectPlaceholder}</option>
                       {SIZE_OPTIONS.map((s) => (
                         <option key={s} value={s}>{s}</option>
                       ))}
                     </select>
+                    <FieldError msg={fieldErrors[`child-${index}-shortsSize`]} />
                   </div>
-                  <div>
+                  <div data-field={`child-${index}-socksSize`}>
                     <label className="block text-xs text-muted-foreground mb-1.5">{f.shoeSize}</label>
                     <input
                       type="number"
-                      required
                       min={25}
                       max={48}
                       placeholder={f.shoeSizePh}
                       value={child.socksSize}
                       onChange={(e) => updateChild(index, { socksSize: e.target.value })}
-                      className={inputClass}
+                      aria-invalid={!!fieldErrors[`child-${index}-socksSize`]}
+                      className={cls(fieldErrors[`child-${index}-socksSize`])}
                     />
+                    <FieldError msg={fieldErrors[`child-${index}-socksSize`]} />
                   </div>
                 </div>
               </div>
 
-              <div>
+              <div data-field={`child-${index}-campId`}>
                 <label className={labelClass}>{f.campSelect}</label>
                 <select
-                  required
                   value={child.campId}
                   onChange={(e) => updateChild(index, { campId: e.target.value })}
-                  className={inputClass}
+                  aria-invalid={!!fieldErrors[`child-${index}-campId`]}
+                  className={cls(fieldErrors[`child-${index}-campId`])}
                 >
                   <option value="">{f.campSelectPlaceholder}</option>
                   {camps.map((camp) => (
                     <option key={camp.id} value={camp.id}>
-                      {camp.city} – {camp.dates} ({camp.remainingSpots} {f.spotsShort})
+                      {camp.city} – {camp.dates}
                     </option>
                   ))}
                 </select>
+                <FieldError msg={fieldErrors[`child-${index}-campId`]} />
               </div>
             </div>
           ))}
@@ -493,39 +536,43 @@ function JelentkezesForm() {
               </div>
             )}
 
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                required
-                checked={healthAccepted}
-                onChange={(e) => setHealthAccepted(e.target.checked)}
-                className="mt-1 w-4 h-4 accent-[#d4a017] cursor-pointer"
-              />
-              <span className="text-sm text-foreground">{hd.formCheckboxLabel}</span>
-            </label>
+            <div data-field="health">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={healthAccepted}
+                  onChange={(e) => setHealthAccepted(e.target.checked)}
+                  className="mt-1 w-4 h-4 accent-[#d4a017] cursor-pointer"
+                />
+                <span className="text-sm text-foreground">{hd.formCheckboxLabel}</span>
+              </label>
+              <FieldError msg={fieldErrors.health} />
+            </div>
           </div>
 
           {/* Privacy */}
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              required
-              checked={privacyAccepted}
-              onChange={(e) => setPrivacyAccepted(e.target.checked)}
-              className="mt-1 w-4 h-4 accent-[#d4a017] cursor-pointer"
-            />
-            <span className="text-sm text-muted-foreground">
-              {f.privacyLabel}{" "}
-              <Link href="/adatkezelesi-tajekoztato" target="_blank" className="text-[#d4a017] underline hover:no-underline">
-                {f.privacyLink}
-              </Link>{" "}
-              {f.privacyAnd}{" "}
-              <Link href="/aszf" target="_blank" className="text-[#d4a017] underline hover:no-underline">
-                {f.termsLink}
-              </Link>
-              {f.privacyEnd}
-            </span>
-          </label>
+          <div data-field="privacy">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={privacyAccepted}
+                onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                className="mt-1 w-4 h-4 accent-[#d4a017] cursor-pointer"
+              />
+              <span className="text-sm text-muted-foreground">
+                {f.privacyLabel}{" "}
+                <Link href="/adatkezelesi-tajekoztato" target="_blank" className="text-[#d4a017] underline hover:no-underline">
+                  {f.privacyLink}
+                </Link>{" "}
+                {f.privacyAnd}{" "}
+                <Link href="/aszf" target="_blank" className="text-[#d4a017] underline hover:no-underline">
+                  {f.termsLink}
+                </Link>
+                {f.privacyEnd}
+              </span>
+            </label>
+            <FieldError msg={fieldErrors.privacy} />
+          </div>
 
           {/* Payment section */}
           {selectedCamps.length > 0 && (
@@ -533,33 +580,8 @@ function JelentkezesForm() {
               <div>
                 <h3 className="font-serif text-lg font-bold text-foreground">Fizetés</h3>
                 <p className="text-xs text-muted-foreground mt-1">
-                  A jelentkezést követően biztonságos Stripe oldalra irányítunk. Bankkártya, Apple Pay, Google Pay{currency === "EUR" ? ", SEPA átutalás" : ""} fogadva.
+                  A jelentkezést követően biztonságos Stripe oldalra irányítunk. Bankkártya, Apple Pay, Google Pay elfogadva.
                 </p>
-              </div>
-
-              <div>
-                <label className={labelClass}>Valuta</label>
-                <div className="flex gap-3">
-                  {(["HUF", "EUR"] as Currency[]).map((cur) => (
-                    <button
-                      key={cur}
-                      type="button"
-                      onClick={() => setCurrency(cur)}
-                      className={`flex-1 h-11 border text-sm font-medium rounded-md transition-colors ${
-                        currency === cur
-                          ? "bg-[#d4a017] border-[#d4a017] text-[#0a1f0a]"
-                          : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
-                      }`}
-                    >
-                      {cur}
-                    </button>
-                  ))}
-                </div>
-                {currency === "EUR" && !hasEurPrices && (
-                  <p className="text-xs text-amber-700 mt-2">
-                    Az egyik kiválasztott táborhoz nincs EUR ár. Válassz HUF-ot vagy másik tábort.
-                  </p>
-                )}
               </div>
 
               <div>
@@ -576,7 +598,7 @@ function JelentkezesForm() {
                   >
                     <div className="font-semibold text-sm">Egyben</div>
                     <div className="text-xs mt-1 opacity-80">A teljes összeget most fizeted.</div>
-                    <div className="mt-2 font-bold text-base">{formatPrice(totalFull, currency)}</div>
+                    <div className="mt-2 font-bold text-base">{formatPrice(totalFull, "HUF")}</div>
                   </button>
                   <button
                     type="button"
@@ -587,10 +609,10 @@ function JelentkezesForm() {
                         : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
                     }`}
                   >
-                    <div className="font-semibold text-sm">Részletfizetés (foglaló)</div>
-                    <div className="text-xs mt-1 opacity-80">Most a foglaló, a hátralévőt a tábor előtt.</div>
-                    <div className="mt-2 font-bold text-base">{formatPrice(totalDeposit, currency)}</div>
-                    <div className="text-xs mt-0.5 opacity-70">+ {formatPrice(remainderAfterDeposit, currency)} később</div>
+                    <div className="font-semibold text-sm">Részletfizetés</div>
+                    <div className="text-xs mt-1 opacity-80">Most az első részlet, a hátralévőt a tábor előtt.</div>
+                    <div className="mt-2 font-bold text-base">{formatPrice(totalDeposit, "HUF")}</div>
+                    <div className="text-xs mt-0.5 opacity-70">+ {formatPrice(remainderAfterDeposit, "HUF")} később</div>
                   </button>
                 </div>
               </div>
@@ -598,7 +620,7 @@ function JelentkezesForm() {
               <div className="flex items-baseline justify-between border-t border-[#d4a017]/20 pt-3">
                 <span className="text-sm text-muted-foreground">Most fizetendő</span>
                 <span className="font-serif text-2xl font-bold text-foreground">
-                  {formatPrice(dueNow, currency)}
+                  {formatPrice(dueNow, "HUF")}
                 </span>
               </div>
             </div>

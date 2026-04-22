@@ -45,6 +45,7 @@ export function useDynamicCamps(): { camps: DynamicCamp[]; loaded: boolean } {
       .then((data: ApiCamp[]) => {
         if (cancelled) return
         if (Array.isArray(data) && data.length > 0) {
+          const defaultCta = staticCamps[0]?.cta?.trim() || t.form.cta
           const mapped: DynamicCamp[] = data.map((c) => ({
             city: c.city,
             venue: c.venue,
@@ -52,7 +53,7 @@ export function useDynamicCamps(): { camps: DynamicCamp[]; loaded: boolean } {
             price: c.price,
             earlyBird: c.earlyBirdPrice,
             spots: String(c.remainingSpots),
-            cta: staticCamps[0]?.cta ?? "",
+            cta: defaultCta,
             id: c.id,
             slug: c.slug,
             imageUrl: c.imageUrl,

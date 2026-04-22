@@ -1,7 +1,8 @@
 import { db } from "@/lib/db"
 import { deleteBlogPost } from "@/lib/actions"
 import Link from "next/link"
-import { Plus, Pencil, Trash2, Eye, EyeOff, Tag } from "lucide-react"
+import { Plus, Pencil, Trash2, Eye, EyeOff, Tag, BookOpen } from "lucide-react"
+import { PageHeader } from "@/components/admin/page-header"
 
 export const dynamic = "force-dynamic"
 
@@ -13,21 +14,23 @@ export default async function AdminBlogPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">
-          Blog kezelése ({posts.length})
-        </h2>
-        <Link
-          href="/admin/blog/uj"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-[#d4a017] text-[#0a1f0a] text-sm font-semibold hover:bg-[#d4a017]/90 transition-colors"
-        >
-          <Plus className="w-4 h-4" /> Új bejegyzés
-        </Link>
-      </div>
+      <PageHeader
+        icon={BookOpen}
+        title={`Hírek (${posts.length})`}
+        description="A weboldal „Hírek” aloldalán megjelenő cikkek. Kattints az „Új bejegyzés” gombra új hír létrehozásához."
+        actions={
+          <Link
+            href="/admin/blog/uj"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#d4a017] text-[#0a1f0a] text-sm font-semibold hover:bg-[#d4a017]/90 transition-colors rounded"
+          >
+            <Plus className="w-4 h-4" /> Új bejegyzés
+          </Link>
+        }
+      />
 
       {posts.length === 0 ? (
         <div className="text-center py-20 text-white/30">
-          Még nincs blog bejegyzés létrehozva
+          Még nincs hír bejegyzés létrehozva
         </div>
       ) : (
         <div className="bg-[#0a1f0a] border border-[#d4a017]/10 divide-y divide-white/5">

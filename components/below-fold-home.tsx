@@ -5,14 +5,12 @@ import { useLanguage } from "@/lib/language-context"
 import Link from "next/link"
 import { ZigzagSection } from "@/components/zigzag-section"
 import { USPSection } from "@/components/usp-section"
-import { FAQSection } from "@/components/faq-section"
 import { LimitedSpots } from "@/components/limited-spots"
 import { TargetAudience } from "@/components/target-audience"
 import { LocationCards } from "@/components/location-cards"
 import { ApplicationForm } from "@/components/application-form"
 import { FootballDivider } from "@/components/football-divider"
-
-const CDN = "https://focis.b-cdn.net"
+import { useSiteImage } from "@/lib/site-images-context"
 
 const KID_ITEMS = [
   { Icon: Plane, color: "#3b82f6" },
@@ -26,6 +24,9 @@ const KID_ITEMS = [
 
 export default function BelowFoldHome() {
   const { t } = useLanguage()
+  const whySpecialImg = useSiteImage("whySpecial.image")
+  const whatKidsGetImg = useSiteImage("whatKidsGet.image")
+  const experienceImg = useSiteImage("experience.image")
 
   return (
     <>
@@ -35,7 +36,7 @@ export default function BelowFoldHome() {
         titleHighlight={t.whySpecial.titleHighlight}
         titleEnd={t.whySpecial.titleEnd}
         text={t.whySpecial.text}
-        imageSrc={`${CDN}/site/gyerekek-edzovel.jpg`}
+        imageSrc={whySpecialImg}
         imageAlt="Gyerekek az edzővel a pályán"
       >
         <div className="space-y-3">
@@ -69,7 +70,7 @@ export default function BelowFoldHome() {
         titleHighlight={t.whatKidsGet.titleHighlight}
         titleEnd={t.whatKidsGet.titleEnd}
         text={t.whatKidsGet.subtitle}
-        imageSrc={`${CDN}/site/edzes-kozben.jpg`}
+        imageSrc={whatKidsGetImg}
         imageAlt="Edzés közben a pályán"
       >
         <div className="space-y-3 md:space-y-4">
@@ -108,7 +109,7 @@ export default function BelowFoldHome() {
         titleHighlight={t.experience.titleHighlight}
         titleEnd={t.experience.titleEnd}
         text={`${t.experience.text1} ${t.experience.text1End}`}
-        imageSrc={`${CDN}/site/gyerekcsapat.jpg`}
+        imageSrc={experienceImg}
         imageAlt="Gyerekcsapat összetartás"
       >
         <div className="grid grid-cols-3 gap-2 md:gap-4 mb-4 md:mb-6">
@@ -133,10 +134,7 @@ export default function BelowFoldHome() {
       {/* 8. Helyszínek */}
       <LocationCards />
 
-      {/* 9. GYIK */}
-      <FAQSection />
-
-      {/* 10. Záró CTA — Transfer window stílus */}
+      {/* 9. Záró CTA — Transfer window stílus */}
       <ApplicationForm />
     </>
   )

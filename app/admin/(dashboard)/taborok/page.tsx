@@ -1,8 +1,9 @@
 import { db } from "@/lib/db"
 import { deleteCamp } from "@/lib/actions"
 import Link from "next/link"
-import { Plus, MapPin, Calendar, Users, Pencil, Trash2 } from "lucide-react"
+import { Plus, MapPin, Calendar, Users, Pencil, Trash2, Tent } from "lucide-react"
 import { formatPrice } from "@/lib/pricing"
+import { PageHeader } from "@/components/admin/page-header"
 
 export const dynamic = 'force-dynamic'
 
@@ -11,12 +12,16 @@ export default async function AdminCampsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Táborok kezelése</h2>
-        <Link href="/admin/taborok/uj" className="inline-flex items-center gap-2 px-4 py-2 bg-[#d4a017] text-[#0a1f0a] text-sm font-semibold hover:bg-[#d4a017]/90 transition-colors">
-          <Plus className="w-4 h-4" /> Új tábor
-        </Link>
-      </div>
+      <PageHeader
+        icon={Tent}
+        title={`Táborok (${camps.length})`}
+        description="Itt tudsz új tábort létrehozni, a meglévőket szerkeszteni (időpont, ár, helyszín), vagy aktívra/inaktívra állítani."
+        actions={
+          <Link href="/admin/taborok/uj" className="inline-flex items-center gap-2 px-4 py-2 bg-[#d4a017] text-[#0a1f0a] text-sm font-semibold hover:bg-[#d4a017]/90 transition-colors rounded">
+            <Plus className="w-4 h-4" /> Új tábor
+          </Link>
+        }
+      />
 
       {camps.length === 0 ? (
         <div className="text-center py-20 text-white/30">Még nincs tábor létrehozva</div>
@@ -51,9 +56,6 @@ export default async function AdminCampsPage() {
               <div className="flex items-center gap-2 mb-4 flex-wrap">
                 <span className="text-[#d4a017] font-bold">{formatPrice(camp.earlyBirdPriceHuf, "HUF") || camp.earlyBirdPrice}</span>
                 <span className="text-white/30 line-through text-sm">{formatPrice(camp.priceHuf, "HUF") || camp.price}</span>
-                {camp.priceEur > 0 && (
-                  <span className="text-white/40 text-xs">/ {formatPrice(camp.earlyBirdPriceEur || camp.priceEur, "EUR")}</span>
-                )}
                 <span className="ml-auto text-xs text-white/30">{camp._count.applications} jelentkező</span>
               </div>
 

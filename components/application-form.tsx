@@ -3,6 +3,7 @@
 import Image from "next/image"
 import { ArrowRight, Shield, CreditCard, Users, BadgePercent } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import { useSiteImage } from "@/lib/site-images-context"
 
 const TRUST_ITEMS = [
   { Icon: Users, color: "#22c55e" },
@@ -12,6 +13,7 @@ const TRUST_ITEMS = [
 
 export function ApplicationForm() {
   const { t } = useLanguage()
+  const image = useSiteImage("jelentkezes.side")
 
   return (
     <section className="relative py-14 md:py-28 overflow-hidden">
@@ -34,12 +36,13 @@ export function ApplicationForm() {
           <div className="relative">
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
               <Image
-                src="https://focis.b-cdn.net/site/edzes-kozben.jpg"
+                src={image}
                 alt="Edzés közben"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
                 loading="lazy"
+                unoptimized={image.includes("b-cdn.net")}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0a1f0a] via-transparent to-transparent" />
 

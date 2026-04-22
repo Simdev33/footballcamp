@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import Script from 'next/script'
 import { LayoutWrapper } from '@/components/layout-wrapper'
 import { getSiteContent } from '@/lib/content'
+import { getSiteImages } from '@/lib/site-images'
 
 const GOOGLE_ADS_ID = 'AW-18106758812'
 import './globals.css'
@@ -39,7 +40,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const dbContent = await getSiteContent()
+  const [dbContent, siteImages] = await Promise.all([
+    getSiteContent(),
+    getSiteImages(),
+  ])
 
   return (
     <html lang="hu">
@@ -68,7 +72,7 @@ gtag('config', '${GOOGLE_ADS_ID}', { allow_enhanced_conversions: true });`}
         />
       </head>
       <body className={`${playfair.variable} ${inter.variable} font-sans antialiased`}>
-        <LayoutWrapper dbContent={dbContent}>{children}</LayoutWrapper>
+        <LayoutWrapper dbContent={dbContent} siteImages={siteImages}>{children}</LayoutWrapper>
         <Analytics />
       </body>
     </html>

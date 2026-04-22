@@ -1,4 +1,4 @@
-export type Locale = "hu" | "en";
+﻿export type Locale = "hu" | "en";
 
 export const translations = {
   hu: {
@@ -10,19 +10,19 @@ export const translations = {
       gallery: "Galéria",
       contact: "Kapcsolat",
       faq: "GYIK",
-      blog: "Blog",
-      register: "Jelentkezés",
+      blog: "Hírek",
+      register: "Jelentkezés →",
     },
     hero: {
       campBadge: "Eddz valódi akadémiai módszerekkel, európai top klubok edzőivel!",
-      location: "Algyő (Szeged), Magyarország",
+      location: "",
       pickLocation: "Válassz tábort",
       line1: "Adj a gyermekednek",
       line2: "valódi élményt,",
       line3: "ne csak egy nyári focitábort!",
-      subtitle: "Focitábor 7–15 éves gyerekeknek top európai akadémiák edzőivel",
+      subtitle: "Focitábor 7-15 éves korosztályig top európai akadémiák edzőivel",
       tagline: "Top európai akadémiák • Külföldi edzők • Valódi élmény",
-      cta: "Jelentkezem a táborba",
+      cta: "Jelentkezés →",
       earlyLabel: "Korlátozott létszám!",
       scroll: "Görgess",
       carouselPrev: "Előző tábor",
@@ -73,14 +73,14 @@ export const translations = {
         { title: "Fókuszált edzéskörnyezet", desc: "15 fős csoportok korosztályonként, ahol minden gyerek személyes figyelmet kap" },
         { title: "Napi több edzés", desc: "Technikai, taktikai és mentális fejlődés intenzív, mégis életkorhoz igazított formában" },
         { title: "Fejlődés és élmény együtt", desc: "Egy hét, amely nemcsak élményt ad, hanem hosszú távon is építi az önbizalmat és a játékot" },
-        { title: "Fiúknak és lányoknak egyaránt", desc: "Táboraink minden 7–15 éves gyermek számára nyitottak, nem, tudásszint és tapasztalat alapján csoportokba osztva" },
+        { title: "Fiúknak és lányoknak egyaránt", desc: "Táboraink minden 7-15 éves gyermek számára nyitottak, nem, tudásszint és tapasztalat alapján csoportokba osztva" },
       ],
     },
     targetAudience: {
       badge: "Kinek szól?",
       title: "Kinek ajánljuk",
       titleHighlight: "a tábort?",
-      text: "Ez a tábor azoknak a 7–15 éves fiúknak és lányoknak szól, akik nem csak focizni szeretnek, hanem fejlődni is akarnak. És azoknak a szülőknek, akik fontosnak tartják, hogy a gyermekük minőségi, szakmailag megalapozott környezetben fejlődjön.",
+      text: "Ez a tábor azoknak a 7-15 éves korosztályba tartozó fiúknak és lányoknak szól, akik nem csak focizni szeretnek, hanem fejlődni is akarnak. És azoknak a szülőknek, akik fontosnak tartják, hogy a gyermekük minőségi, szakmailag megalapozott környezetben fejlődjön.",
       items: [
         "Ha a gyermeked már focizik, és szeretne szintet lépni",
         "Ha fontos számodra a minőségi, strukturált edzés",
@@ -198,14 +198,14 @@ export const translations = {
       spotsLabel: "Férőhely",
       earlyBirdLabel: "Early bird ár május 31-ig",
       earlyBirdBadge: "KORAI ÁR",
-      spots: "fő",
+      spots: "",
       camps: [],
     },
     limitedSpots: {
-      title: "Korlátozott létszám, biztosítsd a helyed időben!",
-      text: "Táboraink kis létszámú csoportokkal működnek, ezért a férőhelyek száma korlátozott. A korai időben jelentkezők biztosítják a helyüket a kiválasztott turnusban.",
+      title: "Biztosítsd a helyed időben!",
+      text: "Táboraink kis létszámú csoportokkal működnek. A korai időben jelentkezők biztosítják a helyüket a kiválasztott turnusban.",
       earlyBirdNote: "Early bird kedvezmény: jelentkezz május 31-ig és biztosítsd kedvezményes áron a helyed!",
-      cta: "Jelentkezem a táborba",
+      cta: "Jelentkezés →",
     },
     experience: {
       badge: "Több mint edzés",
@@ -231,14 +231,14 @@ export const translations = {
       badge: "Jelentkezés",
       title: "Biztosítsd a helyed",
       titleHighlight: "a táborban",
-      subtitle: "A férőhelyek száma korlátozott, a turnusok feltöltése folyamatos. Jelentkezz most, hogy biztosan részt vehessen a gyermeked a táborban.",
-      cta: "Jelentkezem a táborba",
+      subtitle: "A turnusok feltöltése folyamatos. Jelentkezz most, hogy biztosan részt vehessen a gyermeked a táborban.",
+      cta: "Jelentkezés →",
       trust: [
-        { label: "Kis létszámú csoportok", desc: "Max. 12–15 fő korosztályonként" },
+        { label: "Kis létszámú csoportok", desc: "Max. 12-15 fő korosztályonként" },
         { label: "Early bird kedvezmény", desc: "Május 31-ig kedvezményes ár" },
         { label: "Részletfizetési lehetőség", desc: "Rugalmas fizetési opciók" },
       ],
-      security: "A jelentkezés nem jár azonnali fizetési kötelezettséggel.",
+      security: "",
     },
     faq: {
       badge: "GYIK",
@@ -251,11 +251,11 @@ export const translations = {
         },
         {
           question: "Kik vehetnek részt a táborokban?",
-          answer: "Táboraink minden olyan 6-15 év közötti fiatal labdarúgó (fiúk, lányok) számára nyitottak, akik szeretnének fejlődni, nyitottak a nemzetközi edzésmódszerekre és szeretnének felejthetetlen 5 napot focival eltölteni. A táborokban való részvételt előzetes tudásszint-felmérés nem előzi meg, de értelemszerűen olyanoknak érdemes jelentkezni, akik nem most fognak először focilabdát látni.",
+          answer: "Táboraink minden olyan 7-15 éves korosztályba tartozó fiatal labdarúgó (fiúk, lányok) számára nyitottak, akik szeretnének fejlődni, nyitottak a nemzetközi edzésmódszerekre és szeretnének felejthetetlen 5 napot focival eltölteni. A táborokban való részvételt előzetes tudásszint-felmérés nem előzi meg, de értelemszerűen olyanoknak érdemes jelentkezni, akik nem most fognak először focilabdát látni.",
         },
         {
           question: "Milyen korosztálynak szólnak a táborok?",
-          answer: "A klubok egyedi szabályozása szerint eltérő lehet, de általában 6-15 éves kor között várjuk a jelentkezőket.",
+          answer: "Egységesen 7-15 éves korosztályig várjuk a jelentkezőket.",
         },
         {
           question: "Milyen nyelven zajlanak az edzések?",
@@ -279,7 +279,7 @@ export const translations = {
         },
         {
           question: "Van-e lehetőség részletfizetésre?",
-          answer: "Igen van! Jelentkezéskor 30.000 Ft 1. részletfizetés megfizetése kötelező, ezt követően a fennmaradó összeg megfizetése – igény szerint – még két részletben is történhet. A teljes összeg megfizetésének a tábor kezdési időpontja előtt egy héttel meg kell történnie. Fontos, hogy az EARLYBIRD kedvezmény igénybevétele esetén nincs lehetőség részletfizetésre!",
+          answer: "Igen van! Jelentkezéskor az első részletfizetés (40%) megfizetése kötelező. A fennmaradó összeg kifizetésére a tábor előtti 30. napon küldünk fizetési linket, amelyre 2 hét fizetési határidőt biztosítunk. Fontos, hogy az EARLYBIRD kedvezmény igénybevétele esetén nincs lehetőség részletfizetésre!",
         },
         {
           question: "Van lehetőség korai kedvezményre?",
@@ -320,12 +320,12 @@ export const translations = {
       sizesHint: "A tábor felszerelés (mez, rövidnadrág) választásához.",
       jerseySize: "Mez mérete",
       shortsSize: "Nadrág mérete",
-      shoeSize: "Cipőméret",
+      shoeSize: "Sportszár mérete",
       shoeSizePh: "pl. 36",
       selectPlaceholder: "Válassz...",
       campSelect: "Melyik táborra jelentkezik?",
       campSelectPlaceholder: "Válassz tábort...",
-      spotsShort: "szabad hely",
+      spotsShort: "",
       addChild: "További gyermek hozzáadása",
       notesLabel: "Megjegyzés",
       notesOptional: "(nem kötelező)",
@@ -335,8 +335,8 @@ export const translations = {
       privacyAnd: "és az",
       termsLink: "ÁSZF-et",
       privacyEnd: ".",
-      submit: "Jelentkezés elküldése",
-      afterSubmit: "A jelentkezés elküldése után e-mailben felvesszük veled a kapcsolatot.",
+      submit: "Jelentkezés és Fizetés",
+      afterSubmit: "Átirányítunk a biztonságos fizetési oldalra.",
       errChildMissing: "A(z) {n}. gyermek kötelező mezői nincsenek kitöltve.",
       errPlaysMissing: "Jelöld be, hogy a(z) {n}. gyermek focizik-e egyesületben.",
       errSizesMissing: "A(z) {n}. gyermek méret adatai hiányoznak.",
@@ -400,7 +400,7 @@ export const translations = {
             "Nyilvántartó bíróság: Szegedi Törvényszék Cégbírósága",
             "Képviselő: Rozinka Arnold, ügyvezető",
             "Telefonszám: +36 30 755 1110",
-            "E-mail: kickoff.focitabor@gmail.com",
+            "E-mail: info@kickoffcamps.hu",
             "Honlap: https://kickoffcamps.hu",
             "Tárhelyszolgáltató: Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA – https://vercel.com",
           ],
@@ -447,7 +447,7 @@ export const translations = {
             "A részvételi díj magában foglalja a tábor leírásában feltüntetett szakmai programot, az ott jelzett felszerelést és kiegészítő szolgáltatásokat. A részvételi díj nem tartalmazza a Résztvevő táborba történő utaztatását, a személyes költéseket, valamint a tábor leírásában kifejezetten opcionálisként megjelölt szolgáltatásokat.",
             "A részvételi díj megfizetése két részletben, banki átutalással történik a visszaigazoló e-mailben megadott számlaszámra, a közleményben a jelentkezési azonosító feltüntetésével:",
             "(a) 1. részletfizetés: a visszaigazoló e-mail kézhezvételétől számított 8 napon belül, összege a visszaigazolásban szerepel (általában 30 000 Ft/fő).",
-            "(b) Fennmaradó díj: legkésőbb a tábor kezdőnapját megelőző 14. napig.",
+            "(b) Fennmaradó díj: legkésőbb a tábor kezdőnapját megelőző 30. napig.",
             "A fizetési határidő elmulasztása esetén a Szolgáltató – előzetes e-mailes figyelmeztetést követően – jogosult a szerződéstől egyoldalúan elállni és a helyet újra kiadni; ilyen esetben a már befizetett 1. részletfizetés foglalónak minősül és a Szolgáltatót illeti (Ptk. 6:185. §).",
             "Kedvezmények: az egyes táborok oldalain feltüntetett »early bird« vagy egyéb kedvezmények a megjelölt határidőig leadott és a Szolgáltató által visszaigazolt jelentkezésekre érvényesek. A kedvezmények egymással nem vonhatók össze és készpénzre nem válthatók.",
           ],
@@ -462,7 +462,7 @@ export const translations = {
             "(c) A tábor kezdőnapját megelőző 14 napon belüli lemondás, illetve a táborban történő meg nem jelenés esetén a befizetett teljes összeg meghiúsulási kötbérként a Szolgáltatót illeti, kivéve a lent írt egészségügyi méltányossági eseteket.",
             "Egészségügyi méltányosság: amennyiben a Résztvevő a tábor kezdete előtt vagy alatt igazoltan (háziorvosi/szakorvosi igazolással alátámasztva) olyan egészségügyi állapotba kerül, amely a részvételt kizárja, a Szolgáltató – szabad mérlegelési jogkörében – az érintett napokra eső részvételi díjat részben vagy egészben visszatérítheti, vagy azt következő turnusra átvezetheti.",
             "A visszajáró összegeket a Szolgáltató a lemondás elfogadását követő 14 napon belül, a befizetéssel azonos módon (banki átutalással) fizeti vissza a Megrendelő által megadott számlaszámra.",
-            "Lemondást kizárólag írásban, a kickoff.focitabor@gmail.com e-mail címre küldve lehet érvényesen leadni.",
+            "Lemondást kizárólag írásban, a info@kickoffcamps.hu e-mail címre küldve lehet érvényesen leadni.",
           ],
         },
         {
@@ -501,7 +501,7 @@ export const translations = {
           heading: "12. Képmás- és hangfelvétel",
           paragraphs: [
             "A Szolgáltató a táborban marketing célú képmás- és hangfelvételeket készíthet, amelyeket a Honlapján és közösségi média felületein (különösen Facebook, Instagram, YouTube) felhasználhat.",
-            "Amennyiben a Megrendelő ehhez nem járul hozzá, ezt a jelentkezéskor vagy legkésőbb a tábor kezdete előtt írásban, a kickoff.focitabor@gmail.com e-mail címen bármikor jelezheti. A már közzétett felvételek ez esetben ésszerű határidőn belül eltávolításra kerülnek.",
+            "Amennyiben a Megrendelő ehhez nem járul hozzá, ezt a jelentkezéskor vagy legkésőbb a tábor kezdete előtt írásban, a info@kickoffcamps.hu e-mail címen bármikor jelezheti. A már közzétett felvételek ez esetben ésszerű határidőn belül eltávolításra kerülnek.",
             "A felvételek készítésének és felhasználásának adatkezelési részletei az Adatkezelési Tájékoztatóban szerepelnek.",
           ],
         },
@@ -521,7 +521,7 @@ export const translations = {
         {
           heading: "15. Panaszkezelés és jogorvoslat",
           paragraphs: [
-            "A Megrendelő panaszát szóban (telefon: +36 30 755 1110), írásban e-mailen (kickoff.focitabor@gmail.com) vagy postai úton a Szolgáltató székhelyére (6728 Szeged, Felsőnyomás út 47.) küldve terjesztheti elő.",
+            "A Megrendelő panaszát szóban (telefon: +36 30 755 1110), írásban e-mailen (info@kickoffcamps.hu) vagy postai úton a Szolgáltató székhelyére (6728 Szeged, Felsőnyomás út 47.) küldve terjesztheti elő.",
             "A Szolgáltató a szóbeli panaszt – ha lehetséges – azonnal orvosolja. Ha ez nem lehetséges, jegyzőkönyvet vesz fel és annak másolati példányát a Megrendelő részére átadja vagy megküldi. Az írásbeli panaszra a Szolgáltató 30 napon belül érdemben válaszol.",
             "A panasz elutasítása esetén a fogyasztónak minősülő Megrendelő az alábbi szervekhez fordulhat:",
             "Csongrád-Csanád Vármegyei Békéltető Testület – 6721 Szeged, Párizsi krt. 8–12.; e-mail: bekelteto.testulet@csmkik.hu; honlap: https://bekeltetes-csongrad.hu",
@@ -580,7 +580,7 @@ export const translations = {
         {
           heading: "Kapcsolat",
           paragraphs: [
-            "Cookie-kkal kapcsolatos kérdéseit a kickoff.focitabor@gmail.com e-mail címen teheti fel. Bővebb információt az Adatkezelési Tájékoztatónk tartalmaz.",
+            "Cookie-kkal kapcsolatos kérdéseit a info@kickoffcamps.hu e-mail címen teheti fel. Bővebb információt az Adatkezelési Tájékoztatónk tartalmaz.",
           ],
         },
       ],
@@ -621,19 +621,19 @@ export const translations = {
       gallery: "Gallery",
       contact: "Contact",
       faq: "FAQ",
-      blog: "Blog",
-      register: "Register",
+      blog: "News",
+      register: "Apply →",
     },
     hero: {
       campBadge: "Train with real academy methods, coached by Europe's top clubs!",
-      location: "Algyő (Szeged), Hungary",
+      location: "",
       pickLocation: "Choose a camp",
       line1: "Give your child",
       line2: "a real experience,",
       line3: "not just a summer camp!",
       subtitle: "Football camp for ages 7–15 with coaches from Europe's top academies",
       tagline: "Top European academies • International coaches • Real experience",
-      cta: "Register for camp",
+      cta: "Apply & Pay",
       earlyLabel: "Limited spots!",
       scroll: "Scroll",
       carouselPrev: "Previous camp",
@@ -816,7 +816,7 @@ export const translations = {
       title: "Limited spots – secure your place in time!",
       text: "Our camps operate with small groups, so the number of available spots is limited. Early registrants secure their place in their chosen session.",
       earlyBirdNote: "Early bird discount: register by May 31 and secure your spot at a reduced price!",
-      cta: "Register for camp",
+      cta: "Apply & Pay",
     },
     experience: {
       badge: "More than training",
@@ -843,13 +843,13 @@ export const translations = {
       title: "Secure your place",
       titleHighlight: "at camp",
       subtitle: "The number of spots is limited and sessions fill up continuously. Register now so your child can participate.",
-      cta: "Register for camp",
+      cta: "Apply & Pay",
       trust: [
         { label: "Small groups", desc: "Max. 12–15 per age group" },
         { label: "Early bird discount", desc: "Reduced price until May 31" },
         { label: "Instalment payment", desc: "Flexible payment options" },
       ],
-      security: "Registration does not require immediate payment.",
+      security: "",
     },
     faq: {
       badge: "FAQ",
@@ -862,11 +862,11 @@ export const translations = {
         },
         {
           question: "Who can participate in the camps?",
-          answer: "Our camps are open to all young footballers (boys and girls) aged 6-15 who want to develop, are open to international training methods, and want to spend an unforgettable 5 days playing football. There is no preliminary skill assessment, but it is recommended for those who have at least some prior experience with football.",
+          answer: "Our camps are open to all young footballers (boys and girls) aged 7-15 who want to develop, are open to international training methods, and want to spend an unforgettable 5 days playing football. There is no preliminary skill assessment, but it is recommended for those who have at least some prior experience with football.",
         },
         {
           question: "What age group are the camps designed for?",
-          answer: "It may vary according to each club's specific regulations, but generally we welcome participants between the ages of 6 and 15.",
+          answer: "It may vary according to each club's specific regulations, but generally we welcome participants between the ages of 7 and 15.",
         },
         {
           question: "What language are the training sessions in?",
@@ -931,7 +931,7 @@ export const translations = {
       sizesHint: "For choosing camp kit (jersey, shorts).",
       jerseySize: "Jersey size",
       shortsSize: "Shorts size",
-      shoeSize: "Shoe size",
+      shoeSize: "Socks size",
       shoeSizePh: "e.g. 36",
       selectPlaceholder: "Select...",
       campSelect: "Which camp is the child registering for?",
@@ -946,8 +946,8 @@ export const translations = {
       privacyAnd: "and the",
       termsLink: "Terms of Service",
       privacyEnd: ".",
-      submit: "Submit registration",
-      afterSubmit: "After submitting, we will contact you by email.",
+      submit: "Apply & Pay",
+      afterSubmit: "You will be redirected to the secure payment page.",
       errChildMissing: "Required fields for child #{n} are not filled in.",
       errPlaysMissing: "Please indicate whether child #{n} plays at a club.",
       errSizesMissing: "Size information for child #{n} is missing.",
@@ -1011,7 +1011,7 @@ export const translations = {
             "Registering court: Court of Registration of the Szeged Regional Court",
             "Represented by: Arnold Rozinka, Managing Director",
             "Phone: +36 30 755 1110",
-            "E-mail: kickoff.focitabor@gmail.com",
+            "E-mail: info@kickoffcamps.hu",
             "Website: https://kickoffcamps.hu",
             "Hosting provider: Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA – https://vercel.com",
           ],
@@ -1058,7 +1058,7 @@ export const translations = {
             "The participation fee includes the professional programme, the equipment and the supplementary services set out in the camp description. The participation fee does not include the Participant's travel to and from the camp, personal expenses, or services expressly marked as optional.",
             "The participation fee is payable in two instalments by bank transfer to the account given in the confirmation e-mail, stating the registration reference:",
             "(a) 1st instalment: within 8 days from receipt of the confirmation e-mail, in the amount specified in the confirmation (typically HUF 30,000 per Participant).",
-            "(b) Balance: no later than 14 days before the start date of the camp.",
+            "(b) Balance: no later than 30 days before the start date of the camp.",
             "If a payment deadline is missed, the Service Provider is entitled – after a written e-mail reminder – to unilaterally withdraw from the contract and reallocate the spot; in this case the 1st instalment already paid qualifies as earnest money and is retained by the Service Provider (Section 6:185 of the Civil Code).",
             "Discounts: »early bird« or other discounts shown on the camp pages are valid for registrations submitted by and confirmed by the Service Provider within the stated deadline. Discounts cannot be combined and cannot be redeemed for cash.",
           ],
@@ -1073,7 +1073,7 @@ export const translations = {
             "(c) In case of cancellation received within 14 days of the start date, or no-show at the camp, the total amount paid is retained by the Service Provider as a cancellation penalty, except in the medical goodwill cases set out below.",
             "Medical goodwill: if the Participant is rendered, before or during the camp, medically unable to participate (supported by a certificate from a GP or specialist), the Service Provider may, at its sole discretion, partially or fully refund the fee for the affected days or transfer it to a subsequent turn.",
             "The Service Provider refunds any amounts due within 14 days of acceptance of the cancellation, by the same method as the original payment (bank transfer) to the account designated by the Customer.",
-            "Cancellations may only validly be submitted in writing by e-mail to kickoff.focitabor@gmail.com.",
+            "Cancellations may only validly be submitted in writing by e-mail to info@kickoffcamps.hu.",
           ],
         },
         {
@@ -1112,7 +1112,7 @@ export const translations = {
           heading: "12. Image and audio recordings",
           paragraphs: [
             "The Service Provider may take image and audio recordings at the camp for marketing purposes, which may be used on its Website and social media channels (in particular Facebook, Instagram, YouTube).",
-            "If the Customer does not consent to this, they may notify the Service Provider at registration or at any later time in writing at kickoff.focitabor@gmail.com. Already published recordings will be removed within a reasonable time.",
+            "If the Customer does not consent to this, they may notify the Service Provider at registration or at any later time in writing at info@kickoffcamps.hu. Already published recordings will be removed within a reasonable time.",
             "The data protection aspects of such recordings are set out in the Privacy Notice.",
           ],
         },
@@ -1132,7 +1132,7 @@ export const translations = {
         {
           heading: "15. Complaints and legal remedies",
           paragraphs: [
-            "The Customer may submit a complaint orally (phone: +36 30 755 1110), in writing by e-mail (kickoff.focitabor@gmail.com) or by post to the Service Provider's registered office (6728 Szeged, Felsőnyomás út 47.).",
+            "The Customer may submit a complaint orally (phone: +36 30 755 1110), in writing by e-mail (info@kickoffcamps.hu) or by post to the Service Provider's registered office (6728 Szeged, Felsőnyomás út 47.).",
             "The Service Provider will address oral complaints immediately where possible. If not possible, a record is drawn up and a copy is provided or sent to the Customer. Written complaints are answered substantively within 30 days.",
             "If a complaint is rejected, the Customer, qualifying as a consumer, may turn to:",
             "Csongrád-Csanád County Conciliation Board – 6721 Szeged, Párizsi krt. 8–12., Hungary; e-mail: bekelteto.testulet@csmkik.hu; website: https://bekeltetes-csongrad.hu",
@@ -1191,7 +1191,7 @@ export const translations = {
         {
           heading: "Contact",
           paragraphs: [
-            "For cookie-related questions please contact kickoff.focitabor@gmail.com. Further information is available in our Privacy Notice.",
+            "For cookie-related questions please contact info@kickoffcamps.hu. Further information is available in our Privacy Notice.",
           ],
         },
       ],
@@ -1226,3 +1226,4 @@ export const translations = {
 };
 
 export type Translations = (typeof translations)["hu"];
+

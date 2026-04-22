@@ -4,12 +4,14 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, Handshake, Mail, Users, Globe, Heart, Check } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import { useSiteImage } from "@/lib/site-images-context"
 
 const SECTION_ICONS = [Users, Globe, Heart]
 const SECTION_COLORS = ["#22c55e", "#3b82f6", "#d4a017"]
 
 export default function PartnerprogramPage() {
   const { t } = useLanguage()
+  const heroImg = useSiteImage("partnerProgram.hero")
 
   return (
     <main>
@@ -103,7 +105,7 @@ export default function PartnerprogramPage() {
 
       <section className="relative py-16 md:py-24 overflow-hidden">
         <div className="absolute inset-0">
-          <Image src="https://focis.b-cdn.net/Post_1%20Camp/03%20Template%20Benfica%20Camp%202025_26-03.png" alt="Kickoff" fill className="object-cover" loading="lazy" />
+          <Image src={heroImg} alt="Kickoff" fill className="object-cover" loading="lazy" unoptimized={heroImg.includes("b-cdn.net")} />
           <div className="absolute inset-0 bg-[#0a1f0a]/90" />
         </div>
         <div className="relative z-10 max-w-[800px] mx-auto px-4 md:px-12 text-center">

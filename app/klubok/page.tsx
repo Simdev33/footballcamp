@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import { useLanguage } from "@/lib/language-context"
+import { useSiteImage } from "@/lib/site-images-context"
 
 const CDN = "https://focis.b-cdn.net"
 const BENFICA_LOGO = "https://upload.wikimedia.org/wikipedia/en/thumb/a/a2/SL_Benfica_logo.svg/1280px-SL_Benfica_logo.svg.png"
@@ -29,6 +30,7 @@ const BENFICA_STATS = [
 
 export default function KlubokPage() {
   const { t } = useLanguage()
+  const bannerImg = useSiteImage("klubok.banner")
 
   return (
     <main>
@@ -36,7 +38,6 @@ export default function KlubokPage() {
         <div className="absolute inset-0 bg-[#0a1f0a]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#d4a01714_0%,transparent_60%)]" />
         <div className="relative z-10 max-w-[1400px] mx-auto px-4 md:px-12 lg:px-24 text-center">
-          <Image src={BENFICA_LOGO} alt="SL Benfica" width={100} height={100} className="w-20 h-20 md:w-24 md:h-24 object-contain mx-auto mb-6" />
           <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-white">
             Kik <span className="text-[#d4a017]">állnak</span> mögöttünk?
           </h1>
@@ -46,7 +47,7 @@ export default function KlubokPage() {
 
       <section className="relative py-14 md:py-20 overflow-hidden">
         <div className="absolute inset-0">
-          <Image src={`${CDN}/Post_1%20Camp/04%20Template%20Benfica%20Camp%202025_26_Banner.png`} alt="Kickoff" fill className="object-cover" loading="lazy" />
+          <Image src={bannerImg} alt="Kickoff" fill className="object-cover" loading="lazy" unoptimized={bannerImg.includes("b-cdn.net")} />
           <div className="absolute inset-0 bg-[#0a1f0a]/80" />
         </div>
         <div className="relative z-10 max-w-[1400px] mx-auto px-4 md:px-12 lg:px-24">
@@ -78,16 +79,26 @@ export default function KlubokPage() {
 
       <section className="py-12 md:py-18 bg-[#0a1f0a]">
         <div className="max-w-[1400px] mx-auto px-4 md:px-12 lg:px-24">
+          {/* Made in Benfica – kiemelt, fiatalos stílus */}
           <div className="text-center mb-8 md:mb-10">
-            <h2 className="font-serif text-xl md:text-3xl font-bold text-white">
-              Benfica <span className="text-[#d4a017]">játékosok</span>
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#d4a017]/10 border border-[#d4a017]/40 text-[#d4a017] text-[10px] md:text-xs font-bold tracking-[0.35em] uppercase">
+              ★ Stamped in Lisbon
+            </span>
+            <h2 className="mt-4 font-serif text-2xl md:text-4xl lg:text-5xl font-black text-white leading-tight">
+              MADE IN <span className="bg-[#d4a017] text-[#0a1f0a] px-3 py-0.5 md:px-4 md:py-1 italic">BENFICA</span>
             </h2>
+            <p className="mt-4 text-white/50 text-xs md:text-sm max-w-xl mx-auto">
+              Egy akadémia, amely évről évre világklasszis játékosokat nevel. Ők a mi edzőink iskolájának gyümölcsei.
+            </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
             {PLAYER_PHOTOS.map((player) => (
               <div key={player.name} className="group relative aspect-[3/4] overflow-hidden bg-gradient-to-b from-[#1a0a0a] to-[#0a1f0a]">
                 <Image src={player.src} alt={player.name} fill sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 16vw" className="object-cover object-top group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                <div className="absolute top-2 right-2 md:top-3 md:right-3 px-2 py-0.5 bg-[#d4a017] text-[#0a1f0a] text-[9px] md:text-[10px] font-black tracking-wider uppercase">
+                  Benfica
+                </div>
                 <div className="absolute bottom-0 left-0 right-0 p-2.5 md:p-3">
                   <span className="block text-[#d4a017] font-serif text-xl md:text-2xl font-bold leading-none">#{player.number}</span>
                   <span className="block text-white text-xs md:text-sm font-medium mt-1">{player.name}</span>
@@ -97,15 +108,19 @@ export default function KlubokPage() {
             ))}
           </div>
 
-          <div className="mt-8 md:mt-10 text-center">
-            <p className="text-white/40 text-xs md:text-sm mb-4">Akadémiai végzősök</p>
-            <div className="flex flex-wrap justify-center gap-2 md:gap-3">
-              {BENFICA_PLAYERS.map((player, i) => (
-                <span key={player} className={`px-3 py-1.5 md:px-5 md:py-2 font-serif text-xs md:text-sm font-bold border transition-colors duration-300 ${i % 3 === 0 ? "bg-[#d4a017] text-[#0a1f0a] border-[#d4a017]" : "bg-transparent text-white/70 border-[#d4a017]/20 hover:bg-[#d4a017]/10"}`}>
-                  {player}
-                </span>
-              ))}
-            </div>
+          {/* Akadémiai végzősök – kiegészítő badge lista */}
+          <div className="mt-14 md:mt-20 text-center mb-6 md:mb-8">
+            <h2 className="font-serif text-xl md:text-3xl font-bold text-white">
+              Akadémiai <span className="text-[#d4a017]">végzősök</span>
+            </h2>
+            <p className="mt-3 text-white/50 text-xs md:text-sm">Csak néhány név, akit a Benfica akadémia adott a világnak.</p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+            {BENFICA_PLAYERS.map((player, i) => (
+              <span key={player} className={`px-3 py-1.5 md:px-5 md:py-2 font-serif text-xs md:text-sm font-bold border transition-colors duration-300 ${i % 3 === 0 ? "bg-[#d4a017] text-[#0a1f0a] border-[#d4a017]" : "bg-transparent text-white/70 border-[#d4a017]/20 hover:bg-[#d4a017]/10"}`}>
+                {player}
+              </span>
+            ))}
           </div>
         </div>
       </section>

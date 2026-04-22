@@ -1,4 +1,4 @@
-"use server"
+﻿"use server"
 
 import { db } from "@/lib/db"
 import { revalidatePath } from "next/cache"
@@ -74,7 +74,7 @@ export async function createCamp(formData: FormData) {
       description: (formData.get("description") as string) || "",
       imageUrl: (formData.get("imageUrl") as string) || null,
       clubName: (formData.get("clubName") as string) || "SL Benfica",
-      ageRange: (formData.get("ageRange") as string) || "6-15",
+      ageRange: (formData.get("ageRange") as string) || "7-15",
       includes: parseStringArray(formData, "includes"),
       gallery: parseStringArray(formData, "gallery"),
       videoUrl: (formData.get("videoUrl") as string) || null,
@@ -103,7 +103,7 @@ export async function updateCamp(id: string, formData: FormData) {
       description: (formData.get("description") as string) || "",
       imageUrl: (formData.get("imageUrl") as string) || null,
       clubName: (formData.get("clubName") as string) || "SL Benfica",
-      ageRange: (formData.get("ageRange") as string) || "6-15",
+      ageRange: (formData.get("ageRange") as string) || "7-15",
       includes: parseStringArray(formData, "includes"),
       gallery: parseStringArray(formData, "gallery"),
       videoUrl: (formData.get("videoUrl") as string) || null,
@@ -405,3 +405,4 @@ export async function resetSiteContent(section: string, locale: string) {
   revalidatePath("/", "layout")
   revalidatePath("/admin/tartalom")
 }
+

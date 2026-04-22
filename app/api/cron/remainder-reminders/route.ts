@@ -6,8 +6,10 @@ export const runtime = "nodejs"
 
 /**
  * Cron entry point: finds deposit-paid applications whose camp starts in the
- * next ~14 days and that haven't been reminded yet, then generates+sends a
- * remainder Stripe checkout link for each.
+ * next ~30 days and that haven't been reminded yet, then generates+sends a
+ * remainder Stripe checkout link for each. The Stripe session itself is valid
+ * for 14 days (see /api/stripe/remainder), so parents get the mail 30 days
+ * before camp start and have 2 weeks to pay.
  *
  * Vercel cron calls this with a Bearer token (CRON_SECRET) header.
  */
@@ -24,7 +26,7 @@ export async function GET(request: Request) {
   }
 
   const now = new Date()
-  const in14Days = new Date(now.getTime() + 14 * 24 * 3600 * 1000)
+  const in30Days = new Date(now.getTime() + 30 * 24 * 3600 * 1000)
 
   const candidates = await db.application.findMany({
     where: {
@@ -35,7 +37,7 @@ export async function GET(request: Request) {
         startDate: {
           not: null,
           gte: now,
-          lte: in14Days,
+          lte: in30Days,
         },
       },
     },

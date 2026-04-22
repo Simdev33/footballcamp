@@ -141,10 +141,9 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
               )}
 
               {/* Stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <StatBox icon={<Calendar className="w-6 h-6" />} value={camp.dates.split(/[-–]/)[0]?.trim() || camp.dates} label="Időpont" />
                 <StatBox icon={<MapPin className="w-6 h-6" />} value={camp.venue} label="Helyszín" />
-                <StatBox icon={<Users className="w-6 h-6" />} value={`${camp.totalSpots} fő`} label="Maximum létszám" />
               </div>
 
               {/* Coaches */}
@@ -199,13 +198,7 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
                   <div className="space-y-3 text-sm">
                     <InfoRow label="Helyszín" value={camp.venue} />
                     <InfoRow label="Időpont" value={camp.dates} />
-                    <InfoRow label="Korosztály" value={`${camp.ageRange} év`} />
-                    <div className="flex items-center justify-between">
-                      <span className="text-white/50">Szabad helyek</span>
-                      <span className={`font-bold ${camp.remainingSpots <= 5 ? "text-red-400" : "text-emerald-400"}`}>
-                        {camp.remainingSpots} / {camp.totalSpots}
-                      </span>
-                    </div>
+                    <InfoRow label="Korosztály" value="7-15 éves korosztályig" />
                   </div>
 
                   <Link

@@ -39,11 +39,11 @@ export function Footer() {
             <p className="text-white/60 max-w-md leading-relaxed mb-6 text-sm">{t.footer.desc}</p>
             <div className="flex flex-col gap-2">
               <a
-                href="mailto:kickoff.focitabor@gmail.com"
+                href="mailto:info@kickoffcamps.hu"
                 className="inline-flex items-center gap-2 text-white/80 hover:text-[#d4a017] text-sm transition-colors"
               >
                 <Mail className="w-4 h-4" />
-                kickoff.focitabor@gmail.com
+                info@kickoffcamps.hu
               </a>
               <a
                 href="tel:+36307551110"

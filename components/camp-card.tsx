@@ -1,6 +1,6 @@
 "use client"
 
-import { MapPin, Calendar, Users, ArrowRight, Tag } from "lucide-react"
+import { MapPin, Calendar, ArrowRight, Tag } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
@@ -51,22 +51,13 @@ export function CampCard({ camp, imageSrc, className, priority }: CampCardProps)
         </div>
 
         <div className="p-3 md:p-4 lg:p-5">
-          <div className="mb-3 md:mb-4 grid grid-cols-2 gap-3 md:gap-4">
+          <div className="mb-3 md:mb-4">
             <div>
               <div className="mb-2 md:mb-3 flex items-center gap-2 md:gap-3 text-white/60">
                 <Calendar className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                 <span className="text-[10px] md:text-xs font-medium uppercase tracking-widest">{t.locations.dateLabel}</span>
               </div>
               <p className="text-xs md:text-sm font-semibold text-white">{camp.dates}</p>
-            </div>
-            <div>
-              <div className="mb-1.5 md:mb-2 flex items-center gap-2 md:gap-3 text-white/60">
-                <Users className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" />
-                <span className="text-[10px] md:text-xs font-medium uppercase tracking-widest">{t.locations.spotsLabel}</span>
-              </div>
-              <p className="text-xs md:text-sm font-semibold text-white">
-                {camp.spots} {t.locations.spots}
-              </p>
             </div>
           </div>
 
@@ -80,8 +71,8 @@ export function CampCard({ camp, imageSrc, className, priority }: CampCardProps)
 
           <Link href={camp.slug ? `/taborok/${camp.slug}` : "/taborok"} className="mt-3 md:mt-4 block">
             <span className="flex w-full items-center justify-center gap-2 bg-[#d4a017] px-4 py-3 md:px-6 md:py-3.5 text-xs md:text-sm font-bold text-[#0a1f0a] transition-all duration-300 hover:shadow-[0_0_30px_#d4a01780]">
-              {camp.cta}
-              <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
+              {(camp.cta && String(camp.cta).trim()) ? camp.cta : t.form.cta}
+              <ArrowRight className="h-4 w-4 md:h-5 md:w-5 shrink-0" />
             </span>
           </Link>
         </div>

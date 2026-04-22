@@ -22,13 +22,13 @@ export default async function BlogPage() {
     return (
       <main>
         <SubpageHero
-          title="Blog"
-          subtitle="Cikkek, tippek és inspiráció a futball világából"
+          title="Hírek"
+          subtitle="Hírek, cikkek és inspiráció a futball világából"
         />
         <section className="py-16 md:py-24 bg-background">
           <div className="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-24">
             <div className="text-center py-20 text-muted-foreground">
-              A blog jelenleg nem elérhető. Kérjük, próbáld újra később!
+              A hírek jelenleg nem elérhetők. Kérjük, próbáld újra később!
             </div>
           </div>
         </section>
@@ -42,8 +42,8 @@ export default async function BlogPage() {
   return (
     <main>
       <SubpageHero
-        title="Blog"
-        subtitle="Cikkek, tippek és inspiráció a futball világából"
+        title="Hírek"
+        subtitle="Hírek, cikkek és inspiráció a futball világából"
       />
 
       <section className="py-16 md:py-24 bg-background">

@@ -2,8 +2,9 @@ import { db } from "@/lib/db"
 import { deleteGalleryImage } from "@/lib/actions"
 import Image from "next/image"
 import Link from "next/link"
-import { Trash2, ChevronLeft, ChevronRight } from "lucide-react"
+import { Trash2, ChevronLeft, ChevronRight, ImageIcon } from "lucide-react"
 import { GalleryForm } from "@/components/admin/gallery-form"
+import { PageHeader } from "@/components/admin/page-header"
 
 export const dynamic = "force-dynamic"
 
@@ -26,14 +27,16 @@ export default async function AdminGalleryPage({ searchParams }: { searchParams:
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Galeria kezelese ({total} kep)</h2>
-      </div>
+      <PageHeader
+        icon={ImageIcon}
+        title={`Galéria (${total} kép)`}
+        description="A weboldal „Galéria” szekciójában megjelenő képek kezelése. Tölts fel új képeket, vagy törölj régieket."
+      />
 
       <GalleryForm />
 
       {images.length === 0 ? (
-        <div className="text-center py-20 text-white/30">Meg nincs kep a galeriaban</div>
+        <div className="text-center py-20 text-white/40 text-sm">Még nincs kép a galériában.</div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {images.map((img) => (

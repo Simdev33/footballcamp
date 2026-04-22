@@ -3,64 +3,20 @@
 import { useState, useTransition } from "react"
 import {
   Save, Pencil, X, Plus, Trash2, Globe, RotateCcw, Check, Eye,
-  Home, MapPin, Shield, Handshake, HelpCircle, ImageIcon, Settings, Loader2, FileText,
+  Loader2,
   ArrowRight, ChevronDown,
 } from "lucide-react"
 import { updateSiteContent, resetSiteContent } from "@/lib/actions"
 import type { Locale } from "@/lib/i18n"
+import { CONTENT_PAGES, type ContentPageId } from "@/lib/admin-content-pages"
+
+// Re-export for any client-only imports that still point at this module.
+export type { ContentPageId } from "@/lib/admin-content-pages"
+export { CONTENT_PAGES } from "@/lib/admin-content-pages"
 
 // ─── Page & section registry ───
 
-const PAGES = [
-  {
-    id: "home",
-    label: "Főoldal",
-    icon: Home,
-    sections: ["hero", "whySpecial", "whyDifferent", "usp", "limitedSpots", "whatKidsGet", "targetAudience", "experience"],
-  },
-  {
-    id: "helyszinek",
-    label: "Helyszínek & Jelentkezés",
-    icon: MapPin,
-    sections: ["locations", "form"],
-  },
-  {
-    id: "klubok",
-    label: "Klubok",
-    icon: Shield,
-    sections: ["coaches"],
-  },
-  {
-    id: "partner",
-    label: "Partner",
-    icon: Handshake,
-    sections: ["partnerProgram"],
-  },
-  {
-    id: "gyik",
-    label: "GYIK",
-    icon: HelpCircle,
-    sections: ["faq"],
-  },
-  {
-    id: "galeria",
-    label: "Galéria",
-    icon: ImageIcon,
-    sections: ["gallery"],
-  },
-  {
-    id: "altalanos",
-    label: "Általános",
-    icon: Settings,
-    sections: ["nav", "footer"],
-  },
-  {
-    id: "jogi",
-    label: "Jogi (ÁSZF & Cookie)",
-    icon: FileText,
-    sections: ["aszf", "cookiePolicy", "cookieBanner"],
-  },
-]
+const PAGES = CONTENT_PAGES
 
 const SECTION_INFO: Record<string, { label: string; desc: string; theme: string }> = {
   hero:            { label: "Hero szekció",              desc: "Fejléc videó háttérrel",             theme: "dark" },
@@ -808,16 +764,54 @@ function SectionPreview({
   )
 }
 
+// ─── Small helpers ───
+
+function LocaleToggle({ locale, onChange }: { locale: Locale; onChange: (l: Locale) => void }) {
+  return (
+    <div className="flex items-center gap-1 bg-white/5 border border-white/10 p-1 rounded">
+      {(["hu", "en"] as Locale[]).map((l) => (
+        <button
+          key={l}
+          onClick={() => onChange(l)}
+          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors rounded ${
+            locale === l
+              ? "bg-[#d4a017] text-[#0a1f0a]"
+              : "text-white/40 hover:text-white"
+          }`}
+        >
+          <Globe className="w-3 h-3" />
+          {l === "hu" ? "Magyar" : "English"}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 // ─── Main editor ───
 
 interface ContentEditorProps {
   initialContent: { hu: Record<string, unknown>; en: Record<string, unknown> }
   dbSections: string[]
+  /**
+   * When provided, the editor is scoped to that single page (no page tabs shown).
+   * Useful for dedicated per-page admin screens.
+   */
+  pageId?: ContentPageId
+  /** Optional image picker block rendered above the sections. */
+  imagesSlot?: React.ReactNode
+  /** Optional header slot (title + description) rendered at the very top. */
+  header?: React.ReactNode
 }
 
-export function ContentEditor({ initialContent, dbSections: initialDbSections }: ContentEditorProps) {
+export function ContentEditor({
+  initialContent,
+  dbSections: initialDbSections,
+  pageId,
+  imagesSlot,
+  header,
+}: ContentEditorProps) {
   const [locale, setLocale] = useState<Locale>("hu")
-  const [activePage, setActivePage] = useState("home")
+  const [activePage, setActivePage] = useState<ContentPageId>(pageId || "home")
   const [editingSection, setEditingSection] = useState<string | null>(null)
   const [editData, setEditData] = useState<Record<string, unknown> | null>(null)
   const [content, setContent] = useState(initialContent)
@@ -826,6 +820,7 @@ export function ContentEditor({ initialContent, dbSections: initialDbSections }:
   const [savedSection, setSavedSection] = useState<string | null>(null)
 
   const currentPage = PAGES.find((p) => p.id === activePage)
+  const lockedToPage = Boolean(pageId)
   const localeContent = (content[locale] || {}) as Record<string, Record<string, unknown>>
 
   const startEdit = (sectionId: string) => {
@@ -882,53 +877,48 @@ export function ContentEditor({ initialContent, dbSections: initialDbSections }:
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-serif font-bold text-white">Tartalom szerkesztő</h1>
-          <p className="text-xs text-white/40 mt-0.5">
-            Szekciók vizuális szerkesztése — változtatásaid azonnal megjelennek az oldalon
-          </p>
+      {header ? (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex-1 min-w-0">{header}</div>
+          <LocaleToggle locale={locale} onChange={(l) => { setLocale(l); cancelEdit() }} />
         </div>
-
-        {/* Language toggle */}
-        <div className="flex items-center gap-1 bg-white/5 border border-white/10 p-1">
-          {(["hu", "en"] as Locale[]).map((l) => (
-            <button
-              key={l}
-              onClick={() => { setLocale(l); cancelEdit() }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
-                locale === l
-                  ? "bg-[#d4a017] text-[#0a1f0a]"
-                  : "text-white/40 hover:text-white"
-              }`}
-            >
-              <Globe className="w-3 h-3" />
-              {l === "hu" ? "Magyar" : "English"}
-            </button>
-          ))}
+      ) : (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-xl font-serif font-bold text-white">Tartalom szerkesztő</h1>
+            <p className="text-xs text-white/40 mt-0.5">
+              Szekciók vizuális szerkesztése — változtatásaid azonnal megjelennek az oldalon
+            </p>
+          </div>
+          <LocaleToggle locale={locale} onChange={(l) => { setLocale(l); cancelEdit() }} />
         </div>
-      </div>
+      )}
 
-      {/* Page tabs */}
-      <div className="flex flex-wrap gap-1.5">
-        {PAGES.map((page) => {
-          const Icon = page.icon
-          return (
-            <button
-              key={page.id}
-              onClick={() => { setActivePage(page.id); cancelEdit() }}
-              className={`flex items-center gap-2 px-4 py-2.5 text-xs font-medium transition-all ${
-                activePage === page.id
-                  ? "bg-[#d4a017]/15 text-[#d4a017] border border-[#d4a017]/30"
-                  : "text-white/40 hover:text-white/70 border border-white/5 hover:border-white/15"
-              }`}
-            >
-              <Icon className="w-3.5 h-3.5" />
-              {page.label}
-            </button>
-          )
-        })}
-      </div>
+      {/* Images slot (per-page) */}
+      {imagesSlot}
+
+      {/* Page tabs – only when not locked to a single page */}
+      {!lockedToPage && (
+        <div className="flex flex-wrap gap-1.5">
+          {PAGES.map((page) => {
+            const Icon = page.icon
+            return (
+              <button
+                key={page.id}
+                onClick={() => { setActivePage(page.id); cancelEdit() }}
+                className={`flex items-center gap-2 px-4 py-2.5 text-xs font-medium transition-all rounded ${
+                  activePage === page.id
+                    ? "bg-[#d4a017]/15 text-[#d4a017] border border-[#d4a017]/30"
+                    : "text-white/40 hover:text-white/70 border border-white/5 hover:border-white/15"
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {page.label}
+              </button>
+            )
+          })}
+        </div>
+      )}
 
       {/* Sections */}
       <div className="space-y-3">

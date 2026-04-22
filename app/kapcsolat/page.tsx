@@ -1,11 +1,11 @@
-"use client"
+﻿"use client"
 
 import { Mail, Phone, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
 
 const CONTACT_CARDS = [
-  { icon: Mail, label: "Email", value: "kickoff.focitabor@gmail.com", href: "mailto:kickoff.focitabor@gmail.com", color: "bg-blue-600" },
+  { icon: Mail, label: "Email", value: "info@kickoffcamps.hu", href: "mailto:info@kickoffcamps.hu", color: "bg-blue-600" },
   { icon: Phone, label: "Telefon", value: "+36 30 755 1110", href: "tel:+36307551110", color: "bg-emerald-600" },
 ]
 
@@ -62,11 +62,11 @@ export default function KapcsolatPage() {
           </p>
           <div className="mt-10">
             <a
-              href="mailto:kickoff.focitabor@gmail.com"
+              href="mailto:info@kickoffcamps.hu"
               className="inline-flex items-center gap-3 px-10 py-5 bg-[#d4a017] text-[#0a1f0a] text-lg font-semibold hover:shadow-[0_20px_50px_#d4a0174d] transition-shadow duration-300"
             >
               <Mail className="w-6 h-6" />
-              kickoff.focitabor@gmail.com
+              info@kickoffcamps.hu
               <ArrowRight className="w-6 h-6" />
             </a>
           </div>
@@ -78,7 +78,7 @@ export default function KapcsolatPage() {
         <div className="max-w-[700px] mx-auto px-6 md:px-12 text-center">
           <p className="text-muted-foreground mb-6">Készen állsz a jelentkezésre?</p>
           <Link href="/jelentkezes" className="inline-flex items-center gap-3 px-8 py-4 bg-[#0a1f0a] text-[#d4a017] text-base font-semibold hover:bg-[#d4a017] hover:text-[#0a1f0a] transition-colors duration-300">
-            Jelentkezés
+            Jelentkezés →
             <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
@@ -86,3 +86,4 @@ export default function KapcsolatPage() {
     </main>
   )
 }
+
