@@ -148,8 +148,7 @@ export default async function RootLayout({
       { '@type': 'City', name: 'Kecskemét' },
     ],
     sameAs: [
-      'https://www.facebook.com/kickoffelitefootballcamps',
-      'https://www.instagram.com/kickoffelitefootballcamps',
+      'https://www.facebook.com/kickoffcamps',
     ],
   }
 

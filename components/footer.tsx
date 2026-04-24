@@ -1,6 +1,6 @@
 "use client"
 
-import { Cookie, Mail, Phone } from "lucide-react"
+import { Cookie, Facebook, Mail, Phone } from "lucide-react"
 import { reopenCookieBanner } from "@/components/cookie-banner"
 import Image from "next/image"
 import Link from "next/link"
@@ -51,6 +51,16 @@ export function Footer() {
               >
                 <Phone className="w-4 h-4" />
                 +36 30 755 1110
+              </a>
+              <a
+                href="https://www.facebook.com/kickoffcamps"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="inline-flex items-center gap-2 text-white/80 hover:text-[#d4a017] text-sm transition-colors"
+              >
+                <Facebook className="w-4 h-4" />
+                facebook.com/kickoffcamps
               </a>
             </div>
           </div>
