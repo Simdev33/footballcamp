@@ -2,11 +2,12 @@ import { db } from "@/lib/db"
 import { updateApplicationStatus, updateApplicationNotes } from "@/lib/actions"
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, User, Mail, Phone, Calendar, MapPin, Shirt, Home, Trophy, Users, CreditCard, Receipt } from "lucide-react"
+import { ArrowLeft, User, Mail, Phone, Calendar, MapPin, Shirt, Home, Trophy, Users, CreditCard, Receipt, Banknote } from "lucide-react"
 import { PAYMENT_STATUS_CONFIG } from "@/lib/payment-status"
 import { formatPrice } from "@/lib/pricing"
 import type { PaymentStatus } from "@prisma/client"
 import { RemainderButton } from "@/components/admin/remainder-button"
+import { TransferPaidButton } from "@/components/admin/transfer-paid-button"
 
 export const dynamic = 'force-dynamic'
 
@@ -85,12 +86,42 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
       <div className="bg-[#0a1f0a] border border-[#d4a017]/10 p-6 space-y-5">
         <div className="flex items-center justify-between">
           <h3 className="text-white/40 text-xs uppercase tracking-wider font-medium flex items-center gap-2">
-            <CreditCard className="w-4 h-4" /> Fizetés
+            {app.paymentMethod === "TRANSFER" ? <Banknote className="w-4 h-4" /> : <CreditCard className="w-4 h-4" />}
+            Fizetés {app.paymentMethod === "TRANSFER" ? "(átutalás)" : "(bankkártya)"}
           </h3>
           <span className={`text-xs px-2 py-1 font-medium ${PAYMENT_STATUS_CONFIG[app.paymentStatus as PaymentStatus].class}`}>
             {PAYMENT_STATUS_CONFIG[app.paymentStatus as PaymentStatus].label}
           </span>
         </div>
+
+        {app.paymentMethod === "TRANSFER" && app.transferReference && (
+          <div className="bg-[#d4a017]/5 border border-[#d4a017]/20 p-4 space-y-3 rounded">
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div>
+                <p className="text-[10px] uppercase tracking-wider text-white/40 mb-1">Közleménykód</p>
+                <p className="font-mono text-[#d4a017] text-lg font-bold">{app.transferReference}</p>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-wider text-white/40 mb-1">Várt átutalás</p>
+                <p className="text-white font-semibold">
+                  {formatPrice(app.transferExpectedAmount, (app.currency as "HUF" | "EUR") || "HUF")}
+                </p>
+              </div>
+            </div>
+            {app.paymentStatus === "PENDING" && (
+              <TransferPaidButton
+                applicationId={app.id}
+                kinds={app.isInstallment ? ["deposit", "full"] : ["full"]}
+              />
+            )}
+            {app.paymentStatus === "DEPOSIT_PAID" && (
+              <TransferPaidButton applicationId={app.id} kinds={["remainder"]} />
+            )}
+            {app.paymentStatus === "FULLY_PAID" && (
+              <p className="text-xs text-emerald-400">A teljes összeg beérkezett.</p>
+            )}
+          </div>
+        )}
 
         {app.totalAmount > 0 ? (
           <>

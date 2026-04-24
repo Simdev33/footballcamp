@@ -101,12 +101,16 @@ model Application {
 
   // Payment tracking
   paymentStatus                 PaymentStatus  @default(PENDING)
+  paymentMethod                 String         @default("CARD") // "CARD" | "TRANSFER"
   isInstallment                 Boolean        @default(false)
   currency                      String         @default("HUF")
   totalAmount                   Int            @default(0)
   depositAmount                 Int            @default(0)
   depositPaidAmount             Int            @default(0)
   remainderPaidAmount           Int            @default(0)
+  // Bank transfer — shared across siblings of the same submission.
+  transferReference             String?
+  transferExpectedAmount        Int            @default(0)
   stripeCheckoutSessionId       String?
   stripePaymentIntentId         String?
   stripeCustomerId              String?
@@ -123,6 +127,7 @@ model Application {
   @@index([siblingGroupId])
   @@index([paymentStatus])
   @@index([stripeCheckoutSessionId])
+  @@index([transferReference])
 }
 
 enum PaymentStatus {

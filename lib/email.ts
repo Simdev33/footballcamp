@@ -1,4 +1,6 @@
 import nodemailer, { type Transporter } from "nodemailer"
+import { BANK_DETAILS, formatDeadline } from "@/lib/bank-transfer"
+import { formatPrice, type Currency } from "@/lib/pricing"
 
 const SMTP_HOST = process.env.SMTP_HOST
 const SMTP_PORT = Number(process.env.SMTP_PORT || 587)
@@ -325,6 +327,98 @@ export function renderFullyPaidEmail(args: {
     ${infoBox("Mire számíthatsz?", `A tábor előtti héten egy részletes tájékoztatót küldünk: pontos helyszín és időpontok, szükséges felszerelés, napirend és minden gyakorlati tudnivaló. Addig is lazíts — a nehezét elvégezted!`)}
     ${paragraph(`Ha bármi változik (pl. betegség, lemondás), azonnal szólj, és segítünk.`)}
     ${paragraph(`Találkozunk a pályán! ⚽`)}
+    <p style="font-size:15px;line-height:1.7;margin:22px 0 0;color:${C.ink};">Sportbaráti üdvözlettel,<br><strong>KickOff Camps csapata</strong></p>
+  `,
+  )
+  return { subject, html }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Bank transfer instructions
+// ─────────────────────────────────────────────────────────────
+
+export function renderTransferInstructionsEmail(args: {
+  parentName: string
+  children: Array<{ name: string; camp: string; amount: number }>
+  currency: Currency
+  totalAmount: number
+  reference: string
+  deadline: Date
+  isInstallment: boolean
+}): { subject: string; html: string } {
+  const subject = args.isInstallment
+    ? `Jelentkezés rögzítve — foglaló átutalása (${args.reference})`
+    : `Jelentkezés rögzítve — átutalási adatok (${args.reference})`
+
+  const deadlineStr = formatDeadline(args.deadline, "hu")
+  const amountStr = formatPrice(args.totalAmount, args.currency)
+
+  const kidsRows = args.children
+    .map((c) =>
+      amountRow(
+        `${c.name} — ${c.camp}`,
+        formatPrice(c.amount, args.currency),
+      ),
+    )
+    .join("")
+
+  const bankBlock = `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 20px;background:${C.bg};border-radius:12px;overflow:hidden;">
+      <tr><td style="padding:22px 24px;">
+        <div style="font-size:11px;color:${C.gold};letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Utalási adatok</div>
+        <div style="color:#ffffff;font-family:Georgia,serif;font-size:18px;font-weight:700;line-height:1.4;">${escapeHtml(BANK_DETAILS.accountHolder)}</div>
+        <div style="color:rgba(250,247,240,0.75);font-size:13px;margin-top:2px;">${escapeHtml(BANK_DETAILS.bankName)}</div>
+
+        <div style="margin-top:16px;border-top:1px solid rgba(212,160,23,0.2);padding-top:14px;">
+          <div style="font-size:11px;color:rgba(250,247,240,0.6);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">Számlaszám</div>
+          <div style="font-family:'Menlo','Courier New',monospace;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:0.5px;">${escapeHtml(BANK_DETAILS.accountNumber)}</div>
+        </div>
+
+        <div style="margin-top:14px;">
+          <div style="font-size:11px;color:rgba(250,247,240,0.6);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">Közlemény (kötelező!)</div>
+          <div style="font-family:'Menlo','Courier New',monospace;color:${C.gold};font-size:22px;font-weight:700;letter-spacing:1px;">${escapeHtml(args.reference)}</div>
+        </div>
+
+        <div style="margin-top:14px;">
+          <div style="font-size:11px;color:rgba(250,247,240,0.6);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">Utalandó összeg</div>
+          <div style="color:#ffffff;font-size:22px;font-weight:700;">${escapeHtml(amountStr)}</div>
+        </div>
+
+        <div style="margin-top:14px;">
+          <div style="font-size:11px;color:rgba(250,247,240,0.6);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">Határidő</div>
+          <div style="color:#ffffff;font-size:15px;font-weight:600;">${escapeHtml(deadlineStr)}</div>
+        </div>
+      </td></tr>
+    </table>
+  `
+
+  const html = wrap(
+    {
+      title: args.isInstallment ? "Köszönjük a jelentkezést!" : "Köszönjük a jelentkezést!",
+      eyebrow: "Átutalás szükséges",
+      preheader: `${args.reference} — ${amountStr} átutalása a megadott számlaszámra.`,
+    },
+    `
+    ${greeting(args.parentName)}
+    ${paragraph(
+      args.isInstallment
+        ? `A jelentkezést rögzítettük. A hely véglegesítéséhez, kérlek, utald át a <strong>foglaló</strong> összegét az alábbi adatokkal. A hátralévő összegről a tábor előtt külön tájékoztatunk.`
+        : `A jelentkezést rögzítettük. A hely véglegesítéséhez, kérlek, utald át a teljes összeget az alábbi adatokkal.`,
+    )}
+
+    ${bankBlock}
+
+    ${infoBox(
+      "Nagyon fontos!",
+      `Kérjük, <strong>pontosan másold be a közleményt</strong> (<span style="font-family:'Menlo','Courier New',monospace;color:${C.goldDark};font-weight:700;">${escapeHtml(args.reference)}</span>). Enélkül nem tudjuk az utalást a jelentkezéshez hozzárendelni.`,
+    )}
+
+    ${args.children.length > 1 ? `<p style="font-size:13px;color:${C.mute};margin:12px 0 6px;">Részletezés testvérenként:</p>${amountTable(kidsRows + amountRow("Összesen", amountStr, { highlight: true, bold: true }))}` : ""}
+
+    ${paragraph(`Amint az átutalást jóváírták, automatikusan küldünk egy visszaigazoló emailt és az elektronikus számlát is. Ez az ünnepnapoktól és a banki átfutástól függően <strong>1-3 munkanapot</strong> vehet igénybe.`)}
+
+    ${paragraph(`Ha kérdésed van, csak válaszolj erre az emailre, vagy keress minket a <a href="tel:+36307551110" style="color:${C.goldDark};">+36 30 755 1110</a> számon.`)}
+
     <p style="font-size:15px;line-height:1.7;margin:22px 0 0;color:${C.ink};">Sportbaráti üdvözlettel,<br><strong>KickOff Camps csapata</strong></p>
   `,
   )

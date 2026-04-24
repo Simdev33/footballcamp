@@ -160,6 +160,183 @@ export async function updateApplicationNotes(id: string, notes: string) {
   revalidatePath("/admin/jelentkezesek")
 }
 
+/**
+ * Marks a bank transfer as received for an application and propagates all
+ * the downstream effects: payment status update, PaymentEvent timeline,
+ * Számlázz.hu invoice generation and the matching confirmation email.
+ *
+ * `kind` selects which portion of the total is being settled. When the
+ * application has siblings sharing the same transferReference, all of
+ * them are updated in one go (they belong to the same submission).
+ */
+export async function markTransferPaid(
+  id: string,
+  kind: "deposit" | "full" | "remainder",
+) {
+  const { db } = await import("@/lib/db")
+  const { sendEmail, renderDepositPaidEmail, renderFullyPaidEmail } = await import("@/lib/email")
+  const { createInvoiceForApplicationPayment } = await import("@/lib/szamlazz")
+  const { formatPrice } = await import("@/lib/pricing")
+
+  const anchor = await db.application.findUnique({ where: { id } })
+  if (!anchor) return { ok: false, error: "Jelentkezés nem található." }
+  if (anchor.paymentMethod !== "TRANSFER") {
+    return { ok: false, error: "Nem átutalásos jelentkezés." }
+  }
+  if (!anchor.transferReference) {
+    return { ok: false, error: "Nincs közleménykód — régi jelentkezés?" }
+  }
+
+  // All siblings from the same submission share one reference.
+  const group = await db.application.findMany({
+    where: { transferReference: anchor.transferReference },
+    include: { camp: true },
+  })
+
+  const currency = (anchor.currency as "HUF" | "EUR") || "HUF"
+  const newlyDepositPaid: typeof group = []
+  const newlyFullyPaid: typeof group = []
+  const invoiceTargets: Array<{
+    app: typeof group[number]
+    paymentEventId: string
+    amount: number
+    kind: "deposit" | "full" | "remainder"
+  }> = []
+
+  await db.$transaction(async (tx) => {
+    for (const app of group) {
+      const remainderExpected = Math.max(0, app.totalAmount - app.depositAmount)
+      const perAppExpected =
+        kind === "deposit" ? app.depositAmount
+        : kind === "remainder" ? remainderExpected
+        : app.totalAmount
+      const already =
+        kind === "deposit" ? app.depositPaidAmount
+        : kind === "remainder" ? app.remainderPaidAmount
+        : app.depositPaidAmount + app.remainderPaidAmount
+      if (already >= perAppExpected && perAppExpected > 0) continue
+
+      const now = new Date()
+      const data: Parameters<typeof tx.application.update>[0]["data"] = {}
+
+      if (kind === "full" || !app.isInstallment) {
+        data.paymentStatus = "FULLY_PAID"
+        data.depositPaidAmount = app.depositAmount || perAppExpected
+        data.remainderPaidAmount = Math.max(0, (app.totalAmount || perAppExpected) - (app.depositAmount || 0))
+        data.depositPaidAt = app.depositPaidAt ?? now
+        data.fullyPaidAt = now
+        newlyFullyPaid.push(app)
+      } else if (kind === "remainder") {
+        data.paymentStatus = "FULLY_PAID"
+        data.remainderPaidAmount = perAppExpected
+        data.fullyPaidAt = now
+        newlyFullyPaid.push(app)
+      } else {
+        data.paymentStatus = "DEPOSIT_PAID"
+        data.depositPaidAmount = perAppExpected
+        data.depositPaidAt = now
+        newlyDepositPaid.push(app)
+      }
+
+      await tx.application.update({ where: { id: app.id }, data })
+
+      const event = await tx.paymentEvent.create({
+        data: {
+          applicationId: app.id,
+          type:
+            kind === "deposit" ? "deposit_paid"
+            : kind === "remainder" ? "remainder_paid"
+            : "full_paid",
+          amount: perAppExpected,
+          currency,
+          note: `Átutalás kézzel megerősítve (közl: ${app.transferReference})`,
+        },
+        select: { id: true },
+      })
+
+      invoiceTargets.push({ app, paymentEventId: event.id, amount: perAppExpected, kind })
+    }
+  })
+
+  // Side effects outside the DB transaction.
+  const campDates = (c: typeof group[number]["camp"]): string => {
+    const raw = c.dates
+    if (typeof raw === "string" && raw.length > 0) return raw
+    if (raw && typeof raw === "object" && "hu" in raw && typeof (raw as { hu?: unknown }).hu === "string") {
+      return (raw as { hu: string }).hu
+    }
+    return ""
+  }
+
+  await Promise.all([
+    ...newlyDepositPaid.map(async (app) => {
+      try {
+        const { subject, html } = renderDepositPaidEmail({
+          parentName: app.parentName,
+          childName: app.childName,
+          campCity: app.camp.city,
+          campDates: campDates(app.camp),
+          depositAmount: formatPrice(app.depositAmount, currency),
+          remainderAmount: formatPrice(Math.max(0, app.totalAmount - app.depositAmount), currency),
+          totalAmount: formatPrice(app.totalAmount, currency),
+        })
+        await sendEmail({ to: app.parentEmail, subject, html, replyTo: "info@kickoffcamps.hu" })
+      } catch (err) {
+        console.error("[markTransferPaid] deposit email failed", err)
+      }
+    }),
+    ...newlyFullyPaid.map(async (app) => {
+      try {
+        const { subject, html } = renderFullyPaidEmail({
+          parentName: app.parentName,
+          childName: app.childName,
+          campCity: app.camp.city,
+          campDates: campDates(app.camp),
+          totalAmount: formatPrice(app.totalAmount, currency),
+        })
+        await sendEmail({ to: app.parentEmail, subject, html, replyTo: "info@kickoffcamps.hu" })
+      } catch (err) {
+        console.error("[markTransferPaid] paid email failed", err)
+      }
+    }),
+    ...invoiceTargets.map(async (t) => {
+      try {
+        const result = await createInvoiceForApplicationPayment({
+          kind: t.kind,
+          amount: t.amount,
+          currency,
+          parent: {
+            name: t.app.parentName,
+            email: t.app.parentEmail,
+            postalCode: t.app.parentPostalCode,
+            city: t.app.parentCity,
+            address: t.app.parentAddress,
+            taxNumber: t.app.parentTaxNumber,
+          },
+          child: { name: t.app.childName },
+          camp: {
+            city: t.app.camp.city,
+            venue: t.app.camp.venue,
+            dates: campDates(t.app.camp),
+          },
+        })
+        if (result) {
+          await db.paymentEvent.update({
+            where: { id: t.paymentEventId },
+            data: { invoiceNumber: result.invoiceNumber, invoiceUrl: result.downloadUrl },
+          })
+        }
+      } catch (err) {
+        console.error("[markTransferPaid] invoice failed", err)
+      }
+    }),
+  ])
+
+  revalidatePath(`/admin/jelentkezesek/${id}`)
+  revalidatePath("/admin/jelentkezesek")
+  return { ok: true, updated: newlyDepositPaid.length + newlyFullyPaid.length }
+}
+
 export async function sendRemainderLink(id: string, opts: { send: boolean }) {
   const { stripe } = await import("@/lib/stripe")
   const { toStripeUnitAmount, formatPrice: fp } = await import("@/lib/pricing")

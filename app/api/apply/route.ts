@@ -1,6 +1,13 @@
 import { db } from "@/lib/db"
 import { NextResponse } from "next/server"
 import { randomUUID } from "crypto"
+import { pickEffectivePrice, splitInstallment } from "@/lib/pricing"
+import {
+  BANK_DETAILS,
+  computeTransferDeadline,
+  generateTransferReference,
+} from "@/lib/bank-transfer"
+import { sendEmail, renderTransferInstructionsEmail } from "@/lib/email"
 
 interface ChildPayload {
   childName?: string
@@ -22,6 +29,8 @@ interface ApplyPayload {
   parentAddress?: string
   parentTaxNumber?: string
   notes?: string
+  paymentMethod?: "CARD" | "TRANSFER"
+  paymentMode?: "full" | "deposit"
   children?: ChildPayload[]
 }
 
@@ -45,6 +54,9 @@ export async function POST(request: Request) {
     notes,
     children,
   } = payload
+
+  const paymentMethod: "CARD" | "TRANSFER" = payload.paymentMethod === "TRANSFER" ? "TRANSFER" : "CARD"
+  const paymentMode: "full" | "deposit" = payload.paymentMode === "deposit" ? "deposit" : "full"
 
   if (!parentName || !parentEmail || !parentPhone) {
     return new NextResponse("Hiányzó szülői adatok.", { status: 400 })
@@ -90,10 +102,25 @@ export async function POST(request: Request) {
   }
 
   const siblingGroupId = children.length > 1 ? randomUUID() : null
+  const currency = "HUF" as const
+
+  // Pre-compute per-application amounts so both CARD and TRANSFER flows
+  // know exactly what to charge / transfer per child.
+  const perChildAmounts = children.map((c) => {
+    const camp = campMap.get(c.campId!)!
+    const { amount: total } = pickEffectivePrice(camp, currency)
+    const { deposit } = splitInstallment(total, camp.depositPercent)
+    const due = paymentMode === "deposit" ? deposit : total
+    return { total, deposit, due }
+  })
+
+  const transferReference =
+    paymentMethod === "TRANSFER" ? await generateTransferReference() : null
 
   const applicationIds = await db.$transaction(async (tx) => {
     const ids: string[] = []
-    for (const c of children) {
+    for (const [i, c] of children.entries()) {
+      const amounts = perChildAmounts[i]
       const created = await tx.application.create({
         data: {
           parentName,
@@ -113,6 +140,21 @@ export async function POST(request: Request) {
           campId: c.campId!,
           notes: notes || "",
           siblingGroupId,
+          paymentMethod,
+          // Only TRANSFER persists amounts here — CARD relies on the
+          // /api/stripe/create-checkout endpoint to set them as part of
+          // building the Stripe session. That keeps Stripe the source of
+          // truth for card payments.
+          ...(paymentMethod === "TRANSFER"
+            ? {
+                currency,
+                totalAmount: amounts.total,
+                depositAmount: amounts.deposit,
+                isInstallment: paymentMode === "deposit",
+                transferReference: transferReference!,
+                transferExpectedAmount: amounts.due,
+              }
+            : {}),
         },
         select: { id: true },
       })
@@ -128,5 +170,51 @@ export async function POST(request: Request) {
     return ids
   })
 
-  return NextResponse.json({ success: true, applicationIds })
+  if (paymentMethod === "TRANSFER") {
+    const totalDue = perChildAmounts.reduce((s, a) => s + a.due, 0)
+
+    // Pick the earliest camp start among the selected camps to derive the
+    // deadline — safest for multi-child submissions with different camps.
+    const earliestStart = children
+      .map((c) => campMap.get(c.campId!)?.startDate ?? null)
+      .filter((d): d is Date => d != null)
+      .sort((a, b) => a.getTime() - b.getTime())[0] ?? null
+
+    const deadline = computeTransferDeadline(earliestStart)
+
+    // Fire-and-log the instruction email. Failure must not break the
+    // submission — the confirmation page shows the same info on-screen.
+    try {
+      const childrenBrief = children.map((c, i) => ({
+        name: c.childName!,
+        camp: campMap.get(c.campId!)!.city,
+        amount: perChildAmounts[i].due,
+      }))
+      const { subject, html } = renderTransferInstructionsEmail({
+        parentName: parentName!,
+        children: childrenBrief,
+        currency,
+        totalAmount: totalDue,
+        reference: transferReference!,
+        deadline,
+        isInstallment: paymentMode === "deposit",
+      })
+      await sendEmail({ to: parentEmail!, subject, html, replyTo: "info@kickoffcamps.hu" })
+    } catch (err) {
+      console.error("[apply] Transfer instruction email failed:", err)
+    }
+
+    return NextResponse.json({
+      success: true,
+      applicationIds,
+      paymentMethod: "TRANSFER",
+      transferReference,
+      amountDue: totalDue,
+      currency,
+      deadline: deadline.toISOString(),
+      bank: BANK_DETAILS,
+    })
+  }
+
+  return NextResponse.json({ success: true, applicationIds, paymentMethod: "CARD" })
 }

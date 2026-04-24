@@ -4,7 +4,7 @@ import { Suspense, useState, useEffect } from "react"
 import Link from "next/link"
 import { SubpageHero } from "@/components/subpage-hero"
 import { SizeChart, SIZE_OPTIONS } from "@/components/size-chart"
-import { Send, Loader2, Plus, Trash2, HeartPulse, ChevronDown, ChevronUp } from "lucide-react"
+import { Send, Loader2, Plus, Trash2, HeartPulse, ChevronDown, ChevronUp, CreditCard, Banknote } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { getHealthDeclaration } from "@/lib/health-declaration"
@@ -86,6 +86,7 @@ function JelentkezesForm() {
   const [healthAccepted, setHealthAccepted] = useState(false)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [paymentMode, setPaymentMode] = useState<"full" | "deposit">("full")
+  const [paymentMethod, setPaymentMethod] = useState<"CARD" | "TRANSFER">("CARD")
 
   useEffect(() => {
     fetch("/api/camps")
@@ -189,6 +190,8 @@ function JelentkezesForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...parent,
+          paymentMethod,
+          paymentMode,
           children: children.map((c) => ({
             ...c,
             currentClub: c.playsFootball === "yes" ? c.currentClub.trim() : "",
@@ -201,8 +204,16 @@ function JelentkezesForm() {
         setLoading(false)
         return
       }
-      const { applicationIds } = (await res.json()) as { applicationIds: string[] }
+      const applyJson = (await res.json()) as
+        | { applicationIds: string[]; paymentMethod: "CARD" }
+        | { applicationIds: string[]; paymentMethod: "TRANSFER"; transferReference: string }
 
+      if (applyJson.paymentMethod === "TRANSFER") {
+        window.location.href = `/jelentkezes/atutalas?ref=${encodeURIComponent(applyJson.transferReference)}`
+        return
+      }
+
+      const { applicationIds } = applyJson
       const checkoutRes = await fetch("/api/stripe/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -654,12 +665,13 @@ function JelentkezesForm() {
               <div>
                 <h3 className="font-serif text-lg font-bold text-foreground">Fizetés</h3>
                 <p className="text-xs text-muted-foreground mt-1">
-                  A jelentkezést követően biztonságos Stripe oldalra irányítunk. Bankkártya, Apple Pay, Google Pay elfogadva.
+                  Válaszd ki, hogyan szeretnél fizetni — mindkét opciónál automatikus elektronikus számlát állítunk ki.
                 </p>
               </div>
 
+              {/* Részletfizetés vagy teljes összeg */}
               <div>
-                <label className={labelClass}>Fizetési mód</label>
+                <label className={labelClass}>Fizetési ütemezés</label>
                 <div className="grid sm:grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -691,8 +703,60 @@ function JelentkezesForm() {
                 </div>
               </div>
 
+              {/* Fizetési mód (kártya vs. utalás) */}
+              <div>
+                <label className={labelClass}>Fizetési mód</label>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("CARD")}
+                    className={`p-4 border text-left rounded-md transition-colors ${
+                      paymentMethod === "CARD"
+                        ? "bg-[#d4a017] border-[#d4a017] text-[#0a1f0a]"
+                        : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="w-4 h-4" />
+                      <div className="font-semibold text-sm">Bankkártya</div>
+                    </div>
+                    <div className="text-xs mt-1 opacity-80">
+                      Azonnali fizetés a Stripe biztonságos oldalán. Apple Pay és Google Pay is elfogadott.
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("TRANSFER")}
+                    className={`p-4 border text-left rounded-md transition-colors ${
+                      paymentMethod === "TRANSFER"
+                        ? "bg-[#d4a017] border-[#d4a017] text-[#0a1f0a]"
+                        : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Banknote className="w-4 h-4" />
+                      <div className="font-semibold text-sm">Átutalás</div>
+                    </div>
+                    <div className="text-xs mt-1 opacity-80">
+                      Kapsz egy egyedi közleménykódot és a számlaszámunkat — onnan csak utalnod kell.
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              {paymentMethod === "TRANSFER" && (
+                <div className="p-4 bg-white border border-[#d4a017]/30 rounded-md text-sm text-foreground">
+                  <p className="leading-relaxed">
+                    Az <strong>&quot;Elküldés&quot;</strong> gombra kattintva rögzítjük a jelentkezést, és a következő oldalon
+                    azonnal megjelennek az utalási adatok (számlaszám + egyedi közlemény). Ezeket emailben is elküldjük.
+                  </p>
+                </div>
+              )}
+
               <div className="flex items-baseline justify-between border-t border-[#d4a017]/20 pt-3">
-                <span className="text-sm text-muted-foreground">Most fizetendő</span>
+                <span className="text-sm text-muted-foreground">
+                  {paymentMethod === "TRANSFER" ? "Utalandó összeg" : "Most fizetendő"}
+                </span>
                 <span className="font-serif text-2xl font-bold text-foreground">
                   {formatPrice(dueNow, "HUF")}
                 </span>
