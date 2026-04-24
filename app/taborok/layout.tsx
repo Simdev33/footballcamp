@@ -1,9 +1,16 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Táborok | Kickoff Elite Football Camps',
+  title: 'Táborok',
   description:
-    'Részletek, időpontok és árak a szegedi és kecskeméti futballtáborokról.',
+    'Nyári futballtáborok Szegeden és Kecskeméten. Időpontok, árak, early bird kedvezmény — top európai akadémiák módszereivel.',
+  alternates: { canonical: '/taborok' },
+  openGraph: {
+    title: 'Táborok | Kickoff Elite Football Camps',
+    description:
+      'Időpontok, helyszínek, árak — nézd meg, melyik turnus való a gyermekednek.',
+    url: '/taborok',
+  },
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {

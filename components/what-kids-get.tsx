@@ -9,6 +9,7 @@ const ICONS = [Shirt, Utensils, Dumbbell, Heart]
 
 export function WhatKidsGet() {
   const { t } = useLanguage()
+  const alts = (t as unknown as { imageAlts: { kidsAtCamp: string } }).imageAlts
   const image = useSiteImage("whatKidsGet.image")
 
   return (
@@ -33,7 +34,7 @@ export function WhatKidsGet() {
             <div className="relative aspect-[4/3] overflow-hidden">
               <Image
                 src={image}
-                alt="Gyerekek a focitáborban"
+                alt={alts.kidsAtCamp}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"

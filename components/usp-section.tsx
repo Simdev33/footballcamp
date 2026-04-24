@@ -2,11 +2,13 @@
 
 import { useLanguage } from "@/lib/language-context"
 
-const FORMATION = [
-  { row: [0], label: "Kapus", color: "#d4a017" },
-  { row: [1, 2, 3, 4], label: "Védelem", color: "#22c55e" },
-  { row: [5, 6, 7], label: "Középpálya", color: "#3b82f6" },
-  { row: [8, 9, 10], label: "Támadás", color: "#ef4444" },
+type FormationStrings = { goalkeeper: string; defense: string; midfield: string; attack: string }
+
+const FORMATION_ROWS: { row: number[]; color: string; key: keyof FormationStrings }[] = [
+  { row: [0], color: "#d4a017", key: "goalkeeper" },
+  { row: [1, 2, 3, 4], color: "#22c55e", key: "defense" },
+  { row: [5, 6, 7], color: "#3b82f6", key: "midfield" },
+  { row: [8, 9, 10], color: "#ef4444", key: "attack" },
 ]
 
 const POSITION_COLORS = [
@@ -18,6 +20,8 @@ const POSITION_COLORS = [
 
 export function USPSection() {
   const { t } = useLanguage()
+  const formation = (t as unknown as { formation: FormationStrings }).formation
+  const FORMATION = FORMATION_ROWS.map((f) => ({ ...f, label: formation[f.key] }))
 
   return (
     <section className="relative py-12 md:py-20 overflow-hidden bg-[#0a1f0a]">

@@ -13,6 +13,7 @@ const TRUST_ITEMS = [
 
 export function ApplicationForm() {
   const { t } = useLanguage()
+  const a = (t as unknown as { appForm: { signingBadge: string; limitedNote: string; trainingAlt: string } }).appForm
   const image = useSiteImage("jelentkezes.side")
 
   return (
@@ -37,7 +38,7 @@ export function ApplicationForm() {
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
               <Image
                 src={image}
-                alt="Edzés közben"
+                alt={a.trainingAlt}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
@@ -57,8 +58,8 @@ export function ApplicationForm() {
                       <line x1="16" y1="17" x2="8" y2="17" />
                     </svg>
                     <div>
-                      <span className="block text-[#d4a017] text-xs md:text-sm font-bold uppercase tracking-wider">Jelentkezés nyitva</span>
-                      <span className="block text-white/60 text-[10px] md:text-xs mt-0.5">Korlátozott helyek — ne maradj le!</span>
+                      <span className="block text-[#d4a017] text-xs md:text-sm font-bold uppercase tracking-wider">{a.signingBadge}</span>
+                      <span className="block text-white/60 text-[10px] md:text-xs mt-0.5">{a.limitedNote}</span>
                     </div>
                   </div>
                 </div>

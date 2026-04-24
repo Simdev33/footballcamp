@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Playfair_Display, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import Script from 'next/script'
@@ -8,6 +8,7 @@ import { getSiteImages } from '@/lib/site-images'
 
 const GOOGLE_ADS_ID = 'AW-18106758812'
 const META_PIXEL_ID = '804886405638081'
+const SITE_URL = 'https://kickoffcamps.hu'
 import './globals.css'
 
 const playfair = Playfair_Display({ 
@@ -22,9 +23,82 @@ const inter = Inter({
   display: 'swap',
 })
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#eef1ec' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a1f0a' },
+  ],
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  colorScheme: 'light',
+}
+
 export const metadata: Metadata = {
-  title: 'Kickoff Elite Football Camps | Nemzetközi Futballtáborok',
-  description: 'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény a legjobb európai akadémiák módszereivel.',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'Kickoff Elite Football Camps | Nemzetközi Futballtáborok',
+    template: '%s | Kickoff Elite Football Camps',
+  },
+  description:
+    'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény a legjobb európai akadémiák módszereivel.',
+  applicationName: 'Kickoff Elite Football Camps',
+  keywords: [
+    'focitábor',
+    'futballtábor',
+    'Benfica tábor',
+    'nyári focitábor',
+    'Szeged focitábor',
+    'Kecskemét focitábor',
+    'nemzetközi focitábor',
+    'gyerek focitábor',
+    'Kickoff Elite Football Camps',
+    'football camp Hungary',
+    'elite football camp',
+  ],
+  authors: [{ name: 'Tireksz Nonprofit Kft.' }],
+  creator: 'Kickoff Elite Football Camps',
+  publisher: 'Tireksz Nonprofit Kft.',
+  formatDetection: {
+    telephone: true,
+    email: true,
+    address: true,
+  },
+  alternates: {
+    canonical: '/',
+    languages: {
+      'hu-HU': '/',
+      'en-US': '/',
+      'x-default': '/',
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'hu_HU',
+    alternateLocale: ['en_US'],
+    url: SITE_URL,
+    siteName: 'Kickoff Elite Football Camps',
+    title: 'Kickoff Elite Football Camps | Nemzetközi Futballtáborok',
+    description:
+      'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény a legjobb európai akadémiák módszereivel.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Kickoff Elite Football Camps | Nemzetközi Futballtáborok',
+    description:
+      'Nemzetközi futballtáborok külföldi edzőkkel. Top európai akadémiák módszereivel Szegeden és Kecskeméten.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
   icons: {
     icon: [
       { url: '/kickoff-logo.png?v=2', type: 'image/png', sizes: '512x512' },
@@ -34,6 +108,7 @@ export const metadata: Metadata = {
     shortcut: '/kickoff-logo.png?v=2',
     apple: [{ url: '/kickoff-logo.png?v=2', sizes: '180x180', type: 'image/png' }],
   },
+  category: 'sports',
 }
 
 export default async function RootLayout({
@@ -46,11 +121,69 @@ export default async function RootLayout({
     getSiteImages(),
   ])
 
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SportsActivityLocation',
+    '@id': `${SITE_URL}#organization`,
+    name: 'Kickoff Elite Football Camps',
+    legalName: 'Tireksz Nonprofit Kft.',
+    url: SITE_URL,
+    logo: `${SITE_URL}/kickoff-logo.png`,
+    image: `${SITE_URL}/opengraph-image`,
+    description:
+      'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény a legjobb európai akadémiák módszereivel.',
+    telephone: '+36 30 755 1110',
+    email: 'info@kickoffcamps.hu',
+    priceRange: '€€',
+    sport: 'Football',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Felsőnyomás út 47.',
+      postalCode: '6728',
+      addressLocality: 'Szeged',
+      addressCountry: 'HU',
+    },
+    areaServed: [
+      { '@type': 'City', name: 'Szeged' },
+      { '@type': 'City', name: 'Kecskemét' },
+    ],
+    sameAs: [
+      'https://www.facebook.com/kickoffelitefootballcamps',
+      'https://www.instagram.com/kickoffelitefootballcamps',
+    ],
+  }
+
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${SITE_URL}#website`,
+    url: SITE_URL,
+    name: 'Kickoff Elite Football Camps',
+    description:
+      'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten.',
+    inLanguage: ['hu-HU', 'en-US'],
+    publisher: { '@id': `${SITE_URL}#organization` },
+  }
+
   return (
     <html lang="hu">
       <head>
         <link rel="preconnect" href="https://focis.b-cdn.net" />
         <link rel="dns-prefetch" href="https://focis.b-cdn.net" />
+        <Script
+          id="ld-organization"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+        >
+          {JSON.stringify(organizationSchema)}
+        </Script>
+        <Script
+          id="ld-website"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+        >
+          {JSON.stringify(websiteSchema)}
+        </Script>
         <Script id="gtag-consent-default" strategy="beforeInteractive">
           {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);} window.gtag = gtag;

@@ -7,6 +7,7 @@ import { useSiteImage } from "@/lib/site-images-context"
 
 export function WhySpecial() {
   const { t } = useLanguage()
+  const alts = (t as unknown as { imageAlts: { kidsWithCoach: string } }).imageAlts
   const image = useSiteImage("whySpecial.image")
 
   return (
@@ -19,7 +20,7 @@ export function WhySpecial() {
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
               <Image
                 src={image}
-                alt="Gyerekek az edzővel"
+                alt={alts.kidsWithCoach}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"

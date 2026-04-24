@@ -21,15 +21,24 @@ const PLAYER_PHOTOS = [
   { src: `${CDN}/Photos/84-Joao-Rego.png`, name: "João Rego", number: "84" },
 ]
 
-const BENFICA_STATS = [
-  { value: "120+", label: "év történelem" },
-  { value: "80+", label: "országban jelen" },
-  { value: "50+", label: "profi akadémiai végzős" },
-  { value: "#1", label: "portugál akadémia" },
-]
+type ClubsStrings = {
+  heroTitle: string
+  heroTitleHighlight: string
+  heroTitleEnd: string
+  heroSubtitle: string
+  benficaDesc1: string
+  stampedInLisbon: string
+  madeInBenficaSubtitle: string
+  benficaBadge: string
+  graduatesTitle: string
+  graduatesHighlight: string
+  graduatesSubtitle: string
+  stats: { value: string; label: string }[]
+}
 
 export default function KlubokPage() {
   const { t } = useLanguage()
+  const c = (t as unknown as { clubsPage: ClubsStrings }).clubsPage
   const bannerImg = useSiteImage("klubok.banner")
 
   return (
@@ -39,9 +48,9 @@ export default function KlubokPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#d4a01714_0%,transparent_60%)]" />
         <div className="relative z-10 max-w-[1400px] mx-auto px-4 md:px-12 lg:px-24 text-center">
           <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-white">
-            Kik <span className="text-[#d4a017]">állnak</span> mögöttünk?
+            {c.heroTitle} <span className="text-[#d4a017]">{c.heroTitleHighlight}</span> {c.heroTitleEnd}
           </h1>
-          <p className="mt-6 text-sm md:text-lg text-white/60 max-w-2xl mx-auto">Külföldi partner egyesületeink</p>
+          <p className="mt-6 text-sm md:text-lg text-white/60 max-w-2xl mx-auto">{c.heroSubtitle}</p>
         </div>
       </section>
 
@@ -60,13 +69,11 @@ export default function KlubokPage() {
                   <span className="block text-xs md:text-sm text-[#d4a017] tracking-widest uppercase">{t.coaches.cards[0].role}</span>
                 </div>
               </div>
-              <p className="text-sm md:text-base text-white/70 leading-relaxed max-w-xl">
-                A Benfica akadémia a világ egyik legelismertebb utánpótlás-műhelye. Az akadémia módszertana a technikai kiválóságra, a taktikai intelligenciára és a mentális erősségre épül.
-              </p>
+              <p className="text-sm md:text-base text-white/70 leading-relaxed max-w-xl">{c.benficaDesc1}</p>
               <p className="mt-3 text-sm md:text-base text-white/60 leading-relaxed max-w-xl">{t.coaches.cards[0].desc}</p>
             </div>
             <div className="grid grid-cols-2 gap-2 md:gap-3 w-full lg:w-auto">
-              {BENFICA_STATS.map((stat) => (
+              {c.stats.map((stat) => (
                 <div key={stat.label} className="p-4 md:p-5 bg-black/30 backdrop-blur-sm border border-[#d4a017]/20 text-center min-w-[110px] md:min-w-[130px] hover:bg-[#d4a017]/10 transition-colors duration-300">
                   <span className="block font-serif text-xl md:text-3xl font-bold text-[#d4a017]">{stat.value}</span>
                   <span className="block text-white/50 text-[10px] md:text-xs mt-1 uppercase tracking-wider">{stat.label}</span>
@@ -79,17 +86,14 @@ export default function KlubokPage() {
 
       <section className="py-12 md:py-18 bg-[#0a1f0a]">
         <div className="max-w-[1400px] mx-auto px-4 md:px-12 lg:px-24">
-          {/* Made in Benfica – kiemelt, fiatalos stílus */}
           <div className="text-center mb-8 md:mb-10">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#d4a017]/10 border border-[#d4a017]/40 text-[#d4a017] text-[10px] md:text-xs font-bold tracking-[0.35em] uppercase">
-              ★ Stamped in Lisbon
+              {c.stampedInLisbon}
             </span>
             <h2 className="mt-4 font-serif text-2xl md:text-4xl lg:text-5xl font-black text-white leading-tight">
               MADE IN <span className="bg-[#d4a017] text-[#0a1f0a] px-3 py-0.5 md:px-4 md:py-1 italic">BENFICA</span>
             </h2>
-            <p className="mt-4 text-white/50 text-xs md:text-sm max-w-xl mx-auto">
-              Egy akadémia, amely évről évre világklasszis játékosokat nevel. Ők a mi edzőink iskolájának gyümölcsei.
-            </p>
+            <p className="mt-4 text-white/50 text-xs md:text-sm max-w-xl mx-auto">{c.madeInBenficaSubtitle}</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
             {PLAYER_PHOTOS.map((player) => (
@@ -97,7 +101,7 @@ export default function KlubokPage() {
                 <Image src={player.src} alt={player.name} fill sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 16vw" className="object-cover object-top group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                 <div className="absolute top-2 right-2 md:top-3 md:right-3 px-2 py-0.5 bg-[#d4a017] text-[#0a1f0a] text-[9px] md:text-[10px] font-black tracking-wider uppercase">
-                  Benfica
+                  {c.benficaBadge}
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-2.5 md:p-3">
                   <span className="block text-[#d4a017] font-serif text-xl md:text-2xl font-bold leading-none">#{player.number}</span>
@@ -108,12 +112,11 @@ export default function KlubokPage() {
             ))}
           </div>
 
-          {/* Akadémiai végzősök – kiegészítő badge lista */}
           <div className="mt-14 md:mt-20 text-center mb-6 md:mb-8">
             <h2 className="font-serif text-xl md:text-3xl font-bold text-white">
-              Akadémiai <span className="text-[#d4a017]">végzősök</span>
+              {c.graduatesTitle} <span className="text-[#d4a017]">{c.graduatesHighlight}</span>
             </h2>
-            <p className="mt-3 text-white/50 text-xs md:text-sm">Csak néhány név, akit a Benfica akadémia adott a világnak.</p>
+            <p className="mt-3 text-white/50 text-xs md:text-sm">{c.graduatesSubtitle}</p>
           </div>
           <div className="flex flex-wrap justify-center gap-2 md:gap-3">
             {BENFICA_PLAYERS.map((player, i) => (

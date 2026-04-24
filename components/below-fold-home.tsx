@@ -22,8 +22,13 @@ const KID_ITEMS = [
   { Icon: Heart, color: "#ec4899" },
 ]
 
+type ImageAlts = { kidsWithCoach: string; trainingOnField: string; teamBonding: string }
+type ExpStats = { groupLabel: string; trainingsLabel: string; daysLabel: string }
+
 export default function BelowFoldHome() {
   const { t } = useLanguage()
+  const alts = (t as unknown as { imageAlts: ImageAlts }).imageAlts
+  const stats = (t as unknown as { expStats: ExpStats }).expStats
   const whySpecialImg = useSiteImage("whySpecial.image")
   const whatKidsGetImg = useSiteImage("whatKidsGet.image")
   const experienceImg = useSiteImage("experience.image")
@@ -37,7 +42,7 @@ export default function BelowFoldHome() {
         titleEnd={t.whySpecial.titleEnd}
         text={t.whySpecial.text}
         imageSrc={whySpecialImg}
-        imageAlt="Gyerekek az edzővel a pályán"
+        imageAlt={alts.kidsWithCoach}
       >
         <div className="space-y-3">
           {t.whySpecial.bullets.map((point) => (
@@ -71,7 +76,7 @@ export default function BelowFoldHome() {
         titleEnd={t.whatKidsGet.titleEnd}
         text={t.whatKidsGet.subtitle}
         imageSrc={whatKidsGetImg}
-        imageAlt="Edzés közben a pályán"
+        imageAlt={alts.trainingOnField}
       >
         <div className="space-y-3 md:space-y-4">
           {t.whatKidsGet.items.map((item, index) => {
@@ -110,13 +115,13 @@ export default function BelowFoldHome() {
         titleEnd={t.experience.titleEnd}
         text={`${t.experience.text1} ${t.experience.text1End}`}
         imageSrc={experienceImg}
-        imageAlt="Gyerekcsapat összetartás"
+        imageAlt={alts.teamBonding}
       >
         <div className="grid grid-cols-3 gap-2 md:gap-4 mb-4 md:mb-6">
           {[
-            { value: "15", label: "fő / korosztály", color: "#22c55e" },
-            { value: "4", label: "edzés / nap", color: "#3b82f6" },
-            { value: "5", label: "nap / turnus", color: "#d4a017" },
+            { value: "15", label: stats.groupLabel, color: "#22c55e" },
+            { value: "4", label: stats.trainingsLabel, color: "#3b82f6" },
+            { value: "5", label: stats.daysLabel, color: "#d4a017" },
           ].map((stat) => (
             <div key={stat.label} className="text-center p-3 md:p-4 bg-white/5 border border-white/10 rounded-lg">
               <span className="block font-serif text-xl md:text-2xl font-bold" style={{ color: stat.color }}>{stat.value}</span>

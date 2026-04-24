@@ -135,44 +135,44 @@ function JelentkezesForm() {
     const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     const phoneRe = /^[+0-9 ()/.-]{7,}$/
 
-    if (!parent.parentName.trim()) errs["parentName"] = "Kötelező mező"
-    if (!parent.parentEmail.trim()) errs["parentEmail"] = "Kötelező mező"
-    else if (!emailRe.test(parent.parentEmail.trim())) errs["parentEmail"] = "Érvénytelen email cím"
-    if (!parent.parentPhone.trim()) errs["parentPhone"] = "Kötelező mező"
-    else if (!phoneRe.test(parent.parentPhone.trim())) errs["parentPhone"] = "Érvénytelen telefonszám"
-    if (!parent.parentPostalCode.trim()) errs["parentPostalCode"] = "Kötelező mező"
-    else if (!/^\d{4}$/.test(parent.parentPostalCode.trim())) errs["parentPostalCode"] = "Érvénytelen irányítószám"
-    if (!parent.parentCity.trim()) errs["parentCity"] = "Kötelező mező"
-    if (!parent.parentAddress.trim()) errs["parentAddress"] = "Kötelező mező"
+    if (!parent.parentName.trim()) errs["parentName"] = f.errRequired
+    if (!parent.parentEmail.trim()) errs["parentEmail"] = f.errRequired
+    else if (!emailRe.test(parent.parentEmail.trim())) errs["parentEmail"] = f.errInvalidEmail
+    if (!parent.parentPhone.trim()) errs["parentPhone"] = f.errRequired
+    else if (!phoneRe.test(parent.parentPhone.trim())) errs["parentPhone"] = f.errInvalidPhone
+    if (!parent.parentPostalCode.trim()) errs["parentPostalCode"] = f.errRequired
+    else if (!/^\d{4}$/.test(parent.parentPostalCode.trim())) errs["parentPostalCode"] = f.errInvalidPostal
+    if (!parent.parentCity.trim()) errs["parentCity"] = f.errRequired
+    if (!parent.parentAddress.trim()) errs["parentAddress"] = f.errRequired
 
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     for (const [i, c] of children.entries()) {
-      if (!c.childName.trim()) errs[`child-${i}-childName`] = "Kötelező mező"
-      if (!c.childBirthDate) errs[`child-${i}-childBirthDate`] = "Kötelező mező"
+      if (!c.childName.trim()) errs[`child-${i}-childName`] = f.errRequired
+      if (!c.childBirthDate) errs[`child-${i}-childBirthDate`] = f.errRequired
       else {
         const bd = new Date(c.childBirthDate)
-        if (isNaN(bd.getTime())) errs[`child-${i}-childBirthDate`] = "Érvénytelen dátum"
-        else if (bd > today) errs[`child-${i}-childBirthDate`] = "A születési dátum nem lehet jövőbeli"
+        if (isNaN(bd.getTime())) errs[`child-${i}-childBirthDate`] = f.errInvalidDate
+        else if (bd > today) errs[`child-${i}-childBirthDate`] = f.errFutureBirth
         else {
           const age = (today.getTime() - bd.getTime()) / (365.25 * 24 * 3600 * 1000)
-          if (age < 5 || age > 17) errs[`child-${i}-childBirthDate`] = "A tábor 7-15 éves korosztálynak szól"
+          if (age < 5 || age > 17) errs[`child-${i}-childBirthDate`] = f.errAgeRange
         }
       }
-      if (!c.childCity.trim()) errs[`child-${i}-childCity`] = "Kötelező mező"
-      if (!c.campId) errs[`child-${i}-campId`] = "Válassz tábort"
-      if (!c.playsFootball) errs[`child-${i}-playsFootball`] = "Válassz egy opciót"
-      if (c.playsFootball === "yes" && !c.currentClub.trim()) errs[`child-${i}-currentClub`] = "Add meg az egyesület nevét"
-      if (!c.jerseySize) errs[`child-${i}-jerseySize`] = "Válassz méretet"
-      if (!c.shortsSize) errs[`child-${i}-shortsSize`] = "Válassz méretet"
-      if (!c.socksSize) errs[`child-${i}-socksSize`] = "Kötelező mező"
+      if (!c.childCity.trim()) errs[`child-${i}-childCity`] = f.errRequired
+      if (!c.campId) errs[`child-${i}-campId`] = f.errPickCamp
+      if (!c.playsFootball) errs[`child-${i}-playsFootball`] = f.errPickOption
+      if (c.playsFootball === "yes" && !c.currentClub.trim()) errs[`child-${i}-currentClub`] = f.errEnterClub
+      if (!c.jerseySize) errs[`child-${i}-jerseySize`] = f.errPickSize
+      if (!c.shortsSize) errs[`child-${i}-shortsSize`] = f.errPickSize
+      if (!c.socksSize) errs[`child-${i}-socksSize`] = f.errRequired
     }
-    if (!privacyAccepted) errs["privacy"] = "Fogadd el az adatvédelmi tájékoztatót és az ÁSZF-et"
-    if (!healthAccepted) errs["health"] = "Fogadd el az egészségügyi nyilatkozatot"
+    if (!privacyAccepted) errs["privacy"] = f.errAcceptPrivacy
+    if (!healthAccepted) errs["health"] = f.errAcceptHealth
 
     if (Object.keys(errs).length > 0) {
       setFieldErrors(errs)
-      setError("Kérjük, javítsd a pirossal jelölt mezőket.")
+      setError(f.errFixFields)
       scrollToFirstError(errs)
       return
     }
@@ -221,7 +221,7 @@ function JelentkezesForm() {
       })
       if (!checkoutRes.ok) {
         const text = await checkoutRes.text()
-        setError(text || "Nem sikerült a fizetés elindítása.")
+        setError(text || f.errCheckoutFailed)
         setLoading(false)
         return
       }
@@ -241,7 +241,7 @@ function JelentkezesForm() {
         </div>
         {canceled && (
           <div className="mb-6 p-4 border border-amber-300 bg-amber-50 text-amber-800 text-sm rounded-md">
-            A fizetés megszakadt. Próbáld újra — a jelentkezésed addig is rögzítve van.
+            {f.canceledMsg}
           </div>
         )}
         <form
@@ -663,15 +663,12 @@ function JelentkezesForm() {
           {selectedCamps.length > 0 && (
             <div className="border border-[#d4a017]/30 bg-[#d4a017]/5 p-5 space-y-5 rounded-md">
               <div>
-                <h3 className="font-serif text-lg font-bold text-foreground">Fizetés</h3>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Válaszd ki, hogyan szeretnél fizetni — mindkét opciónál automatikus elektronikus számlát állítunk ki.
-                </p>
+                <h3 className="font-serif text-lg font-bold text-foreground">{f.paymentTitle}</h3>
+                <p className="text-xs text-muted-foreground mt-1">{f.paymentDesc}</p>
               </div>
 
-              {/* Részletfizetés vagy teljes összeg */}
               <div>
-                <label className={labelClass}>Fizetési ütemezés</label>
+                <label className={labelClass}>{f.paymentScheduleLabel}</label>
                 <div className="grid sm:grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -682,8 +679,8 @@ function JelentkezesForm() {
                         : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
                     }`}
                   >
-                    <div className="font-semibold text-sm">Egyben</div>
-                    <div className="text-xs mt-1 opacity-80">A teljes összeget most fizeted.</div>
+                    <div className="font-semibold text-sm">{f.paymentScheduleFull}</div>
+                    <div className="text-xs mt-1 opacity-80">{f.paymentScheduleFullDesc}</div>
                     <div className="mt-2 font-bold text-base">{formatPrice(totalFull, "HUF")}</div>
                   </button>
                   <button
@@ -695,17 +692,18 @@ function JelentkezesForm() {
                         : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
                     }`}
                   >
-                    <div className="font-semibold text-sm">Részletfizetés</div>
-                    <div className="text-xs mt-1 opacity-80">Most az első részlet, a hátralévőt a tábor előtt.</div>
+                    <div className="font-semibold text-sm">{f.paymentScheduleDeposit}</div>
+                    <div className="text-xs mt-1 opacity-80">{f.paymentScheduleDepositDesc}</div>
                     <div className="mt-2 font-bold text-base">{formatPrice(totalDeposit, "HUF")}</div>
-                    <div className="text-xs mt-0.5 opacity-70">+ {formatPrice(remainderAfterDeposit, "HUF")} később</div>
+                    <div className="text-xs mt-0.5 opacity-70">
+                      {f.paymentScheduleDepositLater.replace("{amount}", formatPrice(remainderAfterDeposit, "HUF"))}
+                    </div>
                   </button>
                 </div>
               </div>
 
-              {/* Fizetési mód (kártya vs. utalás) */}
               <div>
-                <label className={labelClass}>Fizetési mód</label>
+                <label className={labelClass}>{f.paymentMethodLabel}</label>
                 <div className="grid sm:grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -718,11 +716,9 @@ function JelentkezesForm() {
                   >
                     <div className="flex items-center gap-2">
                       <CreditCard className="w-4 h-4" />
-                      <div className="font-semibold text-sm">Bankkártya</div>
+                      <div className="font-semibold text-sm">{f.paymentMethodCard}</div>
                     </div>
-                    <div className="text-xs mt-1 opacity-80">
-                      Azonnali fizetés a Stripe biztonságos oldalán. Apple Pay és Google Pay is elfogadott.
-                    </div>
+                    <div className="text-xs mt-1 opacity-80">{f.paymentMethodCardDesc}</div>
                   </button>
                   <button
                     type="button"
@@ -735,27 +731,22 @@ function JelentkezesForm() {
                   >
                     <div className="flex items-center gap-2">
                       <Banknote className="w-4 h-4" />
-                      <div className="font-semibold text-sm">Átutalás</div>
+                      <div className="font-semibold text-sm">{f.paymentMethodTransfer}</div>
                     </div>
-                    <div className="text-xs mt-1 opacity-80">
-                      Kapsz egy egyedi közleménykódot és a számlaszámunkat — onnan csak utalnod kell.
-                    </div>
+                    <div className="text-xs mt-1 opacity-80">{f.paymentMethodTransferDesc}</div>
                   </button>
                 </div>
               </div>
 
               {paymentMethod === "TRANSFER" && (
                 <div className="p-4 bg-white border border-[#d4a017]/30 rounded-md text-sm text-foreground">
-                  <p className="leading-relaxed">
-                    Az <strong>&quot;Elküldés&quot;</strong> gombra kattintva rögzítjük a jelentkezést, és a következő oldalon
-                    azonnal megjelennek az utalási adatok (számlaszám + egyedi közlemény). Ezeket emailben is elküldjük.
-                  </p>
+                  <p className="leading-relaxed">{f.paymentTransferHint}</p>
                 </div>
               )}
 
               <div className="flex items-baseline justify-between border-t border-[#d4a017]/20 pt-3">
                 <span className="text-sm text-muted-foreground">
-                  {paymentMethod === "TRANSFER" ? "Utalandó összeg" : "Most fizetendő"}
+                  {paymentMethod === "TRANSFER" ? f.paymentDueNowTransfer : f.paymentDueNowCard}
                 </span>
                 <span className="font-serif text-2xl font-bold text-foreground">
                   {formatPrice(dueNow, "HUF")}

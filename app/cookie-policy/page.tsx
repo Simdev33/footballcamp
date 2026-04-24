@@ -19,6 +19,7 @@ export default function CookiePolicyPage() {
   const { t } = useLanguage()
   const p = (t as unknown as { cookiePolicy: PolicyContent }).cookiePolicy
   const b = (t as unknown as { cookieBanner: { reopen: string } }).cookieBanner
+  const pp = (t as unknown as { privacyPolicy: { backLink: string } }).privacyPolicy
 
   return (
     <main>
@@ -68,7 +69,7 @@ export default function CookiePolicyPage() {
                 href="/adatkezelesi-tajekoztato"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#0a1f0a] text-[#d4a017] font-semibold hover:bg-[#d4a017] hover:text-[#0a1f0a] transition-colors"
               >
-                Adatkezelési tájékoztató
+                {pp.backLink}
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </div>

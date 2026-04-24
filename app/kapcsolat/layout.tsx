@@ -1,9 +1,16 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Kapcsolat | Kickoff Elite Football Camps',
+  title: 'Kapcsolat',
   description:
-    'Vedd fel velünk a kapcsolatot! Elérhetőségeink és közösségi média csatornáink.',
+    'Vedd fel velünk a kapcsolatot — elérhetőségeink, közösségi média csatornáink, Kickoff Elite Football Camps.',
+  alternates: { canonical: '/kapcsolat' },
+  openGraph: {
+    title: 'Kapcsolat | Kickoff Elite Football Camps',
+    description:
+      'Kérdésed van? Kérj tájékoztatást, írj üzenetet — válaszolunk 24 órán belül.',
+    url: '/kapcsolat',
+  },
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {

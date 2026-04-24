@@ -9,6 +9,7 @@ const ICONS = [Users, Building2, Heart]
 
 export function PartnerProgram() {
   const { t } = useLanguage()
+  const alts = (t as unknown as { imageAlts: { teamKids: string } }).imageAlts
   const image = useSiteImage("experience.image")
 
   return (
@@ -57,7 +58,7 @@ export function PartnerProgram() {
 
           <div className="relative">
             <div className="relative aspect-[4/3] overflow-hidden">
-              <Image src={image} alt="Gyerekcsapat" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" loading="lazy" unoptimized={image.includes("b-cdn.net")} />
+              <Image src={image} alt={alts.teamKids} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" loading="lazy" unoptimized={image.includes("b-cdn.net")} />
             </div>
             <div className="absolute -bottom-4 -left-4 w-full h-full border-2 border-primary/30 -z-10" />
           </div>

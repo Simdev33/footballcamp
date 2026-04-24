@@ -28,18 +28,39 @@ type SessionInfo = {
   }>
 }
 
+type SuccessStrings = {
+  heroTitle: string
+  heroSubtitle: string
+  errorTitle: string
+  missingSession: string
+  unknownError: string
+  backToRegister: string
+  paidAmount: string
+  remainingAmount: string
+  confirmEmailPrefix: string
+  confirmEmailSuffix: string
+  applicants: string
+  statusFullyPaid: string
+  statusDepositPaid: string
+  statusProcessing: string
+  depositNote: string
+  pendingPaymentNote: string
+  backToHome: string
+}
+
 function SikeresContent() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get("session_id")
   const { t } = useLanguage()
   const f = t.applyForm
+  const s = (t as unknown as { successPage: SuccessStrings }).successPage
 
   const [info, setInfo] = useState<SessionInfo | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!sessionId) {
-      setError("Hiányzó session azonosító.")
+      setError(s.missingSession)
       return
     }
     let cancelled = false
@@ -65,22 +86,22 @@ function SikeresContent() {
         }
       })
       .catch((e) => {
-        if (!cancelled) setError(e instanceof Error ? e.message : "Ismeretlen hiba.")
+        if (!cancelled) setError(e instanceof Error ? e.message : s.unknownError)
       })
     return () => {
       cancelled = true
     }
-  }, [sessionId])
+  }, [sessionId, s.missingSession, s.unknownError])
 
   if (error) {
     return (
       <section className="py-20 bg-background">
         <div className="max-w-lg mx-auto px-6 text-center">
           <AlertTriangle className="w-16 h-16 text-amber-500 mx-auto mb-6" />
-          <h2 className="font-serif text-2xl font-bold text-foreground mb-4">Hiba történt</h2>
+          <h2 className="font-serif text-2xl font-bold text-foreground mb-4">{s.errorTitle}</h2>
           <p className="text-muted-foreground mb-6">{error}</p>
           <Link href="/jelentkezes" className="inline-block h-11 px-6 bg-[#d4a017] text-[#0a1f0a] font-semibold rounded-md">
-            Vissza a jelentkezéshez
+            {s.backToRegister}
           </Link>
         </div>
       </section>
@@ -113,7 +134,7 @@ function SikeresContent() {
 
           <div className="text-left border-t border-border/50 pt-6 space-y-4">
             <div className="flex items-baseline justify-between">
-              <span className="text-sm text-muted-foreground">Kifizetett összeg</span>
+              <span className="text-sm text-muted-foreground">{s.paidAmount}</span>
               <span className="font-serif text-2xl font-bold text-foreground">
                 {formatPrice(info.amountTotal, info.currency)}
               </span>
@@ -121,7 +142,7 @@ function SikeresContent() {
 
             {info.paymentMode === "deposit" && remainingTotal > 0 && (
               <div className="flex items-baseline justify-between">
-                <span className="text-sm text-muted-foreground">Hátralévő összeg</span>
+                <span className="text-sm text-muted-foreground">{s.remainingAmount}</span>
                 <span className="text-base font-semibold text-foreground">
                   {formatPrice(remainingTotal, info.currency)}
                 </span>
@@ -130,19 +151,23 @@ function SikeresContent() {
 
             {info.customerEmail && (
               <p className="text-xs text-muted-foreground">
-                A visszaigazolást a(z) <strong>{info.customerEmail}</strong> címre küldtük.
+                {s.confirmEmailPrefix} <strong>{info.customerEmail}</strong> {s.confirmEmailSuffix}
               </p>
             )}
 
             {info.applications.length > 0 && (
               <div className="pt-4 border-t border-border/40 space-y-2">
-                <p className="text-sm font-semibold text-foreground">Jelentkezők</p>
+                <p className="text-sm font-semibold text-foreground">{s.applicants}</p>
                 <ul className="space-y-1 text-sm text-muted-foreground">
                   {info.applications.map((a) => (
                     <li key={a.id} className="flex items-center justify-between">
                       <span>{a.childName} — {a.camp.city}</span>
                       <span className="text-xs uppercase tracking-wider text-[#d4a017]">
-                        {a.paymentStatus === "FULLY_PAID" ? "Kifizetve" : a.paymentStatus === "DEPOSIT_PAID" ? "Első részlet fizetve" : "Feldolgozás alatt"}
+                        {a.paymentStatus === "FULLY_PAID"
+                          ? s.statusFullyPaid
+                          : a.paymentStatus === "DEPOSIT_PAID"
+                            ? s.statusDepositPaid
+                            : s.statusProcessing}
                       </span>
                     </li>
                   ))}
@@ -151,21 +176,17 @@ function SikeresContent() {
             )}
 
             {info.paymentMode === "deposit" && (
-              <p className="text-xs text-muted-foreground pt-3">
-                A hátralévő összegről egy külön fizetési linket fogsz kapni e-mailben a tábor előtt.
-              </p>
+              <p className="text-xs text-muted-foreground pt-3">{s.depositNote}</p>
             )}
           </div>
 
           {!isPaid && (
-            <p className="mt-6 text-sm text-amber-600">
-              A fizetés még feldolgozás alatt van. Rövidesen értesítünk.
-            </p>
+            <p className="mt-6 text-sm text-amber-600">{s.pendingPaymentNote}</p>
           )}
 
           <div className="mt-8">
             <Link href="/" className="inline-block h-11 px-6 leading-[2.75rem] bg-[#d4a017] text-[#0a1f0a] font-semibold rounded-md">
-              Vissza a főoldalra
+              {s.backToHome}
             </Link>
           </div>
         </div>
@@ -174,10 +195,16 @@ function SikeresContent() {
   )
 }
 
+function SikeresHero() {
+  const { t } = useLanguage()
+  const s = (t as unknown as { successPage: SuccessStrings }).successPage
+  return <SubpageHero title={s.heroTitle} subtitle={s.heroSubtitle} />
+}
+
 export default function SikeresPage() {
   return (
     <main>
-      <SubpageHero title="Sikeres jelentkezés" subtitle="Köszönjük a bizalmat!" />
+      <SikeresHero />
       <Suspense fallback={<div className="py-20 text-center text-muted-foreground">…</div>}>
         <SikeresContent />
       </Suspense>

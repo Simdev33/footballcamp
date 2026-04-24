@@ -6,13 +6,11 @@ import { useLanguage } from "@/lib/language-context"
 
 export default function GyikPage() {
   const { t } = useLanguage()
+  const g = (t as unknown as { gyikPage: { subtitle: string } }).gyikPage
 
   return (
     <main>
-      <SubpageHero
-        title={t.faq.badge}
-        subtitle="Válaszok a leggyakrabban feltett kérdésekre"
-      />
+      <SubpageHero title={t.faq.badge} subtitle={g.subtitle} />
       <FAQSection />
     </main>
   )

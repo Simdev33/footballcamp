@@ -4,13 +4,27 @@ import { Mail, Phone, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
 
-const CONTACT_CARDS = [
-  { icon: Mail, label: "Email", value: "info@kickoffcamps.hu", href: "mailto:info@kickoffcamps.hu", color: "bg-blue-600" },
-  { icon: Phone, label: "Telefon", value: "+36 30 755 1110", href: "tel:+36307551110", color: "bg-emerald-600" },
-]
+type ContactStrings = {
+  heroTitle: string
+  heroTitleHighlight: string
+  heroSubtitle: string
+  emailLabel: string
+  phoneLabel: string
+  messageTitle: string
+  messageTitleHighlight: string
+  messageSubtitle: string
+  ctaNote: string
+  ctaButton: string
+}
 
 export default function KapcsolatPage() {
   const { t } = useLanguage()
+  const c = (t as unknown as { contactPage: ContactStrings }).contactPage
+
+  const cards = [
+    { icon: Mail, label: c.emailLabel, value: "info@kickoffcamps.hu", href: "mailto:info@kickoffcamps.hu", color: "bg-blue-600" },
+    { icon: Phone, label: c.phoneLabel, value: "+36 30 755 1110", href: "tel:+36307551110", color: "bg-emerald-600" },
+  ]
 
   return (
     <main>
@@ -21,18 +35,16 @@ export default function KapcsolatPage() {
         <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24 text-center">
           <Mail className="w-12 h-12 text-[#d4a017] mx-auto mb-6" />
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-white">
-            Lépj velünk <span className="text-[#d4a017]">kapcsolatba!</span>
+            {c.heroTitle} <span className="text-[#d4a017]">{c.heroTitleHighlight}</span>
           </h1>
-          <p className="mt-6 text-lg text-white/60 max-w-xl mx-auto">
-            Kérdésed van a táborokról, jelentkezésről vagy a partnerprogramról? Keress minket bátran!
-          </p>
+          <p className="mt-6 text-lg text-white/60 max-w-xl mx-auto">{c.heroSubtitle}</p>
         </div>
       </section>
 
       {/* Contact Cards Grid */}
       <section className="relative -mt-10 z-20 max-w-[1100px] mx-auto px-6 md:px-12 lg:px-24">
         <div className="grid sm:grid-cols-2 gap-4 max-w-lg mx-auto">
-          {CONTACT_CARDS.map((card) => {
+          {cards.map((card) => {
             const Wrapper = card.href ? "a" : "div"
             return (
               <Wrapper
@@ -55,11 +67,9 @@ export default function KapcsolatPage() {
       <section className="py-20 md:py-28 bg-background">
         <div className="max-w-[700px] mx-auto px-6 md:px-12 text-center">
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-            Írj nekünk <span className="text-[#d4a017]">üzenetet!</span>
+            {c.messageTitle} <span className="text-[#d4a017]">{c.messageTitleHighlight}</span>
           </h2>
-          <p className="mt-4 text-muted-foreground">
-            Csapatunk 24 órán belül válaszol minden megkeresésre.
-          </p>
+          <p className="mt-4 text-muted-foreground">{c.messageSubtitle}</p>
           <div className="mt-10">
             <a
               href="mailto:info@kickoffcamps.hu"
@@ -76,9 +86,9 @@ export default function KapcsolatPage() {
       {/* CTA */}
       <section className="py-16 bg-background">
         <div className="max-w-[700px] mx-auto px-6 md:px-12 text-center">
-          <p className="text-muted-foreground mb-6">Készen állsz a jelentkezésre?</p>
+          <p className="text-muted-foreground mb-6">{c.ctaNote}</p>
           <Link href="/jelentkezes" className="inline-flex items-center gap-3 px-8 py-4 bg-[#0a1f0a] text-[#d4a017] text-base font-semibold hover:bg-[#d4a017] hover:text-[#0a1f0a] transition-colors duration-300">
-            Jelentkezés →
+            {c.ctaButton}
             <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
@@ -86,4 +96,3 @@ export default function KapcsolatPage() {
     </main>
   )
 }
-
