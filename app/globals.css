@@ -181,7 +181,8 @@
   animation: shimmer 2s ease-in-out infinite;
 }
 
-section {
-  transform: translateZ(0);
-  backface-visibility: hidden;
+/* Only promote elements that actually animate to compositor layers.
+   Forcing every <section> onto its own layer wrecks mobile memory + CPU. */
+.will-change-transform {
+  will-change: transform;
 }

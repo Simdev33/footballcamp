@@ -49,8 +49,8 @@ export function Hero() {
   }, [api])
 
   return (
-    <section className="relative min-h-svh overflow-hidden pb-20 md:pb-36">
-      {/* Video background */}
+    <section className="relative min-h-svh overflow-hidden pb-20 md:pb-36 bg-[#0a1f0a]">
+      {/* Background: static on mobile (no video download), video on md+ only */}
       <div className="absolute inset-0">
         <video
           autoPlay
@@ -58,10 +58,11 @@ export function Hero() {
           muted
           playsInline
           preload="none"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover hidden md:block"
         >
           <source src={`${CDN}/site/hero-bg.mp4`} type="video/mp4" />
         </video>
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,#0a1f0a_0%,#0d260d_60%,#061406_100%)] md:hidden" />
         <div className="absolute inset-0 bg-linear-to-b from-[#0a1f0a]/60 via-[#0a1f0a]/80 to-[#0a1f0a]" />
         <div className="absolute inset-0 bg-linear-to-r from-[#0a1f0a] via-transparent to-[#0a1f0a]/85" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0a1f0a_72%)]" />

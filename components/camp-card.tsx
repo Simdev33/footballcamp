@@ -33,6 +33,7 @@ export function CampCard({ camp, imageSrc, className, priority }: CampCardProps)
             className="object-cover object-top transition-transform duration-700 will-change-transform group-hover:scale-110"
             loading={priority ? "eager" : "lazy"}
             priority={priority}
+            fetchPriority={priority ? "high" : "auto"}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 

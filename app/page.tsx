@@ -1,9 +1,5 @@
-"use client"
-
-import dynamic from "next/dynamic"
 import { Hero } from "@/components/hero"
-
-const BelowFold = dynamic(() => import("@/components/below-fold-home"), { ssr: false })
+import BelowFold from "@/components/below-fold-home"
 
 export default function Home() {
   return (
