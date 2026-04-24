@@ -7,6 +7,7 @@ import { CheckCircle, Loader2, AlertTriangle } from "lucide-react"
 import { SubpageHero } from "@/components/subpage-hero"
 import { useLanguage } from "@/lib/language-context"
 import { firePurchaseConversion } from "@/lib/google-ads-conversion"
+import { firePurchaseEvent } from "@/lib/meta-pixel"
 import { formatPrice, type Currency } from "@/lib/pricing"
 
 type SessionInfo = {
@@ -52,6 +53,11 @@ function SikeresContent() {
         setInfo(data)
         if (data.paymentStatus === "paid" && data.amountTotal > 0) {
           void firePurchaseConversion({
+            value: data.amountTotal,
+            currency: data.currency,
+            transactionId: sessionId,
+          })
+          firePurchaseEvent({
             value: data.amountTotal,
             currency: data.currency,
             transactionId: sessionId,

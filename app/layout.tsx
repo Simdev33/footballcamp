@@ -7,6 +7,7 @@ import { getSiteContent } from '@/lib/content'
 import { getSiteImages } from '@/lib/site-images'
 
 const GOOGLE_ADS_ID = 'AW-18106758812'
+const META_PIXEL_ID = '804886405638081'
 import './globals.css'
 
 const playfair = Playfair_Display({ 
@@ -70,8 +71,30 @@ gtag('config', '${GOOGLE_ADS_ID}', { allow_enhanced_conversions: true });`}
           strategy="afterInteractive"
           src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
         />
+        {/*
+          Meta (Facebook) Pixel — loaded with consent=revoke by default so
+          nothing is tracked until the visitor accepts marketing cookies.
+          The cookie banner flips consent to "grant" via lib/meta-pixel.ts.
+        */}
+        <Script id="meta-pixel" strategy="afterInteractive">
+          {`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('consent', 'revoke');
+try{var c=JSON.parse(localStorage.getItem('kickoff.cookie-consent')||'null');if(c&&c.marketing===true){fbq('consent','grant');}}catch(e){}
+fbq('init', '${META_PIXEL_ID}');
+fbq('track', 'PageView');`}
+        </Script>
       </head>
       <body className={`${playfair.variable} ${inter.variable} font-sans antialiased`}>
+        {/* Meta Pixel <noscript> fallback for browsers without JS */}
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: 'none' }}
+            alt=""
+            src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
+          />
+        </noscript>
         <LayoutWrapper dbContent={dbContent} siteImages={siteImages}>{children}</LayoutWrapper>
         <Analytics />
       </body>

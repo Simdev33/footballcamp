@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"
 import type Stripe from "stripe"
 import { formatPrice, type Currency } from "@/lib/pricing"
 import { sendEmail, renderDepositPaidEmail, renderFullyPaidEmail } from "@/lib/email"
+import { createInvoiceForApplicationPayment, type InvoiceKind } from "@/lib/szamlazz"
 
 export const dynamic = "force-dynamic"
 // We need the raw body for signature verification, so disable body parsing
@@ -94,6 +95,15 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   const newlyDepositPaid: typeof applications = []
   const newlyFullyPaid: typeof applications = []
 
+  // Collected per successful per-app payment — used to generate invoices
+  // via Számlázz.hu after the DB transaction commits.
+  const invoiceTargets: {
+    app: AppWithCamp
+    paymentEventId: string
+    amount: number
+    kind: InvoiceKind
+  }[] = []
+
   // Split the paid amount evenly per application (Stripe doesn't break
   // line-items down by application after checkout; the planned per-app
   // amounts live in totalAmount / depositAmount).
@@ -144,7 +154,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
       await tx.application.update({ where: { id: app.id }, data })
 
-      await tx.paymentEvent.create({
+      const invoiceKind: InvoiceKind =
+        paymentMode === "deposit" ? "deposit" : paymentMode === "remainder" ? "remainder" : "full"
+
+      const createdEvent = await tx.paymentEvent.create({
         data: {
           applicationId: app.id,
           type:
@@ -157,18 +170,71 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
           currency,
           stripeId: session.id,
         },
+        select: { id: true },
+      })
+
+      invoiceTargets.push({
+        app,
+        paymentEventId: createdEvent.id,
+        amount: perAppExpected,
+        kind: invoiceKind,
       })
     }
   })
 
-  // Fire confirmation emails outside the DB transaction so a mail provider
-  // hiccup cannot roll back the payment state. Failures are logged only.
+  // Fire confirmation emails + Számlázz.hu invoice creation outside the DB
+  // transaction so provider hiccups cannot roll back the payment state.
+  // Failures are logged only — an admin can retry from the dashboard.
   await Promise.all([
     ...newlyDepositPaid.map((app) => sendDepositPaidEmail(app, currency)),
     ...newlyFullyPaid.map((app) => sendFullyPaidEmail(app, currency)),
+    ...invoiceTargets.map((target) => issueInvoice(target, currency)),
   ])
 
   void paidAmount // acknowledged via metadata split above
+}
+
+async function issueInvoice(
+  target: { app: AppWithCamp; paymentEventId: string; amount: number; kind: InvoiceKind },
+  currency: Currency,
+) {
+  try {
+    const { app } = target
+    const result = await createInvoiceForApplicationPayment({
+      kind: target.kind,
+      amount: target.amount,
+      currency,
+      parent: {
+        name: app.parentName,
+        email: app.parentEmail,
+        postalCode: app.parentPostalCode,
+        city: app.parentCity,
+        address: app.parentAddress,
+        taxNumber: app.parentTaxNumber,
+      },
+      child: { name: app.childName },
+      camp: {
+        city: app.camp.city,
+        venue: app.camp.venue,
+        dates: formatCampDates(app.camp),
+      },
+    })
+
+    if (!result) {
+      console.warn("[stripe/webhook] Számlázz.hu invoice was not generated for application", app.id)
+      return
+    }
+
+    await db.paymentEvent.update({
+      where: { id: target.paymentEventId },
+      data: {
+        invoiceNumber: result.invoiceNumber,
+        invoiceUrl: result.downloadUrl,
+      },
+    })
+  } catch (err) {
+    console.error("[stripe/webhook] Invoice creation failed:", err)
+  }
 }
 
 type AppWithCamp = Awaited<ReturnType<typeof db.application.findMany<{ include: { camp: true } }>>>[number]

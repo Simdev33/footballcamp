@@ -17,6 +17,10 @@ interface ApplyPayload {
   parentName?: string
   parentEmail?: string
   parentPhone?: string
+  parentPostalCode?: string
+  parentCity?: string
+  parentAddress?: string
+  parentTaxNumber?: string
   notes?: string
   children?: ChildPayload[]
 }
@@ -30,7 +34,17 @@ export async function POST(request: Request) {
     return new NextResponse("Érvénytelen kérés formátum.", { status: 400 })
   }
 
-  const { parentName, parentEmail, parentPhone, notes, children } = payload
+  const {
+    parentName,
+    parentEmail,
+    parentPhone,
+    parentPostalCode,
+    parentCity,
+    parentAddress,
+    parentTaxNumber,
+    notes,
+    children,
+  } = payload
 
   if (!parentName || !parentEmail || !parentPhone) {
     return new NextResponse("Hiányzó szülői adatok.", { status: 400 })
@@ -85,6 +99,10 @@ export async function POST(request: Request) {
           parentName,
           parentEmail,
           parentPhone,
+          parentPostalCode: parentPostalCode?.trim() || "",
+          parentCity: parentCity?.trim() || "",
+          parentAddress: parentAddress?.trim() || "",
+          parentTaxNumber: parentTaxNumber?.trim() || "",
           childName: c.childName!,
           childBirthDate: new Date(c.childBirthDate!),
           childCity: c.childCity || "",

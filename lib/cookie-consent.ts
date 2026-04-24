@@ -38,7 +38,8 @@ export function writeConsent(consent: Omit<ConsentState, "timestamp" | "version"
     localStorage.setItem(STORAGE_KEY, JSON.stringify(full))
     // Google Consent Mode v2 update
     type GtagFn = (command: string, action: string, params: Record<string, string>) => void
-    type ConsentWindow = Window & { gtag?: GtagFn; dataLayer?: unknown[] }
+    type FbqFn = (...args: unknown[]) => void
+    type ConsentWindow = Window & { gtag?: GtagFn; fbq?: FbqFn; dataLayer?: unknown[] }
     const w = window as ConsentWindow
     if (typeof w.gtag === "function") {
       w.gtag("consent", "update", {
@@ -47,6 +48,10 @@ export function writeConsent(consent: Omit<ConsentState, "timestamp" | "version"
         ad_personalization: full.marketing ? "granted" : "denied",
         analytics_storage: full.analytics ? "granted" : "denied",
       })
+    }
+    // Meta (Facebook) Pixel consent toggle — mirrors the marketing flag.
+    if (typeof w.fbq === "function") {
+      w.fbq("consent", full.marketing ? "grant" : "revoke")
     }
     // Custom event so third-party scripts can react
     window.dispatchEvent(new CustomEvent("cookie-consent-change", { detail: full }))

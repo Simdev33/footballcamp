@@ -81,6 +81,11 @@ model Application {
   parentName     String
   parentEmail    String
   parentPhone    String
+  // Billing address (optional — used for Számlázz.hu invoice generation)
+  parentPostalCode String @default("")
+  parentCity       String @default("")
+  parentAddress    String @default("")
+  parentTaxNumber  String @default("")
   childName      String
   childBirthDate DateTime
   childCity      String   @default("")
@@ -137,6 +142,9 @@ model PaymentEvent {
   amount        Int         @default(0)
   currency      String      @default("HUF")
   stripeId      String? // session id / payment_intent / charge id
+  // Számlázz.hu invoice reference (filled when an invoice was auto-generated)
+  invoiceNumber String?
+  invoiceUrl    String?
   note          String?
   createdAt     DateTime    @default(now())
 

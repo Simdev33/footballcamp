@@ -9,6 +9,7 @@ import { useSearchParams } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { getHealthDeclaration } from "@/lib/health-declaration"
 import { storePendingConversion } from "@/lib/google-ads-conversion"
+import { fireLeadEvent } from "@/lib/meta-pixel"
 import { formatPrice, splitInstallment } from "@/lib/pricing"
 
 interface Camp {
@@ -74,6 +75,10 @@ function JelentkezesForm() {
     parentName: "",
     parentEmail: "",
     parentPhone: "",
+    parentPostalCode: "",
+    parentCity: "",
+    parentAddress: "",
+    parentTaxNumber: "",
     notes: "",
   })
   const [children, setChildren] = useState<ChildForm[]>([emptyChild()])
@@ -134,6 +139,10 @@ function JelentkezesForm() {
     else if (!emailRe.test(parent.parentEmail.trim())) errs["parentEmail"] = "Érvénytelen email cím"
     if (!parent.parentPhone.trim()) errs["parentPhone"] = "Kötelező mező"
     else if (!phoneRe.test(parent.parentPhone.trim())) errs["parentPhone"] = "Érvénytelen telefonszám"
+    if (!parent.parentPostalCode.trim()) errs["parentPostalCode"] = "Kötelező mező"
+    else if (!/^\d{4}$/.test(parent.parentPostalCode.trim())) errs["parentPostalCode"] = "Érvénytelen irányítószám"
+    if (!parent.parentCity.trim()) errs["parentCity"] = "Kötelező mező"
+    if (!parent.parentAddress.trim()) errs["parentAddress"] = "Kötelező mező"
 
     const today = new Date()
     today.setHours(0, 0, 0, 0)
@@ -173,6 +182,7 @@ function JelentkezesForm() {
       email: parent.parentEmail,
       phone: parent.parentPhone,
     })
+    fireLeadEvent({ value: dueNow, currency: "HUF" })
     try {
       const res = await fetch("/api/apply", {
         method: "POST",
@@ -272,6 +282,70 @@ function JelentkezesForm() {
                 className={cls(fieldErrors.parentPhone)}
               />
               <FieldError msg={fieldErrors.parentPhone} />
+            </div>
+          </div>
+
+          {/* Billing address — required for Számlázz.hu invoice generation */}
+          <div className="space-y-6">
+            <div className="border-b border-border/70 pb-3">
+              <h3 className="font-serif text-xl font-bold text-foreground">{f.billingSection}</h3>
+              <p className="text-sm text-muted-foreground mt-1">{f.billingSectionHint}</p>
+            </div>
+
+            <div className="grid sm:grid-cols-[140px_1fr] gap-4">
+              <div data-field="parentPostalCode">
+                <label className={labelClass}>{f.billingPostalCode}</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={4}
+                  placeholder={f.billingPostalCodePh}
+                  value={parent.parentPostalCode}
+                  onChange={(e) => setParent({ ...parent, parentPostalCode: e.target.value.replace(/\D/g, "") })}
+                  aria-invalid={!!fieldErrors.parentPostalCode}
+                  className={cls(fieldErrors.parentPostalCode)}
+                />
+                <FieldError msg={fieldErrors.parentPostalCode} />
+              </div>
+              <div data-field="parentCity">
+                <label className={labelClass}>{f.billingCity}</label>
+                <input
+                  type="text"
+                  placeholder={f.billingCityPh}
+                  value={parent.parentCity}
+                  onChange={(e) => setParent({ ...parent, parentCity: e.target.value })}
+                  aria-invalid={!!fieldErrors.parentCity}
+                  className={cls(fieldErrors.parentCity)}
+                />
+                <FieldError msg={fieldErrors.parentCity} />
+              </div>
+            </div>
+
+            <div data-field="parentAddress">
+              <label className={labelClass}>{f.billingAddress}</label>
+              <input
+                type="text"
+                placeholder={f.billingAddressPh}
+                value={parent.parentAddress}
+                onChange={(e) => setParent({ ...parent, parentAddress: e.target.value })}
+                aria-invalid={!!fieldErrors.parentAddress}
+                className={cls(fieldErrors.parentAddress)}
+              />
+              <FieldError msg={fieldErrors.parentAddress} />
+            </div>
+
+            <div data-field="parentTaxNumber">
+              <label className={labelClass}>
+                {f.billingTaxNumber}{" "}
+                <span className="text-muted-foreground font-normal">{f.billingTaxNumberOptional}</span>
+              </label>
+              <input
+                type="text"
+                placeholder={f.billingTaxNumberPh}
+                value={parent.parentTaxNumber}
+                onChange={(e) => setParent({ ...parent, parentTaxNumber: e.target.value })}
+                className={inputClass}
+              />
             </div>
           </div>
 
