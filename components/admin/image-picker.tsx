@@ -27,16 +27,24 @@ export function ImagePicker({ value, onChange, folder = "uploads" }: ImagePicker
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const loadFiles = useCallback(async (path: string) => {
     setLoading(true)
+    setError(null)
     try {
       const res = await fetch(`/api/bunny?path=${encodeURIComponent(path)}`)
-      if (res.ok) {
-        const data = await res.json()
-        setFiles(data)
+      const data = await res.json().catch(() => null)
+      if (!res.ok) {
+        setFiles([])
+        setError(data?.error || "Nem sikerült betölteni a Bunny képeket.")
+        return
       }
+      setFiles(Array.isArray(data) ? data : [])
+    } catch {
+      setFiles([])
+      setError("Nem sikerült kapcsolódni a Bunny Storage-hoz.")
     } finally {
       setLoading(false)
     }
@@ -50,7 +58,8 @@ export function ImagePicker({ value, onChange, folder = "uploads" }: ImagePicker
   }
 
   const navigateToDir = (dirName: string) => {
-    const newPath = currentPath ? `${currentPath}${dirName}/` : `${dirName}/`
+    const cleanDir = dirName.replace(/^\/+|\/+$/g, "")
+    const newPath = currentPath ? `${currentPath}${cleanDir}/` : `${cleanDir}/`
     setCurrentPath(newPath)
     loadFiles(newPath)
   }
@@ -78,17 +87,22 @@ export function ImagePicker({ value, onChange, folder = "uploads" }: ImagePicker
     }
 
     setUploading(true)
+    setError(null)
     try {
       const form = new FormData()
       form.append("file", file)
       form.append("folder", folder)
 
       const res = await fetch("/api/bunny", { method: "POST", body: form })
-      if (res.ok) {
-        const data = await res.json()
-        onChange(data.cdnUrl)
-        setOpen(false)
+      const data = await res.json().catch(() => null)
+      if (!res.ok) {
+        setError(data?.error || data?.detail || "Nem sikerült feltölteni a képet.")
+        return
       }
+      onChange(data.cdnUrl)
+      setOpen(false)
+    } catch {
+      setError("Nem sikerült feltölteni a képet.")
     } finally {
       setUploading(false)
     }
@@ -150,7 +164,7 @@ export function ImagePicker({ value, onChange, folder = "uploads" }: ImagePicker
 
       {/* Modal */}
       {open && (
-        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/70">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70">
           <div className="bg-[#0f2b0f] border border-[#d4a017]/30 w-full max-w-3xl max-h-[80vh] flex flex-col overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-[#d4a017]/20">
@@ -187,6 +201,12 @@ export function ImagePicker({ value, onChange, folder = "uploads" }: ImagePicker
 
             {/* Content */}
             <div className="flex-1 overflow-y-auto p-4">
+              {error && (
+                <div className="mb-4 rounded-md border border-red-400/30 bg-red-500/10 px-3 py-2 text-sm text-red-100">
+                  {error}
+                </div>
+              )}
+
               {tab === "browse" && (
                 <div>
                   {/* Breadcrumb / back */}

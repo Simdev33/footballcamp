@@ -6,6 +6,26 @@ const STORAGE_ZONE = process.env.BUNNY_STORAGE_ZONE!
 const STORAGE_HOST = process.env.BUNNY_STORAGE_HOST || "https://storage.bunnycdn.com"
 const CDN_URL = process.env.BUNNY_CDN_URL || "https://focis.b-cdn.net"
 
+function getConfigError() {
+  if (!process.env.BUNNY_STORAGE_KEY) return "Missing BUNNY_STORAGE_KEY"
+  if (!process.env.BUNNY_STORAGE_ZONE) return "Missing BUNNY_STORAGE_ZONE"
+  return null
+}
+
+function cleanBunnyPath(path: string) {
+  return path
+    .replace(/^\/+/, "")
+    .replace(/\/{2,}/g, "/")
+}
+
+function encodeCdnPath(path: string) {
+  return path
+    .split("/")
+    .filter(Boolean)
+    .map((part) => encodeURIComponent(part))
+    .join("/")
+}
+
 async function requireAuth() {
   const session = await auth()
   if (!session?.user) {
@@ -18,8 +38,13 @@ export async function GET(req: NextRequest) {
   const denied = await requireAuth()
   if (denied) return denied
 
+  const configError = getConfigError()
+  if (configError) {
+    return NextResponse.json({ error: configError }, { status: 500 })
+  }
+
   const path = req.nextUrl.searchParams.get("path") || ""
-  const cleanPath = path.replace(/^\/+/, "")
+  const cleanPath = cleanBunnyPath(path)
 
   const url = `${STORAGE_HOST}/${STORAGE_ZONE}/${cleanPath}`
   const res = await fetch(url, {
@@ -32,14 +57,13 @@ export async function GET(req: NextRequest) {
 
   const files = await res.json()
   const mapped = files
-    .filter((f: any) => !f.IsDirectory || true)
     .map((f: any) => ({
-      name: f.ObjectName,
-      path: `${cleanPath}${f.ObjectName}`,
+      name: String(f.ObjectName || "").replace(/\/+$/, ""),
+      path: cleanBunnyPath(`${cleanPath}${f.ObjectName || ""}`),
       isDir: f.IsDirectory,
       size: f.Length,
       lastChanged: f.LastChanged,
-      cdnUrl: f.IsDirectory ? null : `${CDN_URL}/${cleanPath}${encodeURIComponent(f.ObjectName)}`,
+      cdnUrl: f.IsDirectory ? null : `${CDN_URL}/${encodeCdnPath(cleanBunnyPath(`${cleanPath}${f.ObjectName || ""}`))}`,
     }))
 
   return NextResponse.json(mapped)
@@ -51,6 +75,11 @@ const MAX_SIZE = 10 * 1024 * 1024
 export async function POST(req: NextRequest) {
   const denied = await requireAuth()
   if (denied) return denied
+
+  const configError = getConfigError()
+  if (configError) {
+    return NextResponse.json({ error: configError }, { status: 500 })
+  }
 
   const formData = await req.formData()
   const file = formData.get("file") as File | null
@@ -66,7 +95,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "File too large (max 10MB)" }, { status: 400 })
   }
 
-  const cleanFolder = folder.replace(/^\/+|\/+$/g, "")
+  const cleanFolder = cleanBunnyPath(folder).replace(/\/+$/g, "")
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_")
   const timestamp = Date.now()
   const uploadName = `${timestamp}-${safeName}`
@@ -96,12 +125,17 @@ export async function DELETE(req: NextRequest) {
   const denied = await requireAuth()
   if (denied) return denied
 
+  const configError = getConfigError()
+  if (configError) {
+    return NextResponse.json({ error: configError }, { status: 500 })
+  }
+
   const path = req.nextUrl.searchParams.get("path")
   if (!path) {
     return NextResponse.json({ error: "Missing path" }, { status: 400 })
   }
 
-  const cleanPath = path.replace(/^\/+/, "")
+  const cleanPath = cleanBunnyPath(path)
   const res = await fetch(`${STORAGE_HOST}/${STORAGE_ZONE}/${cleanPath}`, {
     method: "DELETE",
     headers: { AccessKey: STORAGE_KEY },
