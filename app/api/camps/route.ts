@@ -9,6 +9,7 @@ export async function GET() {
     where: { active: true, remainingSpots: { gt: 0 } },
     select: {
       id: true,
+      slug: true,
       city: true,
       venue: true,
       dates: true,

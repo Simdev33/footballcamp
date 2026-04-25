@@ -47,7 +47,7 @@ export function LimitedSpots() {
 
             <div className="mt-6 md:mt-8">
               <a
-                href="#jelentkezes"
+                href="/jelentkezes"
                 className="inline-flex items-center gap-2 md:gap-3 px-6 py-3 md:px-8 md:py-4 bg-[#d4a017] text-[#0a1f0a] text-sm md:text-base font-bold hover:shadow-[0_0_40px_#d4a01766] transition-all duration-300"
               >
                 {t.limitedSpots.cta}

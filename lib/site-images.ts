@@ -30,7 +30,7 @@ export const SITE_IMAGE_DEFAULTS: Record<SiteImageKey, string> = {
   "whatKidsGet.image": `${CDN}/site/edzes-kozben.jpg`,
   "experience.image": `${CDN}/site/gyerekcsapat.jpg`,
   "partnerProgram.hero": `${CDN}/Post_1%20Camp/03%20Template%20Benfica%20Camp%202025_26-03.png`,
-  "taborok.hero": `${CDN}/Post_1%20Camp/04%20Template%20Benfica%20Camp%202025_26_Banner.png`,
+  "taborok.hero": `${CDN}/site/edzes-kozben.jpg`,
   "klubok.banner": `${CDN}/Post_1%20Camp/04%20Template%20Benfica%20Camp%202025_26_Banner.png`,
   "jelentkezes.side": `${CDN}/site/edzes-kozben.jpg`,
 }

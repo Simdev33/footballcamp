@@ -17,6 +17,7 @@ interface ChildPayload {
   jerseySize?: string
   shortsSize?: string
   socksSize?: string
+  kitPreference?: string
   campId?: string
 }
 
@@ -32,6 +33,12 @@ interface ApplyPayload {
   paymentMethod?: "CARD" | "TRANSFER"
   paymentMode?: "full" | "deposit"
   children?: ChildPayload[]
+}
+
+const KIT_LABELS: Record<string, string> = {
+  "home-red": "Piros mez szett",
+  "away-white": "Fehér mez szett",
+  "goalkeeper-black": "Fekete kapus szett",
 }
 
 export async function POST(request: Request) {
@@ -74,7 +81,8 @@ export async function POST(request: Request) {
       !c.campId ||
       !c.jerseySize ||
       !c.shortsSize ||
-      !c.socksSize
+      !c.socksSize ||
+      !c.kitPreference
     ) {
       return new NextResponse(`A(z) ${i + 1}. gyermek adatai hiányosak.`, { status: 400 })
     }
@@ -121,6 +129,11 @@ export async function POST(request: Request) {
     const ids: string[] = []
     for (const [i, c] of children.entries()) {
       const amounts = perChildAmounts[i]
+      const childNotes = [
+        notes?.trim(),
+        c.kitPreference ? `Felszerelés választás: ${KIT_LABELS[c.kitPreference] || c.kitPreference}` : "",
+      ].filter(Boolean).join("\n")
+
       const created = await tx.application.create({
         data: {
           parentName,
@@ -138,7 +151,7 @@ export async function POST(request: Request) {
           shortsSize: c.shortsSize || "",
           socksSize: c.socksSize || "",
           campId: c.campId!,
-          notes: notes || "",
+          notes: childNotes,
           siblingGroupId,
           paymentMethod,
           // Only TRANSFER persists amounts here — CARD relies on the

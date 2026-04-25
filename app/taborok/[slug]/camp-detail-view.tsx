@@ -68,8 +68,23 @@ function getYouTubeId(url: string): string | null {
   return match?.[1] || null
 }
 
+const CAMP_TEXT_EN: Record<string, string> = {
+  "Hivatalos felszerelés": "Official kit",
+  "1 garnitúra a klub hivatalos felszereléséből (sportszár, nadrág, mez)": "One set of the club's official kit (socks, shorts, jersey)",
+  "Napi étkezés": "Daily meals",
+  "Napi háromszori étkezés (tízórai, ebéd, uzsonna)": "Three meals a day (morning snack, lunch, afternoon snack)",
+  "Változatos edzések": "Varied training sessions",
+  "Napi 4 edzés változatos és játékos feladatokkal": "4 sessions a day with varied, playful drills",
+  "Életre szóló élmény": "A lifelong memory",
+  "Kiemelkedő hangulat, biztonságos környezet, felejthetetlen élmény": "Great atmosphere, safe environment, unforgettable experience",
+}
+
+function campText(text: string, locale: "hu" | "en") {
+  return locale === "en" ? CAMP_TEXT_EN[text] || text : text
+}
+
 export function CampDetailView({ camp, otherCamps }: { camp: CampDetail; otherCamps: OtherCamp[] }) {
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
   const d = (t as unknown as { campDetailPage: DetailStrings }).campDetailPage
   const ytId = camp.videoUrl ? getYouTubeId(camp.videoUrl) : null
 
@@ -151,7 +166,7 @@ export function CampDetailView({ camp, otherCamps }: { camp: CampDetail; otherCa
                         <div className="mt-0.5 w-6 h-6 bg-[#d4a017] flex items-center justify-center shrink-0">
                           <Check className="w-4 h-4 text-[#0a1f0a]" />
                         </div>
-                        <span className="text-sm text-foreground font-medium">{item}</span>
+                        <span className="text-sm text-foreground font-medium">{campText(item, locale)}</span>
                       </div>
                     ))}
                   </div>

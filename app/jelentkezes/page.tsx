@@ -1,10 +1,10 @@
 "use client"
 
-import { Suspense, useState, useEffect } from "react"
+import { Suspense, useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { SubpageHero } from "@/components/subpage-hero"
 import { SizeChart, SIZE_OPTIONS } from "@/components/size-chart"
-import { Send, Loader2, Plus, Trash2, HeartPulse, ChevronDown, ChevronUp, CreditCard, Banknote } from "lucide-react"
+import { Send, Loader2, Plus, Trash2, CreditCard, Banknote } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { getHealthDeclaration } from "@/lib/health-declaration"
@@ -14,6 +14,7 @@ import { formatPrice, splitInstallment } from "@/lib/pricing"
 
 interface Camp {
   id: string
+  slug: string
   city: string
   venue: string
   dates: string
@@ -35,6 +36,7 @@ interface ChildForm {
   jerseySize: string
   shortsSize: string
   socksSize: string
+  kitPreference: string
   campId: string
 }
 
@@ -47,6 +49,7 @@ const emptyChild = (): ChildForm => ({
   jerseySize: "",
   shortsSize: "",
   socksSize: "",
+  kitPreference: "",
   campId: "",
 })
 
@@ -59,9 +62,100 @@ const cls = (err?: string) => (err ? inputErr : inputClass)
 const FieldError = ({ msg }: { msg?: string }) =>
   msg ? <p className="mt-1 text-xs text-red-600">{msg}</p> : null
 
+const KIT_OPTIONS = [
+  { id: "home-red", color: "bg-red-700", accent: "bg-white", labelKey: "kitHome" },
+  { id: "away-white", color: "bg-white", accent: "bg-red-700", labelKey: "kitAway" },
+  { id: "goalkeeper-black", color: "bg-neutral-950", accent: "bg-[#d4a017]", labelKey: "kitGoalkeeper" },
+] as const
+
+function BirthDateInput({
+  value,
+  onChange,
+  hasError,
+}: {
+  value: string
+  onChange: (value: string) => void
+  hasError: boolean
+}) {
+  const [year, setYear] = useState(value.split("-")[0] || "")
+  const [month, setMonth] = useState(value.split("-")[1] || "")
+  const [day, setDay] = useState(value.split("-")[2] || "")
+  const monthRef = useRef<HTMLInputElement>(null)
+  const dayRef = useRef<HTMLInputElement>(null)
+  const partClass = hasError ? inputErr : inputClass
+
+  useEffect(() => {
+    if (!value) return
+    const [y, m, d] = value.split("-")
+    setYear(y || "")
+    setMonth(m || "")
+    setDay(d || "")
+  }, [value])
+
+  const commit = (nextYear: string, nextMonth: string, nextDay: string) => {
+    if (nextYear.length === 4 && nextMonth.length >= 1 && nextDay.length >= 1) {
+      onChange(`${nextYear}-${nextMonth.padStart(2, "0")}-${nextDay.padStart(2, "0")}`)
+    } else {
+      onChange("")
+    }
+  }
+
+  return (
+    <div className="grid grid-cols-[1.2fr_0.8fr_0.8fr] gap-2">
+      <input
+        type="text"
+        inputMode="numeric"
+        maxLength={4}
+        placeholder="YYYY"
+        value={year}
+        onChange={(e) => {
+          const next = e.target.value.replace(/\D/g, "").slice(0, 4)
+          setYear(next)
+          commit(next, month, day)
+          if (next.length === 4) monthRef.current?.focus()
+        }}
+        aria-invalid={hasError}
+        className={partClass}
+      />
+      <input
+        ref={monthRef}
+        type="text"
+        inputMode="numeric"
+        maxLength={2}
+        placeholder="MM"
+        value={month}
+        onChange={(e) => {
+          const next = e.target.value.replace(/\D/g, "").slice(0, 2)
+          setMonth(next)
+          commit(year, next, day)
+          if (next.length === 2) dayRef.current?.focus()
+        }}
+        aria-invalid={hasError}
+        className={partClass}
+      />
+      <input
+        ref={dayRef}
+        type="text"
+        inputMode="numeric"
+        maxLength={2}
+        placeholder="DD"
+        value={day}
+        onChange={(e) => {
+          const next = e.target.value.replace(/\D/g, "").slice(0, 2)
+          setDay(next)
+          commit(year, month, next)
+        }}
+        aria-invalid={hasError}
+        className={partClass}
+      />
+    </div>
+  )
+}
+
 function JelentkezesForm() {
   const searchParams = useSearchParams()
   const canceled = searchParams.get("canceled")
+  const selectedCampParam = searchParams.get("camp")
   const { t, locale } = useLanguage()
   const f = t.applyForm
   const hd = getHealthDeclaration(locale)
@@ -69,7 +163,6 @@ function JelentkezesForm() {
   const [camps, setCamps] = useState<Camp[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [healthOpen, setHealthOpen] = useState(false)
 
   const [parent, setParent] = useState({
     parentName: "",
@@ -95,6 +188,15 @@ function JelentkezesForm() {
       .catch(() => setCamps([]))
   }, [])
 
+  useEffect(() => {
+    if (!selectedCampParam || camps.length === 0) return
+    const selected = camps.find((camp) => camp.slug === selectedCampParam || camp.id === selectedCampParam)
+    if (!selected) return
+    setChildren((prev) =>
+      prev.map((child, index) => (index === 0 && !child.campId ? { ...child, campId: selected.id } : child)),
+    )
+  }, [camps, selectedCampParam])
+
   const campMap = new Map(camps.map((c) => [c.id, c]))
   const selectedCamps = children
     .map((child) => campMap.get(child.campId))
@@ -108,8 +210,28 @@ function JelentkezesForm() {
   const dueNow = paymentMode === "full" ? totalFull : totalDeposit
   const remainderAfterDeposit = totalFull - totalDeposit
 
-  const updateChild = (index: number, patch: Partial<ChildForm>) => {
+  const clearFieldErrors = (...keys: string[]) => {
+    setFieldErrors((prev) => {
+      let changed = false
+      const next = { ...prev }
+      for (const key of keys) {
+        if (next[key]) {
+          delete next[key]
+          changed = true
+        }
+      }
+      return changed ? next : prev
+    })
+  }
+
+  const updateParent = (patch: Partial<typeof parent>, ...fields: string[]) => {
+    setParent((prev) => ({ ...prev, ...patch }))
+    clearFieldErrors(...fields)
+  }
+
+  const updateChild = (index: number, patch: Partial<ChildForm>, ...fields: string[]) => {
     setChildren((prev) => prev.map((c, i) => (i === index ? { ...c, ...patch } : c)))
+    clearFieldErrors(...fields)
   }
 
   const addChild = () => setChildren((prev) => [...prev, emptyChild()])
@@ -151,8 +273,14 @@ function JelentkezesForm() {
       if (!c.childName.trim()) errs[`child-${i}-childName`] = f.errRequired
       if (!c.childBirthDate) errs[`child-${i}-childBirthDate`] = f.errRequired
       else {
+        const match = c.childBirthDate.match(/^(\d{4})-(\d{2})-(\d{2})$/)
         const bd = new Date(c.childBirthDate)
-        if (isNaN(bd.getTime())) errs[`child-${i}-childBirthDate`] = f.errInvalidDate
+        const isRealDate =
+          !!match &&
+          bd.getFullYear() === Number(match[1]) &&
+          bd.getMonth() + 1 === Number(match[2]) &&
+          bd.getDate() === Number(match[3])
+        if (!isRealDate) errs[`child-${i}-childBirthDate`] = f.errInvalidDate
         else if (bd > today) errs[`child-${i}-childBirthDate`] = f.errFutureBirth
         else {
           const age = (today.getTime() - bd.getTime()) / (365.25 * 24 * 3600 * 1000)
@@ -166,6 +294,7 @@ function JelentkezesForm() {
       if (!c.jerseySize) errs[`child-${i}-jerseySize`] = f.errPickSize
       if (!c.shortsSize) errs[`child-${i}-shortsSize`] = f.errPickSize
       if (!c.socksSize) errs[`child-${i}-socksSize`] = f.errRequired
+      if (!c.kitPreference) errs[`child-${i}-kitPreference`] = f.errPickKit
     }
     if (!privacyAccepted) errs["privacy"] = f.errAcceptPrivacy
     if (!healthAccepted) errs["health"] = f.errAcceptHealth
@@ -262,7 +391,7 @@ function JelentkezesForm() {
                   type="text"
                   placeholder={f.parentNamePh}
                   value={parent.parentName}
-                  onChange={(e) => setParent({ ...parent, parentName: e.target.value })}
+                  onChange={(e) => updateParent({ parentName: e.target.value }, "parentName")}
                   aria-invalid={!!fieldErrors.parentName}
                   className={cls(fieldErrors.parentName)}
                 />
@@ -274,7 +403,7 @@ function JelentkezesForm() {
                   type="email"
                   placeholder={f.parentEmailPh}
                   value={parent.parentEmail}
-                  onChange={(e) => setParent({ ...parent, parentEmail: e.target.value })}
+                  onChange={(e) => updateParent({ parentEmail: e.target.value }, "parentEmail")}
                   aria-invalid={!!fieldErrors.parentEmail}
                   className={cls(fieldErrors.parentEmail)}
                 />
@@ -288,7 +417,7 @@ function JelentkezesForm() {
                 type="tel"
                 placeholder={f.parentPhonePh}
                 value={parent.parentPhone}
-                onChange={(e) => setParent({ ...parent, parentPhone: e.target.value })}
+                onChange={(e) => updateParent({ parentPhone: e.target.value }, "parentPhone")}
                 aria-invalid={!!fieldErrors.parentPhone}
                 className={cls(fieldErrors.parentPhone)}
               />
@@ -303,6 +432,19 @@ function JelentkezesForm() {
               <p className="text-sm text-muted-foreground mt-1">{f.billingSectionHint}</p>
             </div>
 
+            <div data-field="parentName">
+              <label className={labelClass}>{f.billingName}</label>
+              <input
+                type="text"
+                placeholder={f.billingNamePh}
+                value={parent.parentName}
+                onChange={(e) => updateParent({ parentName: e.target.value }, "parentName")}
+                aria-invalid={!!fieldErrors.parentName}
+                className={cls(fieldErrors.parentName)}
+              />
+              <FieldError msg={fieldErrors.parentName} />
+            </div>
+
             <div className="grid sm:grid-cols-[140px_1fr] gap-4">
               <div data-field="parentPostalCode">
                 <label className={labelClass}>{f.billingPostalCode}</label>
@@ -312,7 +454,7 @@ function JelentkezesForm() {
                   maxLength={4}
                   placeholder={f.billingPostalCodePh}
                   value={parent.parentPostalCode}
-                  onChange={(e) => setParent({ ...parent, parentPostalCode: e.target.value.replace(/\D/g, "") })}
+                  onChange={(e) => updateParent({ parentPostalCode: e.target.value.replace(/\D/g, "") }, "parentPostalCode")}
                   aria-invalid={!!fieldErrors.parentPostalCode}
                   className={cls(fieldErrors.parentPostalCode)}
                 />
@@ -324,7 +466,7 @@ function JelentkezesForm() {
                   type="text"
                   placeholder={f.billingCityPh}
                   value={parent.parentCity}
-                  onChange={(e) => setParent({ ...parent, parentCity: e.target.value })}
+                  onChange={(e) => updateParent({ parentCity: e.target.value }, "parentCity")}
                   aria-invalid={!!fieldErrors.parentCity}
                   className={cls(fieldErrors.parentCity)}
                 />
@@ -338,7 +480,7 @@ function JelentkezesForm() {
                 type="text"
                 placeholder={f.billingAddressPh}
                 value={parent.parentAddress}
-                onChange={(e) => setParent({ ...parent, parentAddress: e.target.value })}
+                onChange={(e) => updateParent({ parentAddress: e.target.value }, "parentAddress")}
                 aria-invalid={!!fieldErrors.parentAddress}
                 className={cls(fieldErrors.parentAddress)}
               />
@@ -354,7 +496,7 @@ function JelentkezesForm() {
                 type="text"
                 placeholder={f.billingTaxNumberPh}
                 value={parent.parentTaxNumber}
-                onChange={(e) => setParent({ ...parent, parentTaxNumber: e.target.value })}
+                onChange={(e) => updateParent({ parentTaxNumber: e.target.value })}
                 className={inputClass}
               />
             </div>
@@ -391,7 +533,7 @@ function JelentkezesForm() {
                     type="text"
                     placeholder={f.childNamePh}
                     value={child.childName}
-                    onChange={(e) => updateChild(index, { childName: e.target.value })}
+                    onChange={(e) => updateChild(index, { childName: e.target.value }, `child-${index}-childName`)}
                     aria-invalid={!!fieldErrors[`child-${index}-childName`]}
                     className={cls(fieldErrors[`child-${index}-childName`])}
                   />
@@ -399,12 +541,10 @@ function JelentkezesForm() {
                 </div>
                 <div data-field={`child-${index}-childBirthDate`}>
                   <label className={labelClass}>{f.childBirth}</label>
-                  <input
-                    type="date"
+                  <BirthDateInput
                     value={child.childBirthDate}
-                    onChange={(e) => updateChild(index, { childBirthDate: e.target.value })}
-                    aria-invalid={!!fieldErrors[`child-${index}-childBirthDate`]}
-                    className={cls(fieldErrors[`child-${index}-childBirthDate`])}
+                    onChange={(value) => updateChild(index, { childBirthDate: value }, `child-${index}-childBirthDate`)}
+                    hasError={!!fieldErrors[`child-${index}-childBirthDate`]}
                   />
                   <FieldError msg={fieldErrors[`child-${index}-childBirthDate`]} />
                 </div>
@@ -416,7 +556,7 @@ function JelentkezesForm() {
                   type="text"
                   placeholder={f.childCityPh}
                   value={child.childCity}
-                  onChange={(e) => updateChild(index, { childCity: e.target.value })}
+                  onChange={(e) => updateChild(index, { childCity: e.target.value }, `child-${index}-childCity`)}
                   aria-invalid={!!fieldErrors[`child-${index}-childCity`]}
                   className={cls(fieldErrors[`child-${index}-childCity`])}
                 />
@@ -428,7 +568,7 @@ function JelentkezesForm() {
                 <div className="flex gap-3">
                   <button
                     type="button"
-                    onClick={() => updateChild(index, { playsFootball: "yes" })}
+                    onClick={() => updateChild(index, { playsFootball: "yes" }, `child-${index}-playsFootball`)}
                     className={`flex-1 h-11 border text-sm font-medium rounded-md transition-colors ${
                       child.playsFootball === "yes"
                         ? "bg-[#d4a017] border-[#d4a017] text-[#0a1f0a]"
@@ -441,7 +581,7 @@ function JelentkezesForm() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => updateChild(index, { playsFootball: "no", currentClub: "" })}
+                    onClick={() => updateChild(index, { playsFootball: "no", currentClub: "" }, `child-${index}-playsFootball`, `child-${index}-currentClub`)}
                     className={`flex-1 h-11 border text-sm font-medium rounded-md transition-colors ${
                       child.playsFootball === "no"
                         ? "bg-[#d4a017] border-[#d4a017] text-[#0a1f0a]"
@@ -461,7 +601,7 @@ function JelentkezesForm() {
                       type="text"
                       placeholder={f.clubPh}
                       value={child.currentClub}
-                      onChange={(e) => updateChild(index, { currentClub: e.target.value })}
+                      onChange={(e) => updateChild(index, { currentClub: e.target.value }, `child-${index}-currentClub`)}
                       aria-invalid={!!fieldErrors[`child-${index}-currentClub`]}
                       className={cls(fieldErrors[`child-${index}-currentClub`])}
                     />
@@ -485,7 +625,7 @@ function JelentkezesForm() {
                     <label className="block text-xs text-muted-foreground mb-1.5">{f.jerseySize}</label>
                     <select
                       value={child.jerseySize}
-                      onChange={(e) => updateChild(index, { jerseySize: e.target.value })}
+                      onChange={(e) => updateChild(index, { jerseySize: e.target.value }, `child-${index}-jerseySize`)}
                       aria-invalid={!!fieldErrors[`child-${index}-jerseySize`]}
                       className={cls(fieldErrors[`child-${index}-jerseySize`])}
                     >
@@ -500,7 +640,7 @@ function JelentkezesForm() {
                     <label className="block text-xs text-muted-foreground mb-1.5">{f.shortsSize}</label>
                     <select
                       value={child.shortsSize}
-                      onChange={(e) => updateChild(index, { shortsSize: e.target.value })}
+                      onChange={(e) => updateChild(index, { shortsSize: e.target.value }, `child-${index}-shortsSize`)}
                       aria-invalid={!!fieldErrors[`child-${index}-shortsSize`]}
                       className={cls(fieldErrors[`child-${index}-shortsSize`])}
                     >
@@ -519,7 +659,7 @@ function JelentkezesForm() {
                       max={48}
                       placeholder={f.shoeSizePh}
                       value={child.socksSize}
-                      onChange={(e) => updateChild(index, { socksSize: e.target.value })}
+                      onChange={(e) => updateChild(index, { socksSize: e.target.value }, `child-${index}-socksSize`)}
                       aria-invalid={!!fieldErrors[`child-${index}-socksSize`]}
                       className={cls(fieldErrors[`child-${index}-socksSize`])}
                     />
@@ -528,11 +668,50 @@ function JelentkezesForm() {
                 </div>
               </div>
 
+              <div className="space-y-3" data-field={`child-${index}-kitPreference`}>
+                <div>
+                  <label className={labelClass + " mb-0"}>{f.kitTitle}</label>
+                  <p className="text-xs text-muted-foreground mt-1">{f.kitHint}</p>
+                </div>
+                <div className="grid sm:grid-cols-3 gap-3">
+                  {KIT_OPTIONS.map((option) => {
+                    const selected = child.kitPreference === option.id
+                    const label = f[option.labelKey]
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => updateChild(index, { kitPreference: option.id }, `child-${index}-kitPreference`)}
+                        className={`relative p-4 border rounded-md text-left transition-colors ${
+                          selected
+                            ? "border-[#d4a017] bg-[#d4a017]/10"
+                            : fieldErrors[`child-${index}-kitPreference`]
+                              ? "border-red-500 bg-background"
+                              : "border-border bg-background hover:border-[#d4a017]/60"
+                        }`}
+                      >
+                        <div className="mx-auto mb-3 h-24 w-20 relative">
+                          <div className={`absolute left-1/2 top-3 h-20 w-14 -translate-x-1/2 rounded-b-lg ${option.color} border border-black/10 shadow-sm`} />
+                          <div className={`absolute left-0 top-5 h-7 w-5 -rotate-12 rounded ${option.color} border border-black/10`} />
+                          <div className={`absolute right-0 top-5 h-7 w-5 rotate-12 rounded ${option.color} border border-black/10`} />
+                          <div className={`absolute left-1/2 top-4 h-1.5 w-8 -translate-x-1/2 rounded-full ${option.accent}`} />
+                        </div>
+                        <span className="block text-sm font-semibold text-foreground text-center">{label}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+                <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
+                  {f.kitDisclaimer}
+                </p>
+                <FieldError msg={fieldErrors[`child-${index}-kitPreference`]} />
+              </div>
+
               <div data-field={`child-${index}-campId`}>
                 <label className={labelClass}>{f.campSelect}</label>
                 <select
                   value={child.campId}
-                  onChange={(e) => updateChild(index, { campId: e.target.value })}
+                  onChange={(e) => updateChild(index, { campId: e.target.value }, `child-${index}-campId`)}
                   aria-invalid={!!fieldErrors[`child-${index}-campId`]}
                   className={cls(fieldErrors[`child-${index}-campId`])}
                 >
@@ -567,72 +746,32 @@ function JelentkezesForm() {
               rows={3}
               placeholder={f.notesPh}
               value={parent.notes}
-              onChange={(e) => setParent({ ...parent, notes: e.target.value })}
+              onChange={(e) => updateParent({ notes: e.target.value })}
               className="w-full px-4 py-3 border border-border text-foreground focus:border-[#d4a017] focus:outline-none transition-colors text-[15px] bg-background resize-none rounded-md"
             />
           </div>
 
           {/* Health declaration */}
-          <div className="border border-[#d4a017]/30 bg-[#d4a017]/5 p-5 space-y-4 rounded-md">
-            <div className="flex items-start gap-3">
-              <HeartPulse className="w-5 h-5 text-[#d4a017] shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <h3 className="font-serif text-lg font-bold text-foreground">{hd.title}</h3>
-                <p className="text-sm text-muted-foreground mt-1">{hd.formIntro}</p>
-                <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
-                  <Link href="/egeszsegugyi-nyilatkozat" target="_blank" className="text-[#d4a017] underline hover:no-underline">
-                    {hd.openInNewTab}
-                  </Link>
-                  <a href="/egeszsegugyi-nyilatkozat.docx" download className="text-[#d4a017] underline hover:no-underline">
-                    {hd.downloadLabel}
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setHealthOpen(!healthOpen)}
-              className="inline-flex items-center gap-1.5 text-sm text-[#0a1f0a] font-medium hover:text-[#d4a017] transition-colors"
-            >
-              {healthOpen ? (
-                <>
-                  <ChevronUp className="w-4 h-4" /> {hd.formHide}
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="w-4 h-4" /> {hd.formReadHere}
-                </>
-              )}
-            </button>
-
-            {healthOpen && (
-              <div className="max-h-64 overflow-y-auto space-y-3 text-[13px] leading-relaxed text-foreground bg-white p-4 border border-border/50 rounded-md">
-                {hd.paragraphs.map((p, i) => (
-                  <p key={i}>{p}</p>
-                ))}
-                <p className="font-semibold">{hd.commitmentsIntro}</p>
-                <ul className="list-disc pl-5 space-y-1">
-                  {hd.commitments.map((c, i) => (
-                    <li key={i}>{c}</li>
-                  ))}
-                </ul>
-                <p className="font-semibold">{hd.consent}</p>
-              </div>
-            )}
-
-            <div data-field="health">
-              <label className="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={healthAccepted}
-                  onChange={(e) => setHealthAccepted(e.target.checked)}
-                  className="mt-1 w-4 h-4 accent-[#d4a017] cursor-pointer"
-                />
-                <span className="text-sm text-foreground">{hd.formCheckboxLabel}</span>
-              </label>
-              <FieldError msg={fieldErrors.health} />
-            </div>
+          <div data-field="health">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={healthAccepted}
+                onChange={(e) => {
+                  setHealthAccepted(e.target.checked)
+                  clearFieldErrors("health")
+                }}
+                className="mt-1 w-4 h-4 accent-[#d4a017] cursor-pointer"
+              />
+              <span className="text-sm text-muted-foreground">
+                {f.healthAcceptPrefix}{" "}
+                <Link href="/egeszsegugyi-nyilatkozat" target="_blank" className="text-[#d4a017] underline hover:no-underline">
+                  {hd.title}
+                </Link>
+                {f.healthAcceptSuffix}
+              </span>
+            </label>
+            <FieldError msg={fieldErrors.health} />
           </div>
 
           {/* Privacy */}
@@ -641,7 +780,10 @@ function JelentkezesForm() {
               <input
                 type="checkbox"
                 checked={privacyAccepted}
-                onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                onChange={(e) => {
+                  setPrivacyAccepted(e.target.checked)
+                  clearFieldErrors("privacy")
+                }}
                 className="mt-1 w-4 h-4 accent-[#d4a017] cursor-pointer"
               />
               <span className="text-sm text-muted-foreground">

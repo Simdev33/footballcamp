@@ -95,7 +95,15 @@ export default function KlubokPage() {
             </h2>
             <p className="mt-4 text-white/50 text-xs md:text-sm max-w-xl mx-auto">{c.madeInBenficaSubtitle}</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+          <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+            {BENFICA_PLAYERS.map((player, i) => (
+              <span key={player} className={`px-3 py-1.5 md:px-5 md:py-2 font-serif text-xs md:text-sm font-bold border transition-colors duration-300 ${i % 3 === 0 ? "bg-[#d4a017] text-[#0a1f0a] border-[#d4a017]" : "bg-transparent text-white/70 border-[#d4a017]/20 hover:bg-[#d4a017]/10"}`}>
+                {player}
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-14 md:mt-20 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
             {PLAYER_PHOTOS.map((player) => (
               <div key={player.name} className="group relative aspect-[3/4] overflow-hidden bg-gradient-to-b from-[#1a0a0a] to-[#0a1f0a]">
                 <Image src={player.src} alt={player.name} fill sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 16vw" className="object-cover object-top group-hover:scale-105 transition-transform duration-500" loading="lazy" />
@@ -109,20 +117,6 @@ export default function KlubokPage() {
                 </div>
                 <div className="absolute inset-0 border-2 border-[#d4a017]/0 group-hover:border-[#d4a017]/50 transition-colors duration-300" />
               </div>
-            ))}
-          </div>
-
-          <div className="mt-14 md:mt-20 text-center mb-6 md:mb-8">
-            <h2 className="font-serif text-xl md:text-3xl font-bold text-white">
-              {c.graduatesTitle} <span className="text-[#d4a017]">{c.graduatesHighlight}</span>
-            </h2>
-            <p className="mt-3 text-white/50 text-xs md:text-sm">{c.graduatesSubtitle}</p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-2 md:gap-3">
-            {BENFICA_PLAYERS.map((player, i) => (
-              <span key={player} className={`px-3 py-1.5 md:px-5 md:py-2 font-serif text-xs md:text-sm font-bold border transition-colors duration-300 ${i % 3 === 0 ? "bg-[#d4a017] text-[#0a1f0a] border-[#d4a017]" : "bg-transparent text-white/70 border-[#d4a017]/20 hover:bg-[#d4a017]/10"}`}>
-                {player}
-              </span>
             ))}
           </div>
         </div>
