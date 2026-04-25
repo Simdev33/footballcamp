@@ -34,4 +34,7 @@ export async function saveSiteImages(patch: Partial<Record<SiteImageKey, string>
 
   revalidatePath("/", "layout")
   revalidatePath("/admin/tartalom", "layout")
+  revalidatePath("/partnerprogram")
+  revalidatePath("/klubok")
+  revalidatePath("/klubok/benfica")
 }

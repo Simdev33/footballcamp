@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/rolunk", priority: 0.8, changeFrequency: "monthly" },
     { path: "/taborok", priority: 0.9, changeFrequency: "weekly" },
     { path: "/klubok", priority: 0.7, changeFrequency: "monthly" },
+    { path: "/klubok/benfica", priority: 0.7, changeFrequency: "monthly" },
     { path: "/partnerprogram", priority: 0.7, changeFrequency: "monthly" },
     { path: "/galeria", priority: 0.6, changeFrequency: "monthly" },
     { path: "/hirek", priority: 0.7, changeFrequency: "weekly" },

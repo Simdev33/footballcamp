@@ -8,7 +8,7 @@ import { PenLine, Globe, ChevronDown } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
 const CLUB_ITEMS = [
-  { label: "SL Benfica", href: "/klubok" },
+  { label: "SL Benfica", href: "/klubok/benfica" },
 ]
 
 type CampNavItem = { label: string; href: string }
@@ -208,11 +208,33 @@ export function Header() {
             </svg>
           </button>
           <div className="relative flex flex-col items-center justify-center h-full gap-7">
-            {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className={`font-serif text-3xl sm:text-4xl transition-colors ${pathname === link.href ? "text-primary" : "text-foreground hover:text-primary"}`}>
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const dd = (link as { dropdown?: { label: string; href: string }[] }).dropdown
+              const isActive = pathname === link.href || pathname.startsWith(link.href + "/")
+
+              return (
+                <div key={link.href} className="text-center">
+                  <Link href={link.href} className={`font-serif text-3xl sm:text-4xl transition-colors ${isActive ? "text-primary" : "text-foreground hover:text-primary"}`}>
+                    {link.label}
+                  </Link>
+                  {dd && (
+                    <div className="mt-3 flex flex-col items-center gap-2">
+                      {dd.map((item) => (
+                        <Link
+                          key={item.href + item.label}
+                          href={item.href}
+                          className={`text-sm font-semibold uppercase tracking-[0.2em] transition-colors ${
+                            pathname === item.href ? "text-primary" : "text-muted-foreground hover:text-primary"
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
             <button onClick={toggleLocale} className="flex items-center gap-3 px-8 py-4 border-2 border-primary text-primary text-xl font-semibold bg-transparent mt-4">
               <Globe className="w-6 h-6" />
               {locale === "hu" ? "English" : "Magyar"}

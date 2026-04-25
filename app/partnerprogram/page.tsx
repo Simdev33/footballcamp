@@ -106,7 +106,7 @@ export default function PartnerprogramPage() {
       <section className="relative py-16 md:py-24 overflow-hidden bg-[#0a1f0a]">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,#d4a01716_0%,transparent_55%)]" />
         <div className="relative z-10 max-w-[1100px] mx-auto px-4 md:px-12 lg:px-24">
-          <div className="grid md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_340px] items-center gap-8 md:gap-12">
+          <div className="grid md:grid-cols-[1fr_360px] lg:grid-cols-[1fr_440px] items-center gap-8 md:gap-12">
             <div className="text-center md:text-left">
               <h2 className="font-serif text-2xl md:text-4xl font-bold text-white">
                 {t.partnerProgram.ctaTitle}
@@ -123,9 +123,17 @@ export default function PartnerprogramPage() {
               </div>
             </div>
 
-            <div className="relative mx-auto w-full max-w-[260px] md:max-w-none">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-[#d4a017]/25 bg-black/20 shadow-2xl">
-                <Image src={heroImg} alt="Kickoff" fill className="object-contain p-3" loading="lazy" unoptimized={heroImg.includes("b-cdn.net")} />
+            <div className="relative mx-auto w-full max-w-[420px] md:max-w-none">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-[#d4a017]/25 bg-black/20 shadow-2xl">
+                <Image
+                  src={heroImg}
+                  alt="Kickoff"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 440px"
+                  className="object-contain object-top p-2"
+                  loading="lazy"
+                  unoptimized={heroImg.includes("b-cdn.net")}
+                />
               </div>
               <div className="absolute -bottom-3 -right-3 h-full w-full rounded-xl border border-[#d4a017]/25 -z-10" />
             </div>

@@ -29,7 +29,7 @@ export const SITE_IMAGE_DEFAULTS: Record<SiteImageKey, string> = {
   "whySpecial.image": `${CDN}/site/gyerekek-edzovel.jpg`,
   "whatKidsGet.image": `${CDN}/site/edzes-kozben.jpg`,
   "experience.image": `${CDN}/site/gyerekcsapat.jpg`,
-  "partnerProgram.hero": `${CDN}/Post_1%20Camp/03%20Template%20Benfica%20Camp%202025_26-03.png`,
+  "partnerProgram.hero": `${CDN}/site/gyerekcsapat.jpg`,
   "taborok.hero": `${CDN}/site/edzes-kozben.jpg`,
   "klubok.banner": `${CDN}/Post_1%20Camp/04%20Template%20Benfica%20Camp%202025_26_Banner.png`,
   "jelentkezes.side": `${CDN}/site/edzes-kozben.jpg`,
@@ -89,8 +89,8 @@ export const SITE_IMAGE_LABELS: Record<SiteImageKey, { title: string; where: str
   },
   "partnerProgram.hero": {
     group: "partnerprogram",
-    title: "Alsó banner kép",
-    where: "A Partnerprogram oldal alján, a záró „Keress minket” szekcióban.",
+    title: "Alsó CTA kép",
+    where: "A Partnerprogram oldal alján, a záró „Keress minket” szekció jobb oldalán.",
   },
   "jelentkezes.side": {
     group: "jelentkezes",
