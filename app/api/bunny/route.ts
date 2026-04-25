@@ -70,7 +70,7 @@ export async function GET(req: NextRequest) {
 }
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"]
-const MAX_SIZE = 10 * 1024 * 1024
+const MAX_SIZE = 4 * 1024 * 1024
 
 export async function POST(req: NextRequest) {
   const denied = await requireAuth()
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid file type" }, { status: 400 })
   }
   if (file.size > MAX_SIZE) {
-    return NextResponse.json({ error: "File too large (max 10MB)" }, { status: 400 })
+    return NextResponse.json({ error: "A kép túl nagy. Maximum 4 MB tölthető fel egyszerre." }, { status: 400 })
   }
 
   const cleanFolder = cleanBunnyPath(folder).replace(/\/+$/g, "")

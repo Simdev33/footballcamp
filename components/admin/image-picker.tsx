@@ -19,6 +19,44 @@ interface ImagePickerProps {
   folder?: string
 }
 
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024
+const MAX_IMAGE_DIMENSION = 2200
+
+async function prepareImageForUpload(file: File): Promise<File> {
+  if (file.type === "image/gif" || file.size <= MAX_UPLOAD_BYTES) return file
+
+  const objectUrl = URL.createObjectURL(file)
+  try {
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const image = new window.Image()
+      image.onload = () => resolve(image)
+      image.onerror = reject
+      image.src = objectUrl
+    })
+
+    const scale = Math.min(1, MAX_IMAGE_DIMENSION / Math.max(img.width, img.height))
+    const width = Math.max(1, Math.round(img.width * scale))
+    const height = Math.max(1, Math.round(img.height * scale))
+    const canvas = document.createElement("canvas")
+    canvas.width = width
+    canvas.height = height
+
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return file
+    ctx.drawImage(img, 0, 0, width, height)
+
+    const blob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob(resolve, "image/jpeg", 0.82)
+    })
+    if (!blob || blob.size >= file.size) return file
+
+    const baseName = file.name.replace(/\.[^.]+$/, "")
+    return new File([blob], `${baseName}.jpg`, { type: "image/jpeg" })
+  } finally {
+    URL.revokeObjectURL(objectUrl)
+  }
+}
+
 export function ImagePicker({ value, onChange, folder = "uploads" }: ImagePickerProps) {
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState<"browse" | "upload">("browse")
@@ -81,28 +119,30 @@ export function ImagePicker({ value, onChange, folder = "uploads" }: ImagePicker
 
   const uploadFile = async (file: File) => {
     if (!file.type.startsWith("image/")) return
-    if (file.size > 10 * 1024 * 1024) {
-      alert("Max 10MB!")
-      return
-    }
 
     setUploading(true)
     setError(null)
     try {
+      const uploadableFile = await prepareImageForUpload(file)
+      if (uploadableFile.size > MAX_UPLOAD_BYTES) {
+        setError("A kép túl nagy. Kérlek tölts fel legfeljebb 4 MB-os képet, vagy tömörítsd kisebbre.")
+        return
+      }
+
       const form = new FormData()
-      form.append("file", file)
+      form.append("file", uploadableFile)
       form.append("folder", folder)
 
       const res = await fetch("/api/bunny", { method: "POST", body: form })
       const data = await res.json().catch(() => null)
       if (!res.ok) {
-        setError(data?.error || data?.detail || "Nem sikerült feltölteni a képet.")
+        setError(data?.detail || data?.error || `Nem sikerült feltölteni a képet. HTTP ${res.status}`)
         return
       }
       onChange(data.cdnUrl)
       setOpen(false)
-    } catch {
-      setError("Nem sikerült feltölteni a képet.")
+    } catch (err) {
+      setError(err instanceof Error ? `Nem sikerült feltölteni a képet: ${err.message}` : "Nem sikerült feltölteni a képet.")
     } finally {
       setUploading(false)
     }
@@ -293,7 +333,7 @@ export function ImagePicker({ value, onChange, folder = "uploads" }: ImagePicker
                     <>
                       <Upload className="w-12 h-12 text-[#d4a017]/50 mx-auto mb-4" />
                       <p className="text-white/70 text-sm mb-2">Huzd ide a kepet, vagy kattints</p>
-                      <p className="text-white/40 text-xs mb-4">Max 10MB - JPG, PNG, WebP, GIF</p>
+                      <p className="text-white/40 text-xs mb-4">Max 4MB feltöltésenként - a nagy JPG/PNG/WebP képeket automatikusan tömörítjük</p>
                       <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
