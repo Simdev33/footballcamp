@@ -168,6 +168,7 @@ function JelentkezesForm() {
     parentName: "",
     parentEmail: "",
     parentPhone: "",
+    billingName: "",
     parentPostalCode: "",
     parentCity: "",
     parentAddress: "",
@@ -262,6 +263,7 @@ function JelentkezesForm() {
     else if (!emailRe.test(parent.parentEmail.trim())) errs["parentEmail"] = f.errInvalidEmail
     if (!parent.parentPhone.trim()) errs["parentPhone"] = f.errRequired
     else if (!phoneRe.test(parent.parentPhone.trim())) errs["parentPhone"] = f.errInvalidPhone
+    if (!parent.billingName.trim()) errs["billingName"] = f.errRequired
     if (!parent.parentPostalCode.trim()) errs["parentPostalCode"] = f.errRequired
     else if (!/^\d{4}$/.test(parent.parentPostalCode.trim())) errs["parentPostalCode"] = f.errInvalidPostal
     if (!parent.parentCity.trim()) errs["parentCity"] = f.errRequired
@@ -312,7 +314,6 @@ function JelentkezesForm() {
       email: parent.parentEmail,
       phone: parent.parentPhone,
     })
-    fireLeadEvent({ value: dueNow, currency: "HUF" })
     try {
       const res = await fetch("/api/apply", {
         method: "POST",
@@ -336,6 +337,8 @@ function JelentkezesForm() {
       const applyJson = (await res.json()) as
         | { applicationIds: string[]; paymentMethod: "CARD" }
         | { applicationIds: string[]; paymentMethod: "TRANSFER"; transferReference: string }
+
+      fireLeadEvent({ value: dueNow, currency: "HUF" })
 
       if (applyJson.paymentMethod === "TRANSFER") {
         window.location.href = `/jelentkezes/atutalas?ref=${encodeURIComponent(applyJson.transferReference)}`
@@ -432,17 +435,17 @@ function JelentkezesForm() {
               <p className="text-sm text-muted-foreground mt-1">{f.billingSectionHint}</p>
             </div>
 
-            <div data-field="parentName">
+            <div data-field="billingName">
               <label className={labelClass}>{f.billingName}</label>
               <input
                 type="text"
                 placeholder={f.billingNamePh}
-                value={parent.parentName}
-                onChange={(e) => updateParent({ parentName: e.target.value }, "parentName")}
-                aria-invalid={!!fieldErrors.parentName}
-                className={cls(fieldErrors.parentName)}
+                value={parent.billingName}
+                onChange={(e) => updateParent({ billingName: e.target.value }, "billingName")}
+                aria-invalid={!!fieldErrors.billingName}
+                className={cls(fieldErrors.billingName)}
               />
-              <FieldError msg={fieldErrors.parentName} />
+              <FieldError msg={fieldErrors.billingName} />
             </div>
 
             <div className="grid sm:grid-cols-[140px_1fr] gap-4">

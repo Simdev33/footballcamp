@@ -5,6 +5,7 @@ import type Stripe from "stripe"
 import { formatPrice, type Currency } from "@/lib/pricing"
 import { sendEmail, renderDepositPaidEmail, renderFullyPaidEmail } from "@/lib/email"
 import { createInvoiceForApplicationPayment, type InvoiceKind } from "@/lib/szamlazz"
+import { extractBillingName } from "@/lib/billing-name"
 
 export const dynamic = "force-dynamic"
 // We need the raw body for signature verification, so disable body parsing
@@ -205,7 +206,7 @@ async function issueInvoice(
       amount: target.amount,
       currency,
       parent: {
-        name: app.parentName,
+        name: extractBillingName(app.notes, app.parentName),
         email: app.parentEmail,
         postalCode: app.parentPostalCode,
         city: app.parentCity,

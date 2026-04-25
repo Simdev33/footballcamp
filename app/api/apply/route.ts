@@ -8,6 +8,7 @@ import {
   generateTransferReference,
 } from "@/lib/bank-transfer"
 import { sendEmail, renderTransferInstructionsEmail } from "@/lib/email"
+import { billingNameNoteLine } from "@/lib/billing-name"
 
 interface ChildPayload {
   childName?: string
@@ -25,6 +26,7 @@ interface ApplyPayload {
   parentName?: string
   parentEmail?: string
   parentPhone?: string
+  billingName?: string
   parentPostalCode?: string
   parentCity?: string
   parentAddress?: string
@@ -54,6 +56,7 @@ export async function POST(request: Request) {
     parentName,
     parentEmail,
     parentPhone,
+    billingName,
     parentPostalCode,
     parentCity,
     parentAddress,
@@ -67,6 +70,10 @@ export async function POST(request: Request) {
 
   if (!parentName || !parentEmail || !parentPhone) {
     return new NextResponse("Hiányzó szülői adatok.", { status: 400 })
+  }
+
+  if (!billingName) {
+    return new NextResponse("Hiányzó számlázási név.", { status: 400 })
   }
 
   if (!children || !Array.isArray(children) || children.length === 0) {
@@ -131,6 +138,7 @@ export async function POST(request: Request) {
       const amounts = perChildAmounts[i]
       const childNotes = [
         notes?.trim(),
+        billingNameNoteLine(billingName),
         c.kitPreference ? `Felszerelés választás: ${KIT_LABELS[c.kitPreference] || c.kitPreference}` : "",
       ].filter(Boolean).join("\n")
 

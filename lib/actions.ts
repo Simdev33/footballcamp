@@ -176,6 +176,7 @@ export async function markTransferPaid(
   const { db } = await import("@/lib/db")
   const { sendEmail, renderDepositPaidEmail, renderFullyPaidEmail } = await import("@/lib/email")
   const { createInvoiceForApplicationPayment } = await import("@/lib/szamlazz")
+  const { extractBillingName } = await import("@/lib/billing-name")
   const { formatPrice } = await import("@/lib/pricing")
 
   const anchor = await db.application.findUnique({ where: { id } })
@@ -306,7 +307,7 @@ export async function markTransferPaid(
           amount: t.amount,
           currency,
           parent: {
-            name: t.app.parentName,
+            name: extractBillingName(t.app.notes, t.app.parentName),
             email: t.app.parentEmail,
             postalCode: t.app.parentPostalCode,
             city: t.app.parentCity,
