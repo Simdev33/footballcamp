@@ -104,9 +104,9 @@ export default function PartnerprogramPage() {
       </section>
 
       <section className="relative py-16 md:py-24 overflow-hidden">
-        <div className="absolute inset-0">
-          <Image src={heroImg} alt="Kickoff" fill className="object-cover" loading="lazy" unoptimized={heroImg.includes("b-cdn.net")} />
-          <div className="absolute inset-0 bg-[#0a1f0a]/90" />
+        <div className="absolute inset-0 bg-[#0a1f0a]">
+          <Image src={heroImg} alt="Kickoff" fill className="object-contain p-4 md:p-8 opacity-55" loading="lazy" unoptimized={heroImg.includes("b-cdn.net")} />
+          <div className="absolute inset-0 bg-[#0a1f0a]/75" />
         </div>
         <div className="relative z-10 max-w-[800px] mx-auto px-4 md:px-12 text-center">
           <h2 className="font-serif text-2xl md:text-4xl font-bold text-white">

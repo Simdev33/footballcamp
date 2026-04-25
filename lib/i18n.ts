@@ -342,6 +342,10 @@ export const translations = {
       kitGoalkeeper: "Fekete kapus szett",
       kitDisclaimer:
         "Mindent megteszünk annak érdekében, hogy a választott színű felszerelést kapd, de átmeneti készlethiány miatt előfordulhat, hogy ez mégsem sikerül. Megértésed köszönjük!",
+      kitCatalogSummary: "Mezek megtekintése (PDF katalógus)",
+      kitCatalogNewTab: "Megnyitás új lapon",
+      kitCatalogNote:
+        "Az előnézet a böngésző beépített PDF-megjelenítőjét használja. Ha üres marad, nyisd meg az új lapon linket.",
       selectPlaceholder: "Válassz...",
       campSelect: "Melyik táborra jelentkezik?",
       campSelectPlaceholder: "Válassz tábort...",
@@ -1019,16 +1023,16 @@ export const translations = {
     },
     form: {
       badge: "Registration",
-      title: "Secure your place",
-      titleHighlight: "at camp",
-      subtitle: "The number of spots is limited and sessions fill up continuously. Register now so your child can participate.",
-      cta: "Apply & Pay",
+      title: "Don't miss out, secure your place",
+      titleHighlight: "in time!",
+      subtitle: "Spots are limited and sessions fill up continuously. Apply now so your child can be sure to take part in the camp.",
+      cta: "Apply to camp",
       trust: [
-        { label: "Small groups", desc: "Max. 12–15 per age group" },
+        { label: "Limited spots", desc: "Max. 12–15 per age group" },
         { label: "Early bird discount", desc: "Reduced price until May 31" },
-        { label: "Instalment payment", desc: "Flexible payment options" },
+        { label: "Instalment payment available", desc: "Payment in two instalments" },
       ],
-      security: "",
+      security: "Submitting the application does not create an immediate payment obligation.",
     },
     faq: {
       badge: "FAQ",
@@ -1132,6 +1136,10 @@ export const translations = {
       kitGoalkeeper: "Black goalkeeper kit",
       kitDisclaimer:
         "We do our best to provide the kit colour you selected, but temporary stock shortages may mean this is not always possible. Thank you for your understanding!",
+      kitCatalogSummary: "View kits (PDF catalogue)",
+      kitCatalogNewTab: "Open in new tab",
+      kitCatalogNote:
+        "The preview uses your browser’s built-in PDF viewer. If it stays blank, use the “Open in new tab” link.",
       selectPlaceholder: "Select...",
       campSelect: "Which camp is the child registering for?",
       campSelectPlaceholder: "Select a camp...",
