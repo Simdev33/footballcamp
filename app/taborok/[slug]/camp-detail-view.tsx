@@ -196,8 +196,8 @@ export function CampDetailView({
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-4">
-                <StatBox icon={<Calendar className="w-6 h-6" />} value={dates.split(/[-–]/)[0]?.trim() || dates} label={d.dateLabel} />
+              <div className="grid sm:grid-cols-2 gap-3">
+                <StatBox icon={<Calendar className="w-5 h-5" />} value={dates} label={d.dateLabel} />
                 <StatBox icon={<MapPin className="w-6 h-6" />} value={venue} label={d.venueLabel} />
               </div>
 
@@ -394,10 +394,12 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 function StatBox({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) {
   return (
-    <div className="text-center p-6 bg-[#0a1f0a] border border-[#d4a017]/15">
-      <div className="text-[#d4a017] mx-auto mb-2 flex justify-center">{icon}</div>
-      <span className="block font-serif text-lg font-bold text-white leading-tight">{value}</span>
-      <span className="block text-white/50 text-xs mt-1">{label}</span>
+    <div className="flex items-center gap-4 p-4 bg-[#0a1f0a] border border-[#d4a017]/15">
+      <div className="text-[#d4a017] flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#d4a017]/10">{icon}</div>
+      <div className="min-w-0">
+        <span className="block font-serif text-base md:text-lg font-bold text-white leading-tight break-words">{value}</span>
+        <span className="block text-white/50 text-xs mt-1">{label}</span>
+      </div>
     </div>
   )
 }
