@@ -103,24 +103,32 @@ export default function PartnerprogramPage() {
         </div>
       </section>
 
-      <section className="relative py-16 md:py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-[#0a1f0a]">
-          <Image src={heroImg} alt="Kickoff" fill className="object-contain p-4 md:p-8 opacity-55" loading="lazy" unoptimized={heroImg.includes("b-cdn.net")} />
-          <div className="absolute inset-0 bg-[#0a1f0a]/75" />
-        </div>
-        <div className="relative z-10 max-w-[800px] mx-auto px-4 md:px-12 text-center">
-          <h2 className="font-serif text-2xl md:text-4xl font-bold text-white">
-            {t.partnerProgram.ctaTitle}
-          </h2>
-          <p className="mt-5 text-sm md:text-base text-white/60 leading-relaxed">
-            {t.partnerProgram.ctaText}
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link href="/kapcsolat" className="inline-flex items-center gap-2 md:gap-3 px-6 py-3 md:px-8 md:py-4 bg-[#d4a017] text-[#0a1f0a] text-sm md:text-base font-semibold hover:shadow-[0_20px_50px_#d4a0174d] transition-shadow duration-300">
-              <Mail className="w-4 h-4 md:w-5 md:h-5" />
-              {t.partnerProgram.cta}
-              <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
-            </Link>
+      <section className="relative py-16 md:py-24 overflow-hidden bg-[#0a1f0a]">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,#d4a01716_0%,transparent_55%)]" />
+        <div className="relative z-10 max-w-[1100px] mx-auto px-4 md:px-12 lg:px-24">
+          <div className="grid md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_340px] items-center gap-8 md:gap-12">
+            <div className="text-center md:text-left">
+              <h2 className="font-serif text-2xl md:text-4xl font-bold text-white">
+                {t.partnerProgram.ctaTitle}
+              </h2>
+              <p className="mt-5 text-sm md:text-base text-white/60 leading-relaxed">
+                {t.partnerProgram.ctaText}
+              </p>
+              <div className="mt-8 flex flex-wrap justify-center md:justify-start gap-4">
+                <Link href="/kapcsolat" className="inline-flex items-center gap-2 md:gap-3 px-6 py-3 md:px-8 md:py-4 bg-[#d4a017] text-[#0a1f0a] text-sm md:text-base font-semibold hover:shadow-[0_20px_50px_#d4a0174d] transition-shadow duration-300">
+                  <Mail className="w-4 h-4 md:w-5 md:h-5" />
+                  {t.partnerProgram.cta}
+                  <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="relative mx-auto w-full max-w-[260px] md:max-w-none">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-[#d4a017]/25 bg-black/20 shadow-2xl">
+                <Image src={heroImg} alt="Kickoff" fill className="object-contain p-3" loading="lazy" unoptimized={heroImg.includes("b-cdn.net")} />
+              </div>
+              <div className="absolute -bottom-3 -right-3 h-full w-full rounded-xl border border-[#d4a017]/25 -z-10" />
+            </div>
           </div>
         </div>
       </section>
