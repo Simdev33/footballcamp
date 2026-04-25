@@ -676,31 +676,6 @@ function JelentkezesForm() {
                   <label className={labelClass + " mb-0"}>{f.kitTitle}</label>
                   <p className="text-xs text-muted-foreground mt-1">{f.kitHint}</p>
                 </div>
-                {index === 0 && (
-                  <details className="rounded-md border border-border/70 bg-muted/30">
-                    <summary className="cursor-pointer select-none px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted/50">
-                      {f.kitCatalogSummary}
-                    </summary>
-                    <div className="space-y-2 border-t border-border/70 px-3 py-3">
-                      <p className="text-[11px] text-muted-foreground leading-relaxed">{f.kitCatalogNote}</p>
-                      <a
-                        href="/kits-programas-internacionais.pdf"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex text-xs font-semibold text-[#d4a017] underline hover:no-underline"
-                      >
-                        {f.kitCatalogNewTab}
-                      </a>
-                      <div className="overflow-hidden rounded-md border border-border bg-background">
-                        <iframe
-                          title={f.kitCatalogSummary}
-                          src="/kits-programas-internacionais.pdf"
-                          className="h-[min(70vh,520px)] w-full"
-                        />
-                      </div>
-                    </div>
-                  </details>
-                )}
                 <div className="grid sm:grid-cols-3 gap-3">
                   {KIT_OPTIONS.map((option) => {
                     const selected = child.kitPreference === option.id

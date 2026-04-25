@@ -171,6 +171,7 @@ export default async function RootLayout({
   return (
     <html lang="hu">
       <head>
+        <meta name="facebook-domain-verification" content="kqdkhg83u1rctqy7st2b3aoj7myeou" />
         <link rel="preconnect" href="https://focis.b-cdn.net" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://focis.b-cdn.net" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />

@@ -342,10 +342,6 @@ export const translations = {
       kitGoalkeeper: "Fekete kapus szett",
       kitDisclaimer:
         "Mindent megteszünk annak érdekében, hogy a választott színű felszerelést kapd, de átmeneti készlethiány miatt előfordulhat, hogy ez mégsem sikerül. Megértésed köszönjük!",
-      kitCatalogSummary: "Mezek megtekintése (PDF katalógus)",
-      kitCatalogNewTab: "Megnyitás új lapon",
-      kitCatalogNote:
-        "Az előnézet a böngésző beépített PDF-megjelenítőjét használja. Ha üres marad, nyisd meg az új lapon linket.",
       selectPlaceholder: "Válassz...",
       campSelect: "Melyik táborra jelentkezik?",
       campSelectPlaceholder: "Válassz tábort...",
@@ -1136,10 +1132,6 @@ export const translations = {
       kitGoalkeeper: "Black goalkeeper kit",
       kitDisclaimer:
         "We do our best to provide the kit colour you selected, but temporary stock shortages may mean this is not always possible. Thank you for your understanding!",
-      kitCatalogSummary: "View kits (PDF catalogue)",
-      kitCatalogNewTab: "Open in new tab",
-      kitCatalogNote:
-        "The preview uses your browser’s built-in PDF viewer. If it stays blank, use the “Open in new tab” link.",
       selectPlaceholder: "Select...",
       campSelect: "Which camp is the child registering for?",
       campSelectPlaceholder: "Select a camp...",
