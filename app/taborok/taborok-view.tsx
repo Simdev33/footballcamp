@@ -4,6 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { MapPin, Calendar, ArrowRight, Tag, Shirt, Utensils, Dumbbell, Heart, Clock } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
+import type { CampTranslation } from "@/lib/camp-translations"
 
 const KID_ICONS = [Shirt, Utensils, Dumbbell, Heart]
 
@@ -17,6 +18,7 @@ type Camp = {
   earlyBirdPrice: string
   clubName: string
   imageUrl: string | null
+  translationEn?: CampTranslation
 }
 
 type CampsListStrings = {
@@ -39,8 +41,14 @@ type CampsListStrings = {
 }
 
 export function TaborokView({ camps, heroImg }: { camps: Camp[]; heroImg: string }) {
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
   const p = (t as unknown as { campsListPage: CampsListStrings }).campsListPage
+  const displayCamp = (camp: Camp) => ({
+    ...camp,
+    city: locale === "en" ? camp.translationEn?.city?.trim() || camp.city : camp.city,
+    venue: locale === "en" ? camp.translationEn?.venue?.trim() || camp.venue : camp.venue,
+    dates: locale === "en" ? camp.translationEn?.dates?.trim() || camp.dates : camp.dates,
+  })
 
   return (
     <main>
@@ -108,7 +116,9 @@ export function TaborokView({ camps, heroImg }: { camps: Camp[]; heroImg: string
             <p className="text-center text-white/40 py-12">{p.emptyState}</p>
           ) : (
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-10">
-              {camps.map((camp) => (
+              {camps.map((rawCamp) => {
+                const camp = displayCamp(rawCamp)
+                return (
                 <Link key={camp.id} href={`/taborok/${camp.slug}`} className="group block">
                   <div className="relative overflow-hidden bg-[#0f2b0f] border border-[#d4a017]/10 transition-[transform,box-shadow] duration-500 will-change-transform hover:-translate-y-2 hover:shadow-[0_40px_100px_#d4a01733]">
                     <div className="relative aspect-[16/8] overflow-hidden">
@@ -178,7 +188,8 @@ export function TaborokView({ camps, heroImg }: { camps: Camp[]; heroImg: string
                     <div className="absolute bottom-0 right-0 w-16 h-16 border-r-2 border-b-2 border-[#d4a017]/20" />
                   </div>
                 </Link>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>

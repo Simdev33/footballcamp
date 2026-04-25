@@ -9,6 +9,7 @@ import {
 } from "@/lib/bank-transfer"
 import { sendEmail, renderTransferInstructionsEmail } from "@/lib/email"
 import { billingNameNoteLine } from "@/lib/billing-name"
+import { revalidatePublicCamps } from "@/lib/public-camps"
 
 interface ChildPayload {
   childName?: string
@@ -190,6 +191,8 @@ export async function POST(request: Request) {
     }
     return ids
   })
+
+  revalidatePublicCamps()
 
   if (paymentMethod === "TRANSFER") {
     const totalDue = perChildAmounts.reduce((s, a) => s + a.due, 0)

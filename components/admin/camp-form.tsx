@@ -6,6 +6,7 @@ import { createCamp, updateCamp } from "@/lib/actions"
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowLeft, Plus, X, Clock, GripVertical, ChevronDown, ChevronUp } from "lucide-react"
+import type { CampTranslation } from "@/lib/camp-translations"
 
 type ScheduleItem = { time: string; activity: string }
 type CoachItem = { name: string; role: string; image: string; bio: string }
@@ -52,14 +53,17 @@ const DEFAULT_INCLUDES = [
   "Oklevel es emlektargyak",
 ]
 
-export function CampForm({ camp }: { camp?: CampData }) {
+export function CampForm({ camp, campTranslationEn = {} }: { camp?: CampData; campTranslationEn?: CampTranslation }) {
   const isEdit = !!camp
   const [imageUrl, setImageUrl] = useState(camp?.imageUrl || "")
   const [description, setDescription] = useState(camp?.description || "")
+  const [descriptionEn, setDescriptionEn] = useState(campTranslationEn.description || "")
   const [includes, setIncludes] = useState<string[]>(
     camp?.includes?.length ? camp.includes : (isEdit ? [] : DEFAULT_INCLUDES)
   )
+  const [includesEn, setIncludesEn] = useState<string[]>(campTranslationEn.includes || [])
   const [newItem, setNewItem] = useState("")
+  const [newItemEn, setNewItemEn] = useState("")
 
   // New fields
   const [gallery, setGallery] = useState<string[]>(camp?.gallery || [])
@@ -68,16 +72,25 @@ export function CampForm({ camp }: { camp?: CampData }) {
   const [schedule, setSchedule] = useState<ScheduleItem[]>(
     (camp?.schedule as ScheduleItem[]) || []
   )
+  const [scheduleEn, setScheduleEn] = useState<ScheduleItem[]>(
+    (campTranslationEn.schedule as ScheduleItem[]) || []
+  )
   const [coaches, setCoaches] = useState<CoachItem[]>(
     (camp?.coaches as CoachItem[]) || []
+  )
+  const [coachesEn, setCoachesEn] = useState<CoachItem[]>(
+    (campTranslationEn.coaches as CoachItem[]) || []
   )
   const [faq, setFaq] = useState<FaqItem[]>(
     (camp?.faq as FaqItem[]) || []
   )
+  const [faqEn, setFaqEn] = useState<FaqItem[]>(
+    (campTranslationEn.faq as FaqItem[]) || []
+  )
 
   // Collapsible sections
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    basic: true, media: false, schedule: false, coaches: false, faq: false,
+    basic: true, english: false, media: false, schedule: false, coaches: false, faq: false,
   })
   const toggle = (key: string) => setOpenSections(p => ({ ...p, [key]: !p[key] }))
 
@@ -86,6 +99,14 @@ export function CampForm({ camp }: { camp?: CampData }) {
     if (trimmed && !includes.includes(trimmed)) {
       setIncludes([...includes, trimmed])
       setNewItem("")
+    }
+  }
+
+  const addIncludeEn = () => {
+    const trimmed = newItemEn.trim()
+    if (trimmed && !includesEn.includes(trimmed)) {
+      setIncludesEn([...includesEn, trimmed])
+      setNewItemEn("")
     }
   }
 
@@ -109,13 +130,18 @@ export function CampForm({ camp }: { camp?: CampData }) {
         {/* Hidden fields for state-managed values */}
         <input type="hidden" name="imageUrl" value={imageUrl} />
         <input type="hidden" name="description" value={description} />
+        <input type="hidden" name="descriptionEn" value={descriptionEn} />
         <input type="hidden" name="includes" value={includes.join("\n")} />
+        <input type="hidden" name="includesEn" value={includesEn.join("\n")} />
         <input type="hidden" name="gallery" value={gallery.join("\n")} />
         <input type="hidden" name="videoUrl" value={videoUrl} />
         <input type="hidden" name="mapEmbedUrl" value={mapEmbedUrl} />
         <input type="hidden" name="schedule" value={JSON.stringify(schedule)} />
+        <input type="hidden" name="scheduleEn" value={JSON.stringify(scheduleEn)} />
         <input type="hidden" name="coaches" value={JSON.stringify(coaches)} />
+        <input type="hidden" name="coachesEn" value={JSON.stringify(coachesEn)} />
         <input type="hidden" name="faq" value={JSON.stringify(faq)} />
+        <input type="hidden" name="faqEn" value={JSON.stringify(faqEn)} />
 
         {/* ─── BASIC INFO ─── */}
         <Section title="Alap adatok" id="basic" open={openSections.basic} onToggle={() => toggle("basic")}>
@@ -200,6 +226,181 @@ export function CampForm({ camp }: { camp?: CampData }) {
             <input type="checkbox" name="active" defaultChecked={camp?.active ?? true} className="w-5 h-5 accent-[#d4a017]" />
             <span className="text-white text-sm">Aktiv (megjelenik a publikus oldalon)</span>
           </label>
+        </Section>
+
+        {/* ─── ENGLISH CONTENT ─── */}
+        <Section title="Angol tartalom" id="english" open={openSections.english} onToggle={() => toggle("english")}>
+          <div className="grid sm:grid-cols-3 gap-4">
+            <Field label="Varos angolul" name="cityEn" defaultValue={campTranslationEn.city || ""} placeholder="e.g. Szeged" />
+            <Field label="Helyszin angolul" name="venueEn" defaultValue={campTranslationEn.venue || ""} placeholder="e.g. Szeged Sports Centre" />
+            <Field label="Datum angolul" name="datesEn" defaultValue={campTranslationEn.dates || ""} placeholder="e.g. 7-11 July 2026" />
+          </div>
+
+          <div>
+            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Leiras angolul</label>
+            <textarea
+              value={descriptionEn}
+              onChange={(e) => setDescriptionEn(e.target.value)}
+              rows={6}
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm resize-none"
+              placeholder="Detailed English camp description..."
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Mit tartalmaz angolul</label>
+            <div className="space-y-2 mb-3">
+              {includesEn.map((item, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="flex-1 px-3 py-2 bg-white/5 border border-white/10 text-white text-sm">{item}</span>
+                  <button type="button" onClick={() => setIncludesEn(includesEn.filter((_, idx) => idx !== i))} className="w-8 h-8 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newItemEn}
+                onChange={(e) => setNewItemEn(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addIncludeEn() } }}
+                placeholder="Add English item..."
+                className="flex-1 h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm"
+              />
+              <button type="button" onClick={addIncludeEn} className="h-10 px-4 bg-[#d4a017]/20 text-[#d4a017] text-sm font-medium hover:bg-[#d4a017]/30 transition-colors flex items-center gap-1">
+                <Plus className="w-4 h-4" /> Hozzaad
+              </button>
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 pt-5">
+            <label className="block text-xs text-white/50 uppercase tracking-wider mb-3">Napi program angolul</label>
+            <div className="space-y-3">
+              {scheduleEn.map((item, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <Clock className="w-4 h-4 text-[#d4a017]/40 shrink-0" />
+                  <input
+                    type="text"
+                    value={item.time}
+                    onChange={(e) => { const s = [...scheduleEn]; s[i] = { ...s[i], time: e.target.value }; setScheduleEn(s) }}
+                    placeholder="09:00"
+                    className="w-24 h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none text-sm text-center"
+                  />
+                  <input
+                    type="text"
+                    value={item.activity}
+                    onChange={(e) => { const s = [...scheduleEn]; s[i] = { ...s[i], activity: e.target.value }; setScheduleEn(s) }}
+                    placeholder="Morning training, technical drills"
+                    className="flex-1 h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none text-sm"
+                  />
+                  <button type="button" onClick={() => setScheduleEn(scheduleEn.filter((_, idx) => idx !== i))} className="w-8 h-8 flex items-center justify-center text-red-400/60 hover:text-red-400 transition-colors">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setScheduleEn([...scheduleEn, { time: "", activity: "" }])}
+              className="mt-3 h-10 px-4 bg-[#d4a017]/20 text-[#d4a017] text-sm font-medium hover:bg-[#d4a017]/30 transition-colors flex items-center gap-1"
+            >
+              <Plus className="w-4 h-4" /> Angol programpont
+            </button>
+          </div>
+
+          <div className="border-t border-white/10 pt-5">
+            <label className="block text-xs text-white/50 uppercase tracking-wider mb-3">Edzok angolul</label>
+            <div className="space-y-4">
+              {coachesEn.map((coach, i) => (
+                <div key={i} className="bg-white/5 border border-white/10 p-4 space-y-3 relative">
+                  <button type="button" onClick={() => setCoachesEn(coachesEn.filter((_, idx) => idx !== i))} className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                    <X className="w-4 h-4" />
+                  </button>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] text-white/40 uppercase tracking-wider mb-1">Name</label>
+                      <input
+                        type="text"
+                        value={coach.name}
+                        onChange={(e) => { const c = [...coachesEn]; c[i] = { ...c[i], name: e.target.value }; setCoachesEn(c) }}
+                        placeholder="John Smith"
+                        className="w-full h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-white/40 uppercase tracking-wider mb-1">Role</label>
+                      <input
+                        type="text"
+                        value={coach.role}
+                        onChange={(e) => { const c = [...coachesEn]; c[i] = { ...c[i], role: e.target.value }; setCoachesEn(c) }}
+                        placeholder="Head coach"
+                        className="w-full h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none text-sm"
+                      />
+                    </div>
+                  </div>
+                  <input type="hidden" value={coach.image} readOnly />
+                  <div>
+                    <label className="block text-[10px] text-white/40 uppercase tracking-wider mb-1">Bio</label>
+                    <textarea
+                      value={coach.bio}
+                      onChange={(e) => { const c = [...coachesEn]; c[i] = { ...c[i], bio: e.target.value }; setCoachesEn(c) }}
+                      rows={3}
+                      placeholder="Short English bio..."
+                      className="w-full px-3 py-2 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none text-sm resize-none"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setCoachesEn([...coachesEn, { name: "", role: "", image: "", bio: "" }])}
+              className="mt-3 h-10 px-4 bg-[#d4a017]/20 text-[#d4a017] text-sm font-medium hover:bg-[#d4a017]/30 transition-colors flex items-center gap-1"
+            >
+              <Plus className="w-4 h-4" /> Angol edzo
+            </button>
+          </div>
+
+          <div className="border-t border-white/10 pt-5">
+            <label className="block text-xs text-white/50 uppercase tracking-wider mb-3">FAQ angolul</label>
+            <div className="space-y-3">
+              {faqEn.map((item, i) => (
+                <div key={i} className="bg-white/5 border border-white/10 p-4 space-y-3 relative">
+                  <button type="button" onClick={() => setFaqEn(faqEn.filter((_, idx) => idx !== i))} className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                    <X className="w-4 h-4" />
+                  </button>
+                  <div>
+                    <label className="block text-[10px] text-white/40 uppercase tracking-wider mb-1">Question</label>
+                    <input
+                      type="text"
+                      value={item.question}
+                      onChange={(e) => { const f = [...faqEn]; f[i] = { ...f[i], question: e.target.value }; setFaqEn(f) }}
+                      placeholder="What should children bring?"
+                      className="w-full h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] text-white/40 uppercase tracking-wider mb-1">Answer</label>
+                    <textarea
+                      value={item.answer}
+                      onChange={(e) => { const f = [...faqEn]; f[i] = { ...f[i], answer: e.target.value }; setFaqEn(f) }}
+                      rows={3}
+                      placeholder="English answer..."
+                      className="w-full px-3 py-2 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none text-sm resize-none"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setFaqEn([...faqEn, { question: "", answer: "" }])}
+              className="mt-3 h-10 px-4 bg-[#d4a017]/20 text-[#d4a017] text-sm font-medium hover:bg-[#d4a017]/30 transition-colors flex items-center gap-1"
+            >
+              <Plus className="w-4 h-4" /> Angol FAQ
+            </button>
+          </div>
         </Section>
 
         {/* ─── MEDIA ─── */}

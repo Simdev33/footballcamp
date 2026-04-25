@@ -11,6 +11,7 @@ import { LocationCards } from "@/components/location-cards"
 import { ApplicationForm } from "@/components/application-form"
 import { FootballDivider } from "@/components/football-divider"
 import { useSiteImage } from "@/lib/site-images-context"
+import type { PublicCamp } from "@/lib/public-camps"
 
 const KID_ITEMS = [
   { Icon: Plane, color: "#3b82f6" },
@@ -25,7 +26,7 @@ const KID_ITEMS = [
 type ImageAlts = { kidsWithCoach: string; trainingOnField: string; teamBonding: string }
 type ExpStats = { groupLabel: string; trainingsLabel: string; daysLabel: string }
 
-export default function BelowFoldHome() {
+export default function BelowFoldHome({ initialCamps = [] }: { initialCamps?: PublicCamp[] }) {
   const { t } = useLanguage()
   const alts = (t as unknown as { imageAlts: ImageAlts }).imageAlts
   const stats = (t as unknown as { expStats: ExpStats }).expStats
@@ -137,7 +138,7 @@ export default function BelowFoldHome() {
       </ZigzagSection>
 
       {/* 8. Helyszínek */}
-      <LocationCards />
+      <LocationCards initialCamps={initialCamps} />
 
       {/* 9. Záró CTA — Transfer window stílus */}
       <ApplicationForm />

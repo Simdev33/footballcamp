@@ -6,6 +6,7 @@ import { MapPin, Calendar, Users, ArrowRight, Tag, Check, Shield } from "lucide-
 import { CampFaq } from "./camp-faq"
 import { CampGallery } from "./camp-gallery"
 import { useLanguage } from "@/lib/language-context"
+import type { CampTranslation } from "@/lib/camp-translations"
 
 type ScheduleItem = { time: string; activity: string }
 type CoachItem = { name: string; role: string; image: string; bio: string }
@@ -83,10 +84,32 @@ function campText(text: string, locale: "hu" | "en") {
   return locale === "en" ? CAMP_TEXT_EN[text] || text : text
 }
 
-export function CampDetailView({ camp, otherCamps }: { camp: CampDetail; otherCamps: OtherCamp[] }) {
+export function CampDetailView({
+  camp,
+  otherCamps,
+  campTranslationEn = {},
+}: {
+  camp: CampDetail
+  otherCamps: OtherCamp[]
+  campTranslationEn?: CampTranslation
+}) {
   const { t, locale } = useLanguage()
   const d = (t as unknown as { campDetailPage: DetailStrings }).campDetailPage
   const ytId = camp.videoUrl ? getYouTubeId(camp.videoUrl) : null
+  const translated = locale === "en" ? campTranslationEn : {}
+  const city = translated.city?.trim() || camp.city
+  const venue = translated.venue?.trim() || camp.venue
+  const dates = translated.dates?.trim() || camp.dates
+  const description = translated.description?.trim() || camp.description
+  const includes = translated.includes?.length ? translated.includes : camp.includes.map((item) => campText(item, locale))
+  const schedule = translated.schedule?.length ? translated.schedule : camp.schedule
+  const coaches = translated.coaches?.length
+    ? translated.coaches.map((coach, index) => ({
+        ...coach,
+        image: coach.image || camp.coaches[index]?.image || "",
+      }))
+    : camp.coaches
+  const faq = translated.faq?.length ? translated.faq : camp.faq
 
   return (
     <main>
@@ -96,7 +119,7 @@ export function CampDetailView({ camp, otherCamps }: { camp: CampDetail; otherCa
           {camp.imageUrl ? (
             <Image
               src={camp.imageUrl}
-              alt={camp.city}
+              alt={city}
               fill
               className="object-cover"
               priority
@@ -116,8 +139,8 @@ export function CampDetailView({ camp, otherCamps }: { camp: CampDetail; otherCa
             </span>
             <span className="text-white/50 text-sm">{camp.ageRange} {d.ageSuffix}</span>
           </div>
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-white">{camp.city}</h1>
-          <p className="mt-3 text-lg text-white/60">{camp.venue} &middot; {camp.dates}</p>
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-white">{city}</h1>
+          <p className="mt-3 text-lg text-white/60">{venue} &middot; {dates}</p>
         </div>
       </section>
 
@@ -126,22 +149,22 @@ export function CampDetailView({ camp, otherCamps }: { camp: CampDetail; otherCa
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
           <div className="grid lg:grid-cols-[1fr_380px] gap-12 lg:gap-16">
             <div className="space-y-16">
-              {camp.description && (
+              {description && (
                 <div>
                   <SectionTitle>{d.aboutCamp}</SectionTitle>
                   <div className="prose prose-lg max-w-none text-muted-foreground leading-relaxed whitespace-pre-line">
-                    {camp.description}
+                    {description}
                   </div>
                 </div>
               )}
 
-              {camp.schedule.length > 0 && (
+              {schedule.length > 0 && (
                 <div>
                   <SectionTitle>{d.dailyProgram}</SectionTitle>
                   <div className="relative">
                     <div className="absolute left-[39px] top-2 bottom-2 w-px bg-[#d4a017]/20" />
                     <div className="space-y-0">
-                      {camp.schedule.map((item, i) => (
+                      {schedule.map((item, i) => (
                         <div key={i} className="flex items-start gap-5 group py-3">
                           <div className="relative z-10 w-20 shrink-0 text-right">
                             <span className="font-mono text-sm font-bold text-[#d4a017]">{item.time}</span>
@@ -157,16 +180,16 @@ export function CampDetailView({ camp, otherCamps }: { camp: CampDetail; otherCa
                 </div>
               )}
 
-              {camp.includes.length > 0 && (
+              {includes.length > 0 && (
                 <div>
                   <SectionTitle>{d.includes}</SectionTitle>
                   <div className="grid sm:grid-cols-2 gap-4">
-                    {camp.includes.map((item) => (
+                    {includes.map((item) => (
                       <div key={item} className="flex items-start gap-3 p-4 bg-white border border-border/60 shadow-sm">
                         <div className="mt-0.5 w-6 h-6 bg-[#d4a017] flex items-center justify-center shrink-0">
                           <Check className="w-4 h-4 text-[#0a1f0a]" />
                         </div>
-                        <span className="text-sm text-foreground font-medium">{campText(item, locale)}</span>
+                        <span className="text-sm text-foreground font-medium">{item}</span>
                       </div>
                     ))}
                   </div>
@@ -174,15 +197,15 @@ export function CampDetailView({ camp, otherCamps }: { camp: CampDetail; otherCa
               )}
 
               <div className="grid grid-cols-2 gap-4">
-                <StatBox icon={<Calendar className="w-6 h-6" />} value={camp.dates.split(/[-–]/)[0]?.trim() || camp.dates} label={d.dateLabel} />
-                <StatBox icon={<MapPin className="w-6 h-6" />} value={camp.venue} label={d.venueLabel} />
+                <StatBox icon={<Calendar className="w-6 h-6" />} value={dates.split(/[-–]/)[0]?.trim() || dates} label={d.dateLabel} />
+                <StatBox icon={<MapPin className="w-6 h-6" />} value={venue} label={d.venueLabel} />
               </div>
 
-              {camp.coaches.length > 0 && (
+              {coaches.length > 0 && (
                 <div>
                   <SectionTitle>{d.coachesTitle}</SectionTitle>
                   <div className="grid sm:grid-cols-2 gap-6">
-                    {camp.coaches.map((coach, i) => (
+                    {coaches.map((coach, i) => (
                       <div key={i} className="flex gap-4 p-5 bg-white border border-border/60 shadow-sm">
                         {coach.image ? (
                           <div className="relative w-20 h-20 shrink-0 overflow-hidden rounded-full border-2 border-[#d4a017]/30">
@@ -227,8 +250,8 @@ export function CampDetailView({ camp, otherCamps }: { camp: CampDetail; otherCa
 
                 <div className="p-6 space-y-5">
                   <div className="space-y-3 text-sm">
-                    <InfoRow label={d.venueLabel} value={camp.venue} />
-                    <InfoRow label={d.dateLabel} value={camp.dates} />
+                    <InfoRow label={d.venueLabel} value={venue} />
+                    <InfoRow label={d.dateLabel} value={dates} />
                     <InfoRow label={d.ageLabel} value={d.ageRange} />
                   </div>
 
@@ -256,7 +279,7 @@ export function CampDetailView({ camp, otherCamps }: { camp: CampDetail; otherCa
         <section className="py-16 md:py-24 bg-[#0a1f0a]">
           <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-white mb-10 text-center">{d.galleryTitle}</h2>
-            <CampGallery images={camp.gallery} campName={camp.city} />
+            <CampGallery images={camp.gallery} campName={city} />
           </div>
         </section>
       )}
@@ -285,7 +308,7 @@ export function CampDetailView({ camp, otherCamps }: { camp: CampDetail; otherCa
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-white mb-4 text-center">{d.locationTitle}</h2>
             <p className="text-white/50 text-center mb-10">
               <MapPin className="inline w-4 h-4 mr-1" />
-              {camp.venue}, {camp.city}
+              {venue}, {city}
             </p>
             <div className="aspect-21/9 border border-[#d4a017]/20 overflow-hidden">
               <iframe
@@ -301,11 +324,11 @@ export function CampDetailView({ camp, otherCamps }: { camp: CampDetail; otherCa
       )}
 
       {/* FAQ */}
-      {camp.faq && camp.faq.length > 0 && (
+      {faq && faq.length > 0 && (
         <section className="py-16 md:py-24 bg-background">
           <div className="max-w-[800px] mx-auto px-6 md:px-12 lg:px-24">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-10 text-center">{d.faqTitle}</h2>
-            <CampFaq items={camp.faq} />
+            <CampFaq items={faq} />
           </div>
         </section>
       )}

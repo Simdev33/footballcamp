@@ -3,12 +3,13 @@
 import { useLanguage } from "@/lib/language-context"
 import { CampCard } from "@/components/camp-card"
 import { useDynamicCamps } from "@/lib/use-dynamic-camps"
+import type { PublicCamp } from "@/lib/public-camps"
 
 const FALLBACK_IMAGE = "/benfica-camp.png"
 
-export function LocationCards() {
+export function LocationCards({ initialCamps = [] }: { initialCamps?: PublicCamp[] }) {
   const { t } = useLanguage()
-  const { camps } = useDynamicCamps()
+  const { camps } = useDynamicCamps(initialCamps)
 
   const locations = camps.map((camp) => ({
     ...camp,

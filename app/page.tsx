@@ -1,11 +1,14 @@
 import { Hero } from "@/components/hero"
 import BelowFold from "@/components/below-fold-home"
+import { getPublicCamps } from "@/lib/public-camps"
 
-export default function Home() {
+export default async function Home() {
+  const camps = await getPublicCamps()
+
   return (
     <main>
-      <Hero />
-      <BelowFold />
+      <Hero initialCamps={camps} />
+      <BelowFold initialCamps={camps} />
     </main>
   )
 }

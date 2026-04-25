@@ -12,6 +12,12 @@ const CLUB_ITEMS = [
 ]
 
 type CampNavItem = { label: string; href: string }
+type CampNavApiItem = {
+  city: string
+  venue?: string
+  slug: string
+  translationEn?: { city?: string; venue?: string }
+}
 
 export function Header() {
   const { locale, t, toggleLocale } = useLanguage()
@@ -27,20 +33,24 @@ export function Header() {
     let cancelled = false
     fetch("/api/camps-public")
       .then((r) => (r.ok ? r.json() : []))
-      .then((data: Array<{ city: string; venue?: string; slug: string }>) => {
+      .then((data: CampNavApiItem[]) => {
         if (cancelled || !Array.isArray(data)) return
         setCampItems(
-          data.map((c) => ({
-            label: c.venue ? `${c.city} (${c.venue})` : c.city,
-            href: `/taborok/${c.slug}`,
-          }))
+          data.map((c) => {
+            const city = locale === "en" ? c.translationEn?.city?.trim() || c.city : c.city
+            const venue = locale === "en" ? c.translationEn?.venue?.trim() || c.venue : c.venue
+            return {
+              label: venue ? `${city} (${venue})` : city,
+              href: `/taborok/${c.slug}`,
+            }
+          })
         )
       })
       .catch(() => {})
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [locale])
 
   const navLinks = [
     { href: "/taborok", label: t.nav.camps, dropdown: campItems.length > 0 ? campItems : undefined },

@@ -12,6 +12,7 @@ import {
 import { CampCard } from "@/components/camp-card"
 import { cn } from "@/lib/utils"
 import { useDynamicCamps } from "@/lib/use-dynamic-camps"
+import type { PublicCamp } from "@/lib/public-camps"
 const AUTOPLAY_MS = 7000
 const CDN = "https://focis.b-cdn.net"
 
@@ -19,9 +20,9 @@ const CAMP_IMAGES = [
   "/benfica-camp.png",
 ] as const
 
-export function Hero() {
+export function Hero({ initialCamps = [] }: { initialCamps?: PublicCamp[] }) {
   const { t } = useLanguage()
-  const { camps } = useDynamicCamps()
+  const { camps } = useDynamicCamps(initialCamps)
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
 

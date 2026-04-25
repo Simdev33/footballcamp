@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { hash } from "bcryptjs"
 import { formatPrice } from "@/lib/pricing"
+import { revalidatePublicCamps } from "@/lib/public-camps"
+import { parseCampTranslation, saveCampTranslation } from "@/lib/camp-translations"
 
 // ─── Camps ───
 
@@ -61,7 +63,7 @@ function buildCampPriceData(formData: FormData) {
 
 export async function createCamp(formData: FormData) {
   const city = formData.get("city") as string
-  await db.camp.create({
+  const camp = await db.camp.create({
     data: {
       slug: slugify(city) + "-" + Date.now().toString(36),
       city,
@@ -84,7 +86,10 @@ export async function createCamp(formData: FormData) {
       faq: parseJson(formData, "faq"),
     },
   })
+  await saveCampTranslation(camp.id, "en", parseCampTranslation(formData))
+  revalidatePublicCamps()
   revalidatePath("/admin/taborok")
+  revalidatePath("/")
   revalidatePath("/taborok")
   redirect("/admin/taborok")
 }
@@ -113,7 +118,10 @@ export async function updateCamp(id: string, formData: FormData) {
       faq: parseJson(formData, "faq"),
     },
   })
+  await saveCampTranslation(camp.id, "en", parseCampTranslation(formData))
+  revalidatePublicCamps()
   revalidatePath("/admin/taborok")
+  revalidatePath("/")
   revalidatePath("/taborok")
   revalidatePath(`/taborok/${camp.slug}`)
   redirect("/admin/taborok")
@@ -121,7 +129,9 @@ export async function updateCamp(id: string, formData: FormData) {
 
 export async function deleteCamp(id: string) {
   await db.camp.delete({ where: { id } })
+  revalidatePublicCamps()
   revalidatePath("/admin/taborok")
+  revalidatePath("/")
   revalidatePath("/taborok")
 }
 

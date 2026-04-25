@@ -1,52 +1,13 @@
-import { db } from "@/lib/db"
 import { NextResponse } from "next/server"
-import { pickEffectivePrice, formatPrice } from "@/lib/pricing"
+import { getPublicCamps } from "@/lib/public-camps"
 
-export const dynamic = "force-dynamic"
+export const revalidate = 60
 
 export async function GET() {
-  const camps = await db.camp.findMany({
-    where: { active: true },
-    select: {
-      id: true,
-      slug: true,
-      city: true,
-      venue: true,
-      dates: true,
-      price: true,
-      earlyBirdPrice: true,
-      priceHuf: true,
-      priceEur: true,
-      earlyBirdPriceHuf: true,
-      earlyBirdPriceEur: true,
-      earlyBirdUntil: true,
-      depositPercent: true,
-      remainingSpots: true,
-      totalSpots: true,
-      ageRange: true,
-      clubName: true,
-      imageUrl: true,
+  const camps = await getPublicCamps()
+  return NextResponse.json(camps, {
+    headers: {
+      "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
     },
-    orderBy: { createdAt: "asc" },
   })
-
-  const enriched = camps.map((c) => {
-    const huf = pickEffectivePrice(c, "HUF")
-    const eur = pickEffectivePrice(c, "EUR")
-    // Prefer the formatted string from the numeric HUF columns; fall back
-    // to the legacy string field if numbers are missing.
-    const priceStr = c.priceHuf > 0 ? formatPrice(c.priceHuf, "HUF") : c.price
-    const earlyBirdStr = c.earlyBirdPriceHuf > 0 ? formatPrice(c.earlyBirdPriceHuf, "HUF") : c.earlyBirdPrice
-    return {
-      ...c,
-      price: priceStr,
-      earlyBirdPrice: earlyBirdStr,
-      effectiveHuf: huf.amount,
-      effectiveEur: eur.amount,
-      earlyBirdActiveHuf: huf.earlyBird,
-      earlyBirdActiveEur: eur.earlyBird,
-    }
-  })
-
-  return NextResponse.json(enriched)
 }

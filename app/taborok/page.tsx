@@ -1,15 +1,12 @@
-import { db } from "@/lib/db"
 import { getSiteImages, resolveSiteImage } from "@/lib/site-images"
 import { TaborokView } from "./taborok-view"
+import { getPublicCamps } from "@/lib/public-camps"
 
 export const dynamic = "force-dynamic"
 
 export default async function TaborokPage() {
   const [camps, images] = await Promise.all([
-    db.camp.findMany({
-      where: { active: true },
-      orderBy: { createdAt: "asc" },
-    }),
+    getPublicCamps(),
     getSiteImages(),
   ])
   const heroImg = resolveSiteImage("taborok.hero", images)
@@ -24,6 +21,7 @@ export default async function TaborokPage() {
     earlyBirdPrice: c.earlyBirdPrice,
     clubName: c.clubName,
     imageUrl: c.imageUrl,
+    translationEn: c.translationEn,
   }))
 
   return <TaborokView camps={campsData} heroImg={heroImg} />

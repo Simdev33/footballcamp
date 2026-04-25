@@ -2,6 +2,7 @@ import { db } from "@/lib/db"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 import { CampDetailView, type CampDetail } from "./camp-detail-view"
+import { getCampTranslation } from "@/lib/camp-translations"
 
 export const dynamic = "force-dynamic"
 
@@ -43,10 +44,13 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
   const camp = await db.camp.findUnique({ where: { slug } })
   if (!camp) notFound()
 
-  const otherCamps = await db.camp.findMany({
-    where: { active: true, id: { not: camp.id } },
-    take: 3,
-  })
+  const [otherCamps, campTranslationEn] = await Promise.all([
+    db.camp.findMany({
+      where: { active: true, id: { not: camp.id } },
+      take: 3,
+    }),
+    getCampTranslation(camp.id, "en"),
+  ])
 
   const detail: CampDetail = {
     id: camp.id,
@@ -78,5 +82,5 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
     imageUrl: o.imageUrl,
   }))
 
-  return <CampDetailView camp={detail} otherCamps={otherData} />
+  return <CampDetailView camp={detail} otherCamps={otherData} campTranslationEn={campTranslationEn} />
 }
