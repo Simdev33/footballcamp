@@ -35,7 +35,15 @@ export function deepMerge<T extends Record<string, unknown>>(
   return result as T
 }
 
-function buildSiteContent(rows: SiteContentRow[]) {
+function pickSections(source: Record<string, unknown>, sections?: string[]) {
+  if (!sections?.length) return source
+  return sections.reduce<Record<string, unknown>>((acc, section) => {
+    acc[section] = source[section]
+    return acc
+  }, {})
+}
+
+function buildSiteContent(rows: SiteContentRow[], sections?: string[]) {
   const overrides: Record<string, Record<string, unknown>> = {}
 
   for (const row of rows) {
@@ -45,18 +53,19 @@ function buildSiteContent(rows: SiteContentRow[]) {
 
   return {
     hu: deepMerge(
-      translations.hu as unknown as Record<string, unknown>,
+      pickSections(translations.hu as unknown as Record<string, unknown>, sections),
       overrides.hu || {},
     ),
     en: deepMerge(
-      translations.en as unknown as Record<string, unknown>,
+      pickSections(translations.en as unknown as Record<string, unknown>, sections),
       overrides.en || {},
     ),
   }
 }
 
-async function getSiteContentRows() {
+async function getSiteContentRows(sections?: string[]) {
   return db.siteContent.findMany({
+    where: sections?.length ? { section: { in: sections } } : undefined,
     select: { section: true, locale: true, content: true },
   })
 }
@@ -80,11 +89,11 @@ export async function getDbSections(): Promise<string[]> {
   }
 }
 
-export async function getSiteContentWithDbSections() {
+export async function getSiteContentWithDbSections(sections?: string[]) {
   try {
-    const rows = await getSiteContentRows()
+    const rows = await getSiteContentRows(sections)
     return {
-      content: buildSiteContent(rows),
+      content: buildSiteContent(rows, sections),
       dbSections: rows.map((r) => `${r.section}:${r.locale}`),
     }
   } catch {

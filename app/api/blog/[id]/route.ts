@@ -8,7 +8,15 @@ export async function GET(
   const { id } = await params
   const post = await db.blogPost.findUnique({
     where: { id },
-    include: { author: { select: { name: true } } },
+    select: {
+      id: true,
+      title: true,
+      excerpt: true,
+      content: true,
+      imageUrl: true,
+      category: true,
+      published: true,
+    },
   })
   if (!post) return NextResponse.json(null, { status: 404 })
   return NextResponse.json(post)

@@ -33,7 +33,7 @@ export default async function ContentPageEditor({
   if (!meta) notFound()
 
   const [{ content, dbSections }, imageOverrides] = await Promise.all([
-    getSiteContentWithDbSections(),
+    getSiteContentWithDbSections(meta.sections),
     getSiteImages(),
   ])
 

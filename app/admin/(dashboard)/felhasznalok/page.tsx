@@ -1,7 +1,8 @@
 import { db } from "@/lib/db"
-import { createUser, deleteUser } from "@/lib/actions"
-import { UserPlus, Trash2, Shield, Pencil, Eye } from "lucide-react"
+import { createUser } from "@/lib/actions"
+import { UserPlus, Shield, Pencil, Eye } from "lucide-react"
 import { PageHeader } from "@/components/admin/page-header"
+import { DeleteUserForm } from "@/components/admin/delete-user-form"
 
 export const dynamic = 'force-dynamic'
 
@@ -85,12 +86,7 @@ export default async function AdminUsersPage() {
                 <RoleIcon className="h-3.5 w-3.5" />
                 {role.label}
               </span>
-              <form action={async () => { "use server"; await deleteUser(user.id) }}>
-                <button type="submit" className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-red-50 px-4 text-sm font-bold text-red-700 transition-colors hover:bg-red-100 sm:w-auto" title="Törlés">
-                  <Trash2 className="w-4 h-4" />
-                  Törlés
-                </button>
-              </form>
+              <DeleteUserForm userId={user.id} userName={user.name} />
             </div>
           )
         })}

@@ -101,33 +101,34 @@ export function RolunkEditor({
 
   return (
     <div className="space-y-6 max-w-4xl">
-      <div className="bg-[#0a1f0a] border border-[#d4a017]/10 p-6 rounded-lg">
-        <h2 className="font-serif text-2xl font-bold text-white">Rólunk oldal szerkesztése</h2>
-        <p className="text-white/60 text-sm mt-2 leading-relaxed">
-          Itt szerkesztheted a <strong className="text-[#d4a017]">Rólunk</strong> aloldal összes szövegét és képét.
+      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <p className="text-sm font-bold uppercase tracking-wider text-teal-700">Rólunk oldal</p>
+        <h2 className="mt-2 font-serif text-3xl font-bold text-slate-950">Rólunk oldal szerkesztése</h2>
+        <p className="mt-2 text-base leading-relaxed text-slate-600">
+          Itt szerkesztheted a <strong className="text-teal-700">Rólunk</strong> aloldal összes szövegét és képét.
           A hosszabb szövegmezőket a formázóeszközökkel tudod díszíteni (<strong>félkövér</strong>, <em>dőlt</em>, felsorolás, idézet).
-          A módosítások után kattints a <strong className="text-[#d4a017]">Mentés</strong> gombra alul.
+          A módosítások után kattints a <strong className="text-teal-700">Mentés</strong> gombra alul.
         </p>
         <div className="mt-4 flex items-center gap-3">
           <Link
             href="/rolunk"
             target="_blank"
-            className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-xs font-medium transition-colors rounded"
+            className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-teal-50 px-4 text-sm font-bold text-teal-700 transition-colors hover:bg-teal-100"
           >
-            <Eye className="w-3.5 h-3.5" />
+            <Eye className="w-4 h-4" />
             Előnézet új lapon
           </Link>
         </div>
       </div>
 
       {/* Rolunk images */}
-      <div className="bg-[#0a1f0a] border border-[#d4a017]/10 rounded-lg p-6 space-y-5">
+      <div className="rounded-3xl border border-slate-200 bg-white p-5 space-y-5 shadow-sm md:p-6">
         <div>
-          <h3 className="font-serif text-lg font-bold text-white flex items-center gap-2">
-            <ImgIcon className="w-5 h-5 text-[#d4a017]" />
+          <h3 className="flex items-center gap-2 font-serif text-2xl font-bold text-slate-950">
+            <ImgIcon className="w-5 h-5 text-teal-600" />
             A Rólunk oldal képei
           </h3>
-          <p className="text-white/50 text-sm mt-1">Ezek a képek a Rólunk oldalon jelennek meg. Cseréld ki a „Kép választása” gombbal.</p>
+          <p className="mt-1 text-base text-slate-600">Ezek a képek a Rólunk oldalon jelennek meg. Cseréld ki a „Kép választása” gombbal.</p>
         </div>
         <div className="grid sm:grid-cols-2 gap-5">
           {ROLUNK_IMAGE_KEYS.map((key) => {
@@ -136,8 +137,8 @@ export function RolunkEditor({
             const info = SITE_IMAGE_LABELS[key]
             const isCustom = Boolean(override)
             return (
-              <div key={key} className="border border-white/10 rounded-md overflow-hidden bg-black/20">
-                <div className="relative aspect-[16/9] bg-black/40">
+              <div key={key} className="overflow-hidden rounded-3xl border border-slate-200 bg-slate-50">
+                <div className="relative aspect-[16/9] bg-slate-100">
                   <Image
                     src={displayUrl}
                     alt={info.title}
@@ -147,15 +148,15 @@ export function RolunkEditor({
                     unoptimized={displayUrl.includes("b-cdn.net")}
                   />
                   {isCustom && (
-                    <span className="absolute top-2 left-2 px-2 py-0.5 bg-[#d4a017] text-[#0a1f0a] text-[10px] font-bold uppercase tracking-wider rounded">
+                    <span className="absolute top-2 left-2 rounded-full bg-teal-600 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
                       Egyedi
                     </span>
                   )}
                 </div>
-                <div className="p-3 space-y-2">
+                <div className="p-4 space-y-3">
                   <div>
-                    <p className="text-white text-sm font-medium">{info.title}</p>
-                    <p className="text-white/50 text-xs mt-0.5">{info.hint}</p>
+                    <p className="text-base font-bold text-slate-950">{info.title}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-slate-600">{info.where}</p>
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <ImagePicker value={override || ""} onChange={(url) => saveImage(key, url)} folder="site" />
@@ -164,7 +165,7 @@ export function RolunkEditor({
                         type="button"
                         onClick={() => resetImage(key)}
                         disabled={pending}
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-medium text-white/60 hover:text-red-400 border border-white/10 hover:border-red-400/40 transition-colors rounded disabled:opacity-50"
+                        className="inline-flex min-h-10 items-center gap-2 rounded-2xl border border-red-100 bg-red-50 px-3 text-xs font-bold text-red-700 transition-colors hover:bg-red-100 disabled:opacity-50"
                       >
                         <RotateCcw className="w-3 h-3" />
                         Visszaállítás
@@ -180,16 +181,16 @@ export function RolunkEditor({
 
       {/* Text fields */}
       {FIELDS.map((group) => (
-        <div key={group.section} className="bg-[#0a1f0a] border border-[#d4a017]/10 rounded-lg p-6 space-y-5">
+        <div key={group.section} className="rounded-3xl border border-slate-200 bg-white p-5 space-y-5 shadow-sm md:p-6">
           <div>
-            <h3 className="font-serif text-lg font-bold text-white">{group.section}</h3>
-            <p className="text-white/50 text-sm mt-1">{group.description}</p>
+            <h3 className="font-serif text-2xl font-bold text-slate-950">{group.section}</h3>
+            <p className="mt-1 text-base text-slate-600">{group.description}</p>
           </div>
 
           {group.items.map((item) => (
             <div key={item.key}>
-              <label className="block text-white text-sm font-medium mb-1">{item.label}</label>
-              <p className="text-white/40 text-xs mb-2">{item.hint}</p>
+              <label className="mb-1 block text-sm font-bold text-slate-700">{item.label}</label>
+              <p className="mb-2 text-sm leading-relaxed text-slate-500">{item.hint}</p>
               {item.type === "rich" ? (
                 <RichTextEditor
                   value={values[item.key]}
@@ -201,14 +202,14 @@ export function RolunkEditor({
                   rows={3}
                   value={values[item.key]}
                   onChange={(e) => update(item.key, e.target.value)}
-                  className="w-full px-3 py-2.5 bg-black/30 border border-[#d4a017]/20 text-white text-sm focus:border-[#d4a017] focus:outline-none rounded-md resize-y"
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base leading-relaxed text-slate-950 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100 resize-y"
                 />
               ) : (
                 <input
                   type="text"
                   value={values[item.key]}
                   onChange={(e) => update(item.key, e.target.value)}
-                  className="w-full h-10 px-3 bg-black/30 border border-[#d4a017]/20 text-white text-sm focus:border-[#d4a017] focus:outline-none rounded-md"
+                  className="w-full min-h-12 rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-950 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100"
                 />
               )}
             </div>
@@ -216,10 +217,10 @@ export function RolunkEditor({
         </div>
       ))}
 
-      <div className="sticky bottom-4 flex items-center justify-between gap-4 p-4 bg-[#0a1f0a] border border-[#d4a017]/30 rounded-lg shadow-xl z-10">
+      <div className="sticky bottom-4 z-10 flex items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white/95 p-4 shadow-xl shadow-slate-900/10 backdrop-blur">
         <div className="flex items-center gap-3">
           {saved && (
-            <span className="inline-flex items-center gap-1.5 text-emerald-400 text-sm font-medium">
+            <span className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-700">
               <Check className="w-4 h-4" /> Mentve!
             </span>
           )}
@@ -228,7 +229,7 @@ export function RolunkEditor({
           type="button"
           onClick={save}
           disabled={pending}
-          className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#d4a017] text-[#0a1f0a] font-bold text-sm hover:bg-[#d4a017]/90 transition-colors disabled:opacity-50 rounded"
+          className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-teal-600 px-6 text-base font-bold text-white transition-colors hover:bg-teal-700 disabled:opacity-50"
         >
           <Save className="w-4 h-4" />
           {pending ? "Mentés…" : "Mentés"}

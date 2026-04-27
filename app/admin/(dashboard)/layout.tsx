@@ -137,7 +137,7 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
                 {!collapsed && (
                   <span className="flex-1 min-w-0" title={item.hint}>
                     <span className="block truncate">{item.label}</span>
-                    <span className="mt-0.5 hidden text-xs font-normal leading-snug text-slate-500 xl:block">{item.hint}</span>
+                    <span className="mt-0.5 block text-xs font-normal leading-snug text-slate-500">{item.hint}</span>
                   </span>
                 )}
                 {active && <span className="w-1.5 h-8 bg-teal-500 rounded-full flex-shrink-0" />}
