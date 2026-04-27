@@ -5,8 +5,8 @@ export const translations = {
     nav: {
       about: "Rólunk",
       camps: "Tábor",
-      clubs: "Klub",
-      partnerProgram: "Partner Klubok",
+      clubs: "Partner Klubok",
+      partnerProgram: "Partnerprogram",
       gallery: "Galéria",
       contact: "Kapcsolat",
       faq: "GYIK",
@@ -820,8 +820,8 @@ export const translations = {
     nav: {
       about: "About",
       camps: "Camp",
-      clubs: "Club",
-      partnerProgram: "Partner Clubs",
+      clubs: "Partner Clubs",
+      partnerProgram: "Partner Program",
       gallery: "Gallery",
       contact: "Contact",
       faq: "FAQ",

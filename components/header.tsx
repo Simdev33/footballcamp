@@ -12,7 +12,7 @@ const CLUB_ITEMS = [
 ]
 
 function NavLabel({ href, label }: { href: string; label: string }) {
-  if (href !== "/partnerprogram") return <>{label}</>
+  if (href !== "/klubok") return <>{label}</>
 
   const words = label.trim().split(/\s+/)
   const [firstWord, ...rest] = words.length > 1 ? words : ["Partner", "Klubok"]
