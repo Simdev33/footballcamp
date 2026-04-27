@@ -41,6 +41,8 @@ interface ChildForm {
   campId: string
 }
 
+type PaymentMode = "earlyBirdFull" | "regularDeposit" | "regularFull"
+
 const emptyChild = (): ChildForm => ({
   childName: "",
   childBirthDate: "",
@@ -180,7 +182,7 @@ function JelentkezesForm() {
   const [privacyAccepted, setPrivacyAccepted] = useState(false)
   const [healthAccepted, setHealthAccepted] = useState(false)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
-  const [paymentMode, setPaymentMode] = useState<"full" | "deposit">("full")
+  const [paymentMode, setPaymentMode] = useState<PaymentMode>("earlyBirdFull")
   const [paymentMethod, setPaymentMethod] = useState<"CARD" | "TRANSFER">("CARD")
 
   useEffect(() => {
@@ -204,13 +206,18 @@ function JelentkezesForm() {
     .map((child) => campMap.get(child.campId))
     .filter((c): c is Camp => Boolean(c))
 
-  const effectivePerChild = selectedCamps.map((c) => c.effectiveHuf)
-  const totalFull = effectivePerChild.reduce((s, v) => s + v, 0)
-  const totalDeposit = selectedCamps.reduce((s, c) => {
-    return s + splitInstallment(c.effectiveHuf, c.depositPercent).deposit
+  const earlyBirdTotal = selectedCamps.reduce((s, c) => s + c.effectiveHuf, 0)
+  const regularTotal = selectedCamps.reduce((s, c) => s + c.priceHuf, 0)
+  const regularDeposit = selectedCamps.reduce((s, c) => {
+    return s + splitInstallment(c.priceHuf, c.depositPercent).deposit
   }, 0)
-  const dueNow = paymentMode === "full" ? totalFull : totalDeposit
-  const remainderAfterDeposit = totalFull - totalDeposit
+  const dueNow =
+    paymentMode === "regularDeposit"
+      ? regularDeposit
+      : paymentMode === "regularFull"
+        ? regularTotal
+        : earlyBirdTotal
+  const remainderAfterDeposit = regularTotal - regularDeposit
 
   const clearFieldErrors = (...keys: string[]) => {
     setFieldErrors((prev) => {
@@ -818,35 +825,48 @@ function JelentkezesForm() {
 
               <div>
                 <label className={labelClass}>{f.paymentScheduleLabel}</label>
-                <div className="grid sm:grid-cols-2 gap-3">
+                <div className="grid gap-3 lg:grid-cols-3">
                   <button
                     type="button"
-                    onClick={() => setPaymentMode("full")}
+                    onClick={() => setPaymentMode("earlyBirdFull")}
                     className={`p-4 border text-left rounded-md transition-colors ${
-                      paymentMode === "full"
+                      paymentMode === "earlyBirdFull"
                         ? "bg-[#d4a017] border-[#d4a017] text-[#0a1f0a]"
                         : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
                     }`}
                   >
                     <div className="font-semibold text-sm">{f.paymentScheduleFull}</div>
                     <div className="text-xs mt-1 opacity-80">{f.paymentScheduleFullDesc}</div>
-                    <div className="mt-2 font-bold text-base">{formatPrice(totalFull, "HUF")}</div>
+                    <div className="mt-2 font-bold text-base">{formatPrice(earlyBirdTotal, "HUF")}</div>
                   </button>
                   <button
                     type="button"
-                    onClick={() => setPaymentMode("deposit")}
+                    onClick={() => setPaymentMode("regularDeposit")}
                     className={`p-4 border text-left rounded-md transition-colors ${
-                      paymentMode === "deposit"
+                      paymentMode === "regularDeposit"
                         ? "bg-[#d4a017] border-[#d4a017] text-[#0a1f0a]"
                         : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
                     }`}
                   >
                     <div className="font-semibold text-sm">{f.paymentScheduleDeposit}</div>
                     <div className="text-xs mt-1 opacity-80">{f.paymentScheduleDepositDesc}</div>
-                    <div className="mt-2 font-bold text-base">{formatPrice(totalDeposit, "HUF")}</div>
+                    <div className="mt-2 font-bold text-base">{formatPrice(regularDeposit, "HUF")}</div>
                     <div className="text-xs mt-0.5 opacity-70">
                       {f.paymentScheduleDepositLater.replace("{amount}", formatPrice(remainderAfterDeposit, "HUF"))}
                     </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMode("regularFull")}
+                    className={`p-4 border text-left rounded-md transition-colors ${
+                      paymentMode === "regularFull"
+                        ? "bg-[#d4a017] border-[#d4a017] text-[#0a1f0a]"
+                        : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
+                    }`}
+                  >
+                    <div className="font-semibold text-sm">{f.paymentScheduleRegularFull}</div>
+                    <div className="text-xs mt-1 opacity-80">{f.paymentScheduleRegularFullDesc}</div>
+                    <div className="mt-2 font-bold text-base">{formatPrice(regularTotal, "HUF")}</div>
                   </button>
                 </div>
               </div>

@@ -19,7 +19,7 @@ export const ROLUNK_DEFAULTS: RolunkContent = {
     "Táborainkban a gyerekek nemzetközi szintű képzésben vesznek részt, európai akadémiák edzőinek irányításával. Az angol és magyar nyelvű edzések során már fiatal korban megtapasztalhatják a profi futball szemléletét.",
   missionTitle: "Céljaink",
   missionText:
-    "Azért csináljuk, amit csinálunk, mert hiszünk benne, hogy a magyar gyerekek is megérdemlik a legjobb európai futballképzést. Célunk, hogy minél több külföldi edzőt és akadémiát hozzunk el Magyarországra, és megismertessük a gyerekekkel a nemzetközi futball világát.",
+    "Azért csináljuk, amit csinálunk, mert hiszünk benne, hogy a magyar gyerekek is megérdemlik a magas színvonalú európai futballképzést. Célunk, hogy minél több külföldi edzőt és akadémiai szemléletet hozzunk el Magyarországra, és megismertessük a gyerekekkel a nemzetközi futball világát.",
   quote:
     "Táborainkban a gyerekek nemcsak technikai tudást szereznek, hanem megtanulnak együtt gondolkodni, együtt dolgozni és magabiztosabban mozogni a pályán és azon kívül is. A közösség ereje és a közös élmények olyan önbizalmat adnak, ami a tábor után is velük marad.",
   quoteAuthor: "Ez az a közeg, ahol a futball élménnyé válik, az élmény pedig maradandó értékké.",

@@ -90,6 +90,35 @@ export default function KlubokPage() {
                 </Link>
               )
             })}
+            <Link
+              href="/partnerprogram"
+              className="group relative overflow-hidden rounded-xl border border-dashed border-[#d4a017]/50 bg-white p-6 md:p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#d4a017] hover:shadow-xl"
+            >
+              <div className="absolute inset-x-0 top-0 h-1 bg-[#d4a017]" />
+              <div className="flex items-start gap-5">
+                <div className="h-16 w-16 md:h-20 md:w-20 flex-shrink-0 rounded-lg bg-[#0a1f0a]/5 text-[#d4a017] flex items-center justify-center transition-colors group-hover:bg-[#d4a017] group-hover:text-[#0a1f0a]">
+                  <Shield className="h-8 w-8" />
+                </div>
+
+                <div className="min-w-0">
+                  <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground group-hover:text-primary transition-colors">
+                    {t.coaches.partnerTile.title}
+                  </h2>
+                  <p className="mt-1 text-xs md:text-sm font-semibold uppercase tracking-wider text-[#d4a017]">
+                    {t.coaches.partnerTile.cta}
+                  </p>
+                </div>
+              </div>
+
+              <p className="mt-6 text-sm md:text-base text-muted-foreground leading-relaxed">
+                {t.coaches.partnerTile.desc}
+              </p>
+
+              <span className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:gap-3 transition-all duration-300">
+                {t.coaches.partnerTile.cta}
+                <ArrowRight className="h-4 w-4" />
+              </span>
+            </Link>
           </div>
         </div>
       </section>

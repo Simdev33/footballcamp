@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useEffect, useState, useTransition } from "react"
 import {
   Save, Pencil, X, Plus, Trash2, Globe, RotateCcw, Check, Eye,
   Loader2,
@@ -28,6 +28,7 @@ const SECTION_INFO: Record<string, { label: string; desc: string; theme: string 
   targetAudience:  { label: "Kinek ajánljuk?",           desc: "Számozott célcsoport lista",         theme: "dark" },
   experience:      { label: "Több mint edzés",           desc: "Statisztikák és idézet",             theme: "dark" },
   locations:       { label: "Helyszínek feliratok",      desc: "Címek és label-ek (táborok az admin Táborok fülön)", theme: "light" },
+  campsListPage:   { label: "Táborok főoldal",           desc: "A Táborok menüpont általános szövegei és kártya feliratai", theme: "dark" },
   form:            { label: "Jelentkezés szekció",       desc: "CTA és trust elemek",                theme: "dark" },
   coaches:         { label: "Klubok",                    desc: "Partner klubok kártyái",             theme: "light" },
   partnerProgram:  { label: "Partnerprogram",            desc: "Partner szekciók és CTA",            theme: "light" },
@@ -58,7 +59,7 @@ const FIELD_LABELS: Record<string, string> = {
   about: "Rólunk", partnerProgram: "Partnerprogram", gallery: "Galéria",
   contact: "Kapcsolat", faq: "GYIK", register: "Jelentkezés",
   clubs: "Klubok", camps: "Táborok",
-  cards: "Klub kártyák", name: "Név", role: "Beosztás",
+  cards: "Klub kártyák", partnerTile: "Partnerprogram csempe", name: "Név", role: "Beosztás",
   intro: "Bevezető", sections: "Szekciók",
   practiceTitle: "Gyakorlati cím", practiceItems: "Gyakorlati pontok",
   benefitTitle: "Előny cím", benefitItems: "Előny pontok",
@@ -76,6 +77,11 @@ const FIELD_LABELS: Record<string, string> = {
   emailPlaceholder: "Email placeholder", subscribed: "Feliratkozott szöveg",
   copyright: "Copyright", motto: "Mottó", href: "URL",
   detailsCta: "Részletek gomb", statValue: "Statisztika érték", statLabel: "Statisztika felirat",
+  heroTitle: "Hero cím", heroSubtitle: "Hero alcím", kidsBadge: "Gyerek szekció badge",
+  kidsTitle: "Gyerek szekció cím", kidsTitleHighlight: "Gyerek cím kiemelés", kidsTitleEnd: "Gyerek cím vége",
+  kidsItems: "Gyerek szekció elemek", locationsBadge: "Helyszínek badge",
+  locationsTitle: "Helyszínek cím", locationsHighlight: "Helyszínek kiemelés",
+  emptyState: "Üres állapot", ageLabel: "Korosztály felirat", ageRange: "Korosztály",
 }
 
 const SKIP_FIELDS: Record<string, string[]> = {
@@ -90,17 +96,17 @@ function getLabel(key: string): string {
 
 function themeClasses(theme: string) {
   switch (theme) {
-    case "dark":  return "bg-[#0a1f0a] border-[#d4a017]/20"
-    case "green": return "bg-[#1a5c2a] border-[#d4a017]/20"
-    case "gold":  return "bg-[#0a1f0a] border-[#d4a017]/40"
-    default:      return "bg-[#111f11] border-white/10"
+    case "dark":  return "bg-white border-slate-200"
+    case "green": return "bg-emerald-50 border-emerald-100"
+    case "gold":  return "bg-amber-50 border-amber-100"
+    default:      return "bg-white border-slate-200"
   }
 }
 
 function themeTextClasses(theme: string) {
   switch (theme) {
-    case "dark": case "green": case "gold": return "text-white"
-    default: return "text-white"
+    case "dark": case "green": case "gold": return "text-slate-950"
+    default: return "text-slate-950"
   }
 }
 
@@ -127,14 +133,14 @@ function FieldInput({
   label: string; value: string; onChange: (v: string) => void; placeholder?: string
 }) {
   return (
-    <div className="space-y-1.5">
-      <label className="text-xs font-medium text-white/60 uppercase tracking-wider">{label}</label>
+    <div className="space-y-2">
+      <label className="text-sm font-semibold text-slate-700">{label}</label>
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-white/5 border border-white/10 px-3 py-2 text-sm text-white placeholder:text-white/20 focus:border-[#d4a017]/50 focus:outline-none transition-colors"
+        className="w-full min-h-12 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-950 placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100"
       />
     </div>
   )
@@ -146,15 +152,15 @@ function FieldTextarea({
   label: string; value: string; onChange: (v: string) => void; hint?: string
 }) {
   return (
-    <div className="space-y-1.5">
-      <label className="text-xs font-medium text-white/60 uppercase tracking-wider">{label}</label>
+    <div className="space-y-2">
+      <label className="text-sm font-semibold text-slate-700">{label}</label>
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={Math.min(8, Math.max(3, value.split("\n").length + 1))}
-        className="w-full bg-white/5 border border-white/10 px-3 py-2 text-sm text-white placeholder:text-white/20 focus:border-[#d4a017]/50 focus:outline-none transition-colors resize-y"
+        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base leading-relaxed text-slate-950 placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100 resize-y"
       />
-      {hint && <p className="text-[10px] text-white/30">{hint}</p>}
+      {hint && <p className="text-sm text-slate-500">{hint}</p>}
     </div>
   )
 }
@@ -207,7 +213,7 @@ function renderFields(
         return (
           <div key={key} className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-medium text-white/60 uppercase tracking-wider">
+              <label className="text-sm font-semibold text-slate-700">
                 {fieldLabel} ({value.length})
               </label>
               <button
@@ -217,18 +223,18 @@ function renderFields(
                   const newItem = createEmptyItem(template)
                   updateField(currentPath, [...value, newItem])
                 }}
-                className="flex items-center gap-1 text-[10px] font-medium text-[#d4a017] hover:text-[#d4a017]/80 transition-colors"
+                className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-teal-50 px-3 text-sm font-bold text-teal-700 hover:bg-teal-100 transition-colors"
               >
-                <Plus className="w-3 h-3" /> Új elem
+                <Plus className="w-4 h-4" /> Új elem
               </button>
             </div>
             {(value as Record<string, unknown>[]).map((item, i) => (
               <div
                 key={i}
-                className="relative bg-white/3 border border-white/6 p-4 space-y-3"
+                className="relative rounded-2xl bg-slate-50 border border-slate-200 p-4 space-y-3"
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] font-bold text-[#d4a017]/60 uppercase tracking-widest">
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">
                     #{i + 1}
                   </span>
                   {value.length > 1 && (
@@ -239,9 +245,9 @@ function renderFields(
                         next.splice(i, 1)
                         updateField(currentPath, next)
                       }}
-                      className="text-red-400/60 hover:text-red-400 transition-colors"
+                      className="inline-flex min-h-10 items-center gap-1.5 rounded-xl bg-red-50 px-3 text-sm font-bold text-red-700 hover:bg-red-100 transition-colors"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4" /> Törlés
                     </button>
                   )}
                 </div>
@@ -286,6 +292,17 @@ function renderFields(
           </div>
         )
       }
+    }
+
+    if (typeof value === "object" && value !== null) {
+      return (
+        <div key={key} className="space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <label className="text-sm font-semibold text-slate-700">{fieldLabel}</label>
+          <div className="space-y-3">
+            {renderFields(value as Record<string, unknown>, currentPath, updateField, skipKeys)}
+          </div>
+        </div>
+      )
     }
 
     return null
@@ -724,40 +741,37 @@ function SectionPreview({
     ""
 
   return (
-    <div className={`relative p-5 ${themeClasses(info.theme)} ${themeTextClasses(info.theme)}`}>
-      {info.theme === "green" && (
-        <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(255,255,255,0.015)_0px,rgba(255,255,255,0.015)_2px,transparent_2px,transparent_20px)] pointer-events-none" />
-      )}
+    <div className={`relative p-5 md:p-6 ${themeClasses(info.theme)} ${themeTextClasses(info.theme)}`}>
       <div className="relative z-10">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-1.5">
-              <h3 className="font-serif font-bold text-sm truncate">{info.label}</h3>
+              <h3 className="font-serif font-bold text-lg truncate">{info.label}</h3>
               {isCustomized && (
-                <span className="shrink-0 px-1.5 py-0.5 text-[9px] font-bold bg-[#d4a017]/20 text-[#d4a017] uppercase tracking-wider">
+                <span className="shrink-0 rounded-full bg-teal-50 px-2.5 py-1 text-xs font-bold text-teal-700 ring-1 ring-teal-200">
                   Szerkesztve
                 </span>
               )}
             </div>
-            <p className="text-[10px] text-white/40 mb-3">{info.desc}</p>
+            <p className="text-sm text-slate-500 mb-4">{info.desc}</p>
           </div>
         </div>
 
         {title && (
-          <p className="font-serif text-base font-bold leading-tight truncate">
+          <p className="font-serif text-xl font-bold leading-tight text-slate-950">
             {title}{" "}
-            {highlight && <span className="text-[#d4a017]">{highlight}</span>}
+            {highlight && <span className="text-teal-700">{highlight}</span>}
           </p>
         )}
         {sub && (
-          <p className="mt-1 text-xs text-white/50 line-clamp-2">{sub.slice(0, 150)}{sub.length > 150 ? "…" : ""}</p>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600 line-clamp-2">{sub.slice(0, 150)}{sub.length > 150 ? "…" : ""}</p>
         )}
 
         {sectionId === "faq" && Array.isArray(content.items) && (
-          <p className="mt-2 text-[10px] text-white/30">{(content.items as unknown[]).length} kérdés-válasz</p>
+          <p className="mt-3 text-sm text-slate-500">{(content.items as unknown[]).length} kérdés-válasz</p>
         )}
         {sectionId === "usp" && Array.isArray(content.items) && (
-          <p className="mt-2 text-[10px] text-white/30">{(content.items as unknown[]).length} elem</p>
+          <p className="mt-3 text-sm text-slate-500">{(content.items as unknown[]).length} elem</p>
         )}
       </div>
     </div>
@@ -768,18 +782,18 @@ function SectionPreview({
 
 function LocaleToggle({ locale, onChange }: { locale: Locale; onChange: (l: Locale) => void }) {
   return (
-    <div className="flex items-center gap-1 bg-white/5 border border-white/10 p-1 rounded">
+    <div className="flex items-center gap-1 rounded-2xl border border-slate-200 bg-white p-1 shadow-sm">
       {(["hu", "en"] as Locale[]).map((l) => (
         <button
           key={l}
           onClick={() => onChange(l)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors rounded ${
+          className={`flex min-h-10 items-center gap-2 rounded-xl px-4 text-sm font-bold transition-colors ${
             locale === l
-              ? "bg-[#d4a017] text-[#0a1f0a]"
-              : "text-white/40 hover:text-white"
+              ? "bg-teal-600 text-white"
+              : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
           }`}
         >
-          <Globe className="w-3 h-3" />
+          <Globe className="w-4 h-4" />
           {l === "hu" ? "Magyar" : "English"}
         </button>
       ))}
@@ -822,8 +836,25 @@ export function ContentEditor({
   const currentPage = PAGES.find((p) => p.id === activePage)
   const lockedToPage = Boolean(pageId)
   const localeContent = (content[locale] || {}) as Record<string, Record<string, unknown>>
+  const hasUnsavedChanges = Boolean(editingSection && editData)
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) return
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault()
+      event.returnValue = ""
+    }
+    window.addEventListener("beforeunload", onBeforeUnload)
+    return () => window.removeEventListener("beforeunload", onBeforeUnload)
+  }, [hasUnsavedChanges])
+
+  const confirmDiscard = () => {
+    if (!hasUnsavedChanges) return true
+    return window.confirm("Van mentetlen módosításod. Biztosan elhagyod ezt a szerkesztést mentés nélkül?")
+  }
 
   const startEdit = (sectionId: string) => {
+    if (editingSection && editingSection !== sectionId && !confirmDiscard()) return
     setEditingSection(sectionId)
     setEditData(JSON.parse(JSON.stringify(localeContent[sectionId] || {})))
   }
@@ -880,17 +911,25 @@ export function ContentEditor({
       {header ? (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex-1 min-w-0">{header}</div>
-          <LocaleToggle locale={locale} onChange={(l) => { setLocale(l); cancelEdit() }} />
+          <LocaleToggle locale={locale} onChange={(l) => {
+            if (!confirmDiscard()) return
+            setLocale(l)
+            cancelEdit()
+          }} />
         </div>
       ) : (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-xl font-serif font-bold text-white">Tartalom szerkesztő</h1>
-            <p className="text-xs text-white/40 mt-0.5">
+            <h1 className="text-2xl font-serif font-bold text-slate-950">Tartalom szerkesztő</h1>
+            <p className="text-sm text-slate-500 mt-1">
               Szekciók vizuális szerkesztése — változtatásaid azonnal megjelennek az oldalon
             </p>
           </div>
-          <LocaleToggle locale={locale} onChange={(l) => { setLocale(l); cancelEdit() }} />
+          <LocaleToggle locale={locale} onChange={(l) => {
+            if (!confirmDiscard()) return
+            setLocale(l)
+            cancelEdit()
+          }} />
         </div>
       )}
 
@@ -899,20 +938,24 @@ export function ContentEditor({
 
       {/* Page tabs – only when not locked to a single page */}
       {!lockedToPage && (
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-2">
           {PAGES.map((page) => {
             const Icon = page.icon
             return (
               <button
                 key={page.id}
-                onClick={() => { setActivePage(page.id); cancelEdit() }}
-                className={`flex items-center gap-2 px-4 py-2.5 text-xs font-medium transition-all rounded ${
+                onClick={() => {
+                  if (!confirmDiscard()) return
+                  setActivePage(page.id)
+                  cancelEdit()
+                }}
+                className={`flex min-h-11 items-center gap-2 rounded-2xl border px-4 text-sm font-bold transition-all ${
                   activePage === page.id
-                    ? "bg-[#d4a017]/15 text-[#d4a017] border border-[#d4a017]/30"
-                    : "text-white/40 hover:text-white/70 border border-white/5 hover:border-white/15"
+                    ? "bg-teal-50 text-teal-700 border-teal-200"
+                    : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:text-slate-950"
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon className="w-4 h-4" />
                 {page.label}
               </button>
             )
@@ -933,49 +976,51 @@ export function ContentEditor({
           return (
             <div
               key={sectionId}
-              className={`border transition-all duration-300 overflow-hidden ${
+              className={`rounded-3xl border transition-all duration-300 overflow-hidden shadow-sm ${
                 isEditing
-                  ? "border-[#d4a017]/50 shadow-[0_0_30px_rgba(212,160,23,0.1)]"
+                  ? "border-teal-300 shadow-teal-100"
                   : justSaved
-                    ? "border-emerald-500/50"
-                    : "border-white/5 hover:border-white/15"
+                    ? "border-emerald-300"
+                    : "border-slate-200 hover:border-teal-200"
               }`}
             >
               {isEditing && editData ? (
                 /* ── Editing mode with live preview ── */
-                <div className="bg-[#0a1f0a]">
-                  <div className="flex items-center justify-between px-5 py-3 border-b border-[#d4a017]/20 bg-[#d4a017]/5">
+                <div className="bg-white">
+                  <div className="flex flex-col gap-4 border-b border-slate-200 bg-slate-50 px-5 py-4 md:flex-row md:items-center md:justify-between">
                     <div className="flex items-center gap-3">
-                      <Pencil className="w-4 h-4 text-[#d4a017]" />
+                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-50 text-teal-700 ring-1 ring-teal-100">
+                        <Pencil className="w-5 h-5" />
+                      </div>
                       <div>
-                        <h3 className="font-serif font-bold text-sm text-white">{info.label}</h3>
-                        <p className="text-[10px] text-white/40">{locale === "hu" ? "Magyar" : "English"} tartalom szerkesztése</p>
+                        <h3 className="font-serif font-bold text-xl text-slate-950">{info.label}</h3>
+                        <p className="text-sm text-slate-500">{locale === "hu" ? "Magyar" : "English"} tartalom szerkesztése</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                       <button
                         onClick={cancelEdit}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-white/40 hover:text-white transition-colors"
+                        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors"
                       >
-                        <X className="w-3.5 h-3.5" /> Mégse
+                        <X className="w-4 h-4" /> Mégse
                       </button>
                       <button
                         onClick={handleSave}
                         disabled={isPending}
-                        className="flex items-center gap-1.5 px-4 py-1.5 bg-[#d4a017] text-[#0a1f0a] text-xs font-bold hover:bg-[#d4a017]/90 transition-colors disabled:opacity-50"
+                        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-teal-600 px-5 text-sm font-bold text-white hover:bg-teal-700 transition-colors disabled:opacity-50"
                       >
                         {isPending ? (
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <Loader2 className="w-4 h-4 animate-spin" />
                         ) : (
-                          <Save className="w-3.5 h-3.5" />
+                          <Save className="w-4 h-4" />
                         )}
                         Mentés
                       </button>
                     </div>
                   </div>
-                  <div className="grid lg:grid-cols-2 divide-x divide-white/5">
+                  <div className="grid lg:grid-cols-2 lg:divide-x lg:divide-slate-200">
                     {/* Left: edit fields */}
-                    <div className="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
+                    <div className="p-5 space-y-5 lg:max-h-[70vh] lg:overflow-y-auto">
                       {renderFields(
                         editData as Record<string, unknown>,
                         [sectionId],
@@ -984,11 +1029,11 @@ export function ContentEditor({
                       )}
                     </div>
                     {/* Right: live preview */}
-                    <div className="hidden lg:block max-h-[70vh] overflow-y-auto">
-                      <div className="sticky top-0 z-10 px-4 py-2 bg-[#0a1f0a]/95 backdrop-blur border-b border-white/5">
+                    <div className="border-t border-slate-200 lg:max-h-[70vh] lg:overflow-y-auto lg:border-t-0">
+                      <div className="sticky top-0 z-10 px-5 py-3 bg-white/95 backdrop-blur border-b border-slate-200">
                         <div className="flex items-center gap-2">
-                          <Eye className="w-3.5 h-3.5 text-[#d4a017]" />
-                          <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Előnézet — olvasói nézet</span>
+                          <Eye className="w-4 h-4 text-teal-600" />
+                          <span className="text-sm font-bold text-slate-600">Előnézet - olvasói nézet</span>
                         </div>
                       </div>
                       <div className="bg-[#eef1ec]">
@@ -1011,16 +1056,16 @@ export function ContentEditor({
                   />
 
                   {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <span className="flex items-center gap-2 px-4 py-2 bg-[#d4a017] text-[#0a1f0a] text-xs font-bold">
-                      <Pencil className="w-3.5 h-3.5" /> Szerkesztés
+                  <div className="absolute bottom-4 right-4 flex items-center justify-center bg-transparent opacity-100 transition-colors md:inset-0 md:bg-black/0 md:opacity-0 md:group-hover:bg-slate-950/20 md:group-hover:opacity-100">
+                    <span className="flex min-h-11 items-center gap-2 rounded-2xl bg-teal-600 px-5 text-sm font-bold text-white shadow-sm">
+                      <Pencil className="w-4 h-4" /> Szerkesztés
                     </span>
                   </div>
 
                   {/* Saved indicator */}
                   {justSaved && (
-                    <div className="absolute top-3 right-3 flex items-center gap-1.5 px-2 py-1 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">
-                      <Check className="w-3 h-3" /> Mentve
+                    <div className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 ring-1 ring-emerald-200">
+                      <Check className="w-3.5 h-3.5" /> Mentve
                     </div>
                   )}
 
@@ -1033,10 +1078,10 @@ export function ContentEditor({
                           handleReset(sectionId)
                         }
                       }}
-                      className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 text-[10px] text-white/30 hover:text-white/70 bg-black/40 opacity-0 group-hover:opacity-100 transition-all"
+                      className="absolute top-3 right-3 flex min-h-10 items-center gap-2 rounded-xl bg-white px-3 text-xs font-bold text-slate-600 shadow-sm ring-1 ring-slate-200 transition-all hover:bg-slate-50"
                       title="Visszaállítás alapértelmezettre"
                     >
-                      <RotateCcw className="w-3 h-3" /> Alapértelmezett
+                      <RotateCcw className="w-3.5 h-3.5" /> Alapértelmezett
                     </button>
                   )}
                 </div>

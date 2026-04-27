@@ -8,7 +8,23 @@ import { PageHeader } from "@/components/admin/page-header"
 export const dynamic = 'force-dynamic'
 
 export default async function AdminCampsPage() {
-  const camps = await db.camp.findMany({ orderBy: { createdAt: "desc" }, include: { _count: { select: { applications: true } } } })
+  const camps = await db.camp.findMany({
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      city: true,
+      venue: true,
+      dates: true,
+      active: true,
+      remainingSpots: true,
+      totalSpots: true,
+      earlyBirdPrice: true,
+      earlyBirdPriceHuf: true,
+      price: true,
+      priceHuf: true,
+      _count: { select: { applications: true } },
+    },
+  })
 
   return (
     <div className="space-y-6">
@@ -17,55 +33,61 @@ export default async function AdminCampsPage() {
         title={`Táborok (${camps.length})`}
         description="Itt tudsz új tábort létrehozni, a meglévőket szerkeszteni (időpont, ár, helyszín), vagy aktívra/inaktívra állítani."
         actions={
-          <Link href="/admin/taborok/uj" className="inline-flex items-center gap-2 px-4 py-2 bg-[#d4a017] text-[#0a1f0a] text-sm font-semibold hover:bg-[#d4a017]/90 transition-colors rounded">
+          <Link href="/admin/taborok/uj" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-teal-600 px-5 text-base font-bold text-white transition-colors hover:bg-teal-700 sm:w-auto">
             <Plus className="w-4 h-4" /> Új tábor
           </Link>
         }
       />
 
       {camps.length === 0 ? (
-        <div className="text-center py-20 text-white/30">Még nincs tábor létrehozva</div>
+        <div className="rounded-3xl border border-slate-200 bg-white py-20 text-center text-slate-500 shadow-sm">
+          Még nincs tábor létrehozva.
+        </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-4">
           {camps.map((camp) => (
-            <div key={camp.id} className="bg-[#0a1f0a] border border-[#d4a017]/10 p-6">
-              <div className="flex items-start justify-between mb-4">
+            <div key={camp.id} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-5">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <MapPin className="w-4 h-4 text-[#d4a017]" />
-                    <h3 className="text-white font-bold text-lg">{camp.city}</h3>
+                    <MapPin className="w-5 h-5 text-teal-600" />
+                    <h3 className="text-slate-950 font-bold text-xl">{camp.city}</h3>
                   </div>
-                  <p className="text-white/40 text-xs">{camp.venue}</p>
+                  <p className="text-slate-500 text-sm">{camp.venue}</p>
                 </div>
-                <span className={`text-xs px-2 py-1 font-medium ${camp.active ? "bg-emerald-500/15 text-emerald-400" : "bg-red-500/15 text-red-400"}`}>
+                <span className={`inline-flex min-h-9 items-center rounded-full px-3 text-xs font-bold ring-1 ${camp.active ? "bg-emerald-50 text-emerald-700 ring-emerald-200" : "bg-red-50 text-red-700 ring-red-200"}`}>
                   {camp.active ? "Aktív" : "Inaktív"}
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-                <div className="flex items-center gap-2 text-white/50">
-                  <Calendar className="w-4 h-4 text-[#d4a017]" />
+              <div className="grid gap-3 mb-5 text-sm sm:grid-cols-2">
+                <div className="flex items-center gap-2 rounded-2xl bg-slate-50 px-3 py-3 text-slate-700">
+                  <Calendar className="w-4 h-4 text-teal-600" />
                   <span>{camp.dates}</span>
                 </div>
-                <div className="flex items-center gap-2 text-white/50">
-                  <Users className="w-4 h-4 text-[#d4a017]" />
+                <div className="flex items-center gap-2 rounded-2xl bg-slate-50 px-3 py-3 text-slate-700">
+                  <Users className="w-4 h-4 text-teal-600" />
                   <span>{camp.remainingSpots}/{camp.totalSpots} hely</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 mb-4 flex-wrap">
-                <span className="text-[#d4a017] font-bold">{formatPrice(camp.earlyBirdPriceHuf, "HUF") || camp.earlyBirdPrice}</span>
-                <span className="text-white/30 line-through text-sm">{formatPrice(camp.priceHuf, "HUF") || camp.price}</span>
-                <span className="ml-auto text-xs text-white/30">{camp._count.applications} jelentkező</span>
+              <div className="flex items-end gap-3 mb-5 flex-wrap">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">EarlyBird ár</p>
+                  <span className="text-teal-700 text-xl font-bold">{formatPrice(camp.earlyBirdPriceHuf, "HUF") || camp.earlyBirdPrice}</span>
+                </div>
+                <span className="pb-0.5 text-slate-400 line-through text-sm">{formatPrice(camp.priceHuf, "HUF") || camp.price}</span>
+                <span className="ml-auto rounded-full bg-sky-50 px-3 py-1.5 text-xs font-bold text-sky-700 ring-1 ring-sky-100">{camp._count.applications} jelentkező</span>
               </div>
 
-              <div className="flex gap-2">
-                <Link href={`/admin/taborok/${camp.id}`} className="flex-1 flex items-center justify-center gap-2 h-9 bg-white/5 text-white/60 hover:text-[#d4a017] hover:bg-[#d4a017]/10 transition-colors text-sm">
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <Link href={`/admin/taborok/${camp.id}`} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-2xl bg-teal-50 px-4 text-sm font-bold text-teal-700 transition-colors hover:bg-teal-100">
                   <Pencil className="w-4 h-4" /> Szerkesztés
                 </Link>
                 <form action={async () => { "use server"; await deleteCamp(camp.id) }}>
-                  <button type="submit" className="h-9 px-3 bg-white/5 text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                  <button type="submit" className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-red-50 px-4 text-sm font-bold text-red-700 transition-colors hover:bg-red-100 sm:w-auto">
                     <Trash2 className="w-4 h-4" />
+                    Törlés
                   </button>
                 </form>
               </div>

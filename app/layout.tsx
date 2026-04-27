@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     template: '%s | Kickoff Elite Football Camps',
   },
   description:
-    'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény a legjobb európai akadémiák módszereivel.',
+    'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény európai akadémiai szemléletű módszerekkel.',
   applicationName: 'Kickoff Elite Football Camps',
   keywords: [
     'focitábor',
@@ -84,13 +84,13 @@ export const metadata: Metadata = {
     siteName: 'Kickoff Elite Football Camps',
     title: 'Kickoff Elite Football Camps | Nemzetközi Futballtáborok',
     description:
-      'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény a legjobb európai akadémiák módszereivel.',
+      'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény európai akadémiai szemléletű módszerekkel.',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Kickoff Elite Football Camps | Nemzetközi Futballtáborok',
     description:
-      'Nemzetközi futballtáborok külföldi edzőkkel. Top európai akadémiák módszereivel Szegeden és Kecskeméten.',
+      'Nemzetközi futballtáborok külföldi edzőkkel, európai akadémiai szemléletű módszerekkel Szegeden és Kecskeméten.',
   },
   robots: {
     index: true,
@@ -135,7 +135,7 @@ export default async function RootLayout({
     logo: `${SITE_URL}/kickoff-logo.png`,
     image: `${SITE_URL}/opengraph-image`,
     description:
-      'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény a legjobb európai akadémiák módszereivel.',
+      'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény európai akadémiai szemléletű módszerekkel.',
     telephone: '+36 30 755 1110',
     email: 'info@kickoffcamps.hu',
     priceRange: '€€',

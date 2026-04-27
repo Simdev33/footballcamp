@@ -122,13 +122,13 @@ export function CampForm({ camp, campTranslationEn = {} }: { camp?: CampData; ca
   const action = isEdit ? updateCamp.bind(null, camp.id) : createCamp
 
   return (
-    <div className="max-w-4xl space-y-6">
-      <Link href="/admin/taborok" className="inline-flex items-center gap-2 text-white/40 hover:text-white text-sm transition-colors">
+    <div className="max-w-5xl space-y-6">
+      <Link href="/admin/taborok" className="inline-flex min-h-10 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-600 shadow-sm hover:bg-slate-50 hover:text-slate-950">
         <ArrowLeft className="w-4 h-4" /> Vissza
       </Link>
 
-      <h2 className="text-xl font-bold text-white">
-        {isEdit ? `Tabor szerkesztese: ${camp.city}` : "Uj tabor letrehozasa"}
+      <h2 className="font-serif text-3xl font-bold text-slate-950">
+        {isEdit ? `Tábor szerkesztése: ${camp.city}` : "Új tábor létrehozása"}
       </h2>
 
       <form action={action} className="space-y-4">
@@ -151,25 +151,25 @@ export function CampForm({ camp, campTranslationEn = {} }: { camp?: CampData; ca
         {/* ─── BASIC INFO ─── */}
         <Section title="Alap adatok" id="basic" open={openSections.basic} onToggle={() => toggle("basic")}>
           <div>
-            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Tabor kepe</label>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">Tábor képe</label>
             <ImagePicker value={imageUrl} onChange={setImageUrl} folder="camps" />
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Varos" name="city" required defaultValue={camp?.city} placeholder="pl. Szeged" />
-            <Field label="Helyszin" name="venue" required defaultValue={camp?.venue} placeholder="pl. Szegedi Sportkozpont" />
+            <Field label="Város" name="city" required defaultValue={camp?.city} placeholder="pl. Szeged" />
+            <Field label="Helyszín" name="venue" required defaultValue={camp?.venue} placeholder="pl. Szegedi Sportközpont" />
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
             <Field label="Klub neve" name="clubName" defaultValue={camp?.clubName || "SL Benfica"} placeholder="SL Benfica" />
-            <Field label="Korosztaly" name="ageRange" defaultValue={camp?.ageRange || "7-15"} placeholder="7-15" />
+            <Field label="Korosztály" name="ageRange" defaultValue={camp?.ageRange || "7-15"} placeholder="7-15" />
           </div>
 
-          <Field label="Datumok" name="dates" required defaultValue={camp?.dates} placeholder="pl. 2026. julius 7-11." />
+          <Field label="Dátumok" name="dates" required defaultValue={camp?.dates} placeholder="pl. 2026. július 7-11." />
 
           <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Teljes ar (Ft)" name="priceHuf" type="number" required defaultValue={String(camp?.priceHuf || "")} placeholder="133000" />
-            <Field label="Early Bird ar (Ft)" name="earlyBirdPriceHuf" type="number" required defaultValue={String(camp?.earlyBirdPriceHuf || "")} placeholder="99000" />
+            <Field label="Teljes ár (Ft)" name="priceHuf" type="number" required defaultValue={String(camp?.priceHuf || "")} placeholder="133000" />
+            <Field label="Early Bird ár (Ft)" name="earlyBirdPriceHuf" type="number" required defaultValue={String(camp?.earlyBirdPriceHuf || "")} placeholder="99000" />
           </div>
 
           {/* EUR arak - DB mezo marad, UI-n elrejtve, alapertelmezett 0 megy at */}
@@ -177,36 +177,36 @@ export function CampForm({ camp, campTranslationEn = {} }: { camp?: CampData; ca
           <input type="hidden" name="earlyBirdPriceEur" value="0" />
 
           <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Early Bird lejarati datum" name="earlyBirdUntil" type="date" defaultValue={toDateInput(camp?.earlyBirdUntil)} placeholder="" />
-            <Field label="Elso reszlet fix ara (Ft)" name="depositPercent" type="number" required defaultValue={depositAmountInputValue(camp)} placeholder="30000" />
+            <Field label="Early Bird lejárati dátum" name="earlyBirdUntil" type="date" defaultValue={toDateInput(camp?.earlyBirdUntil)} placeholder="" />
+            <Field label="Első részlet fix ára (Ft)" name="depositPercent" type="number" required defaultValue={depositAmountInputValue(camp)} placeholder="30000" />
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Osszes hely" name="totalSpots" type="number" required defaultValue={String(camp?.totalSpots || "")} placeholder="40" />
+            <Field label="Összes hely" name="totalSpots" type="number" required defaultValue={String(camp?.totalSpots || "")} placeholder="40" />
             {isEdit && (
               <Field label="Szabad helyek" name="remainingSpots" type="number" required defaultValue={String(camp?.remainingSpots || "")} />
             )}
           </div>
 
           <div>
-            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Leiras</label>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">Leírás</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={6}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm resize-none"
-              placeholder="A tabor reszletes leirasa..."
+              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base leading-relaxed text-slate-950 placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100 resize-y"
+              placeholder="A tábor részletes leírása..."
             />
           </div>
 
           {/* Includes */}
           <div>
-            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Mit tartalmaz a tabor</label>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">Mit tartalmaz a tábor?</label>
             <div className="space-y-2 mb-3">
               {includes.map((item, i) => (
                 <div key={i} className="flex items-center gap-2">
-                  <span className="flex-1 px-3 py-2 bg-white/5 border border-white/10 text-white text-sm">{item}</span>
-                  <button type="button" onClick={() => setIncludes(includes.filter((_, idx) => idx !== i))} className="w-8 h-8 flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                  <span className="flex-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700">{item}</span>
+                  <button type="button" onClick={() => setIncludes(includes.filter((_, idx) => idx !== i))} className="min-h-11 rounded-2xl bg-red-50 px-3 text-red-700 hover:bg-red-100 transition-colors">
                     <X className="w-4 h-4" />
                   </button>
                 </div>
@@ -218,18 +218,18 @@ export function CampForm({ camp, campTranslationEn = {} }: { camp?: CampData; ca
                 value={newItem}
                 onChange={(e) => setNewItem(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addInclude() } }}
-                placeholder="Uj elem hozzaadasa..."
-                className="flex-1 h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm"
+                placeholder="Új elem hozzáadása..."
+                className="flex-1 min-h-12 rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-950 placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100"
               />
-              <button type="button" onClick={addInclude} className="h-10 px-4 bg-[#d4a017]/20 text-[#d4a017] text-sm font-medium hover:bg-[#d4a017]/30 transition-colors flex items-center gap-1">
-                <Plus className="w-4 h-4" /> Hozzaad
+              <button type="button" onClick={addInclude} className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-teal-50 px-4 text-sm font-bold text-teal-700 hover:bg-teal-100 transition-colors">
+                <Plus className="w-4 h-4" /> Hozzáad
               </button>
             </div>
           </div>
 
           <label className="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" name="active" defaultChecked={camp?.active ?? true} className="w-5 h-5 accent-[#d4a017]" />
-            <span className="text-white text-sm">Aktiv (megjelenik a publikus oldalon)</span>
+            <input type="checkbox" name="active" defaultChecked={camp?.active ?? true} className="w-5 h-5 accent-teal-600" />
+            <span className="text-slate-700 text-base font-medium">Aktív (megjelenik a publikus oldalon)</span>
           </label>
         </Section>
 
@@ -603,8 +603,8 @@ export function CampForm({ camp, campTranslationEn = {} }: { camp?: CampData; ca
         </Section>
 
         {/* Submit */}
-        <button type="submit" className="w-full h-12 bg-[#d4a017] text-[#0a1f0a] font-bold text-base hover:bg-[#d4a017]/90 transition-colors">
-          {isEdit ? "Mentes" : "Tabor letrehozasa"}
+        <button type="submit" className="w-full min-h-14 rounded-3xl bg-teal-600 text-lg font-bold text-white transition-colors hover:bg-teal-700">
+          {isEdit ? "Mentés" : "Tábor létrehozása"}
         </button>
       </form>
     </div>
@@ -615,16 +615,18 @@ function Section({ title, id, open, onToggle, children }: {
   title: string; id: string; open: boolean; onToggle: () => void; children: React.ReactNode
 }) {
   return (
-    <div className="bg-[#0a1f0a] border border-[#d4a017]/10 overflow-hidden">
+    <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
       <button
         type="button"
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-white/5 transition-colors"
+        className="w-full flex min-h-16 items-center justify-between px-5 py-4 text-left hover:bg-slate-50 transition-colors md:px-6"
+        aria-expanded={open}
+        aria-controls={`camp-section-${id}`}
       >
-        <span className="text-white font-semibold text-sm uppercase tracking-wider">{title}</span>
-        {open ? <ChevronUp className="w-5 h-5 text-[#d4a017]" /> : <ChevronDown className="w-5 h-5 text-white/40" />}
+        <span className="text-slate-950 font-bold text-lg">{title}</span>
+        {open ? <ChevronUp className="w-5 h-5 text-teal-600" /> : <ChevronDown className="w-5 h-5 text-slate-400" />}
       </button>
-      {open && <div className="px-6 pb-6 space-y-5">{children}</div>}
+      {open && <div id={`camp-section-${id}`} className="border-t border-slate-100 px-5 py-5 space-y-5 md:px-6">{children}</div>}
     </div>
   )
 }
@@ -634,14 +636,14 @@ function Field({ label, name, type = "text", required = false, defaultValue = ""
 }) {
   return (
     <div>
-      <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">{label}</label>
+      <label className="block text-sm font-semibold text-slate-700 mb-2">{label}</label>
       <input
         type={type}
         name={name}
         required={required}
         defaultValue={defaultValue}
         placeholder={placeholder}
-        className="w-full h-11 px-4 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm"
+        className="w-full min-h-12 rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-950 placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100"
       />
     </div>
   )

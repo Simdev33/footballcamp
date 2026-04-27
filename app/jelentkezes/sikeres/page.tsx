@@ -14,7 +14,7 @@ type SessionInfo = {
   status: string | null
   paymentStatus: string | null
   currency: Currency
-  paymentMode: "full" | "deposit"
+  paymentMode: "earlyBirdFull" | "regularDeposit" | "regularFull" | "full" | "deposit"
   amountTotal: number
   customerEmail: string | null
   applications: Array<{
@@ -119,6 +119,7 @@ function SikeresContent() {
   }
 
   const isPaid = info.paymentStatus === "paid"
+  const isDepositPayment = info.paymentMode === "regularDeposit" || info.paymentMode === "deposit"
   const remainingTotal = info.applications.reduce(
     (sum, a) => sum + (a.isInstallment ? Math.max(0, a.totalAmount - a.depositAmount) : 0),
     0,
@@ -140,7 +141,7 @@ function SikeresContent() {
               </span>
             </div>
 
-            {info.paymentMode === "deposit" && remainingTotal > 0 && (
+            {isDepositPayment && remainingTotal > 0 && (
               <div className="flex items-baseline justify-between">
                 <span className="text-sm text-muted-foreground">{s.remainingAmount}</span>
                 <span className="text-base font-semibold text-foreground">
@@ -175,7 +176,7 @@ function SikeresContent() {
               </div>
             )}
 
-            {info.paymentMode === "deposit" && (
+            {isDepositPayment && (
               <p className="text-xs text-muted-foreground pt-3">{s.depositNote}</p>
             )}
           </div>

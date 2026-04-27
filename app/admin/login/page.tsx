@@ -40,43 +40,43 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a1f0a] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-[#d4a017] flex items-center justify-center mx-auto mb-4">
-            <Shield className="w-8 h-8 text-[#0a1f0a]" />
+          <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-teal-500 to-sky-600 flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <Shield className="w-8 h-8 text-white" />
           </div>
-          <h1 className="font-serif text-3xl font-bold text-white">Admin</h1>
-          <p className="text-white/50 mt-2 text-sm">Kickoff Elite Football Camps</p>
+          <h1 className="font-serif text-4xl font-bold text-slate-950">Admin</h1>
+          <p className="text-slate-500 mt-2 text-base">Kickoff Elite Football Camps</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-[#0f2b0f] border border-[#d4a017]/20 p-8">
+        <form onSubmit={handleSubmit} className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
           {error && (
-            <div className="mb-6 p-3 bg-red-500/10 border border-red-500/30 text-red-400 text-sm text-center">
+            <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-3 text-center text-sm font-medium text-red-700">
               {error}
             </div>
           )}
 
           <div className="mb-5">
-            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Email</label>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full h-12 px-4 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors"
+              className="w-full h-12 rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-950 placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100"
               placeholder="admin@benficacamp.hu"
             />
           </div>
 
           <div className="mb-6">
-            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Jelszó</label>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">Jelszó</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full h-12 px-4 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors"
+              className="w-full h-12 rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-950 placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100"
               placeholder="••••••••"
             />
           </div>
@@ -84,7 +84,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-12 bg-[#d4a017] text-[#0a1f0a] font-semibold hover:bg-[#d4a017]/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full h-12 rounded-2xl bg-teal-600 text-base font-bold text-white hover:bg-teal-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Bejelentkezés"}
           </button>

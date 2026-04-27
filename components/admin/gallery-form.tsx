@@ -18,47 +18,40 @@ export function GalleryForm() {
   }
 
   return (
-    <form action={handleSubmit} className="bg-[#0a1f0a] border border-[#d4a017]/10 p-6">
-      <h3 className="text-white font-medium mb-4">Új kép hozzáadása</h3>
-      <div className="grid sm:grid-cols-[1fr_1fr_auto] gap-4 items-end">
+    <form action={handleSubmit} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+      <h3 className="text-xl font-bold text-slate-950 mb-2">Új kép hozzáadása</h3>
+      <p className="mb-5 text-base leading-relaxed text-slate-600">
+        Válassz ki egy képet, adj hozzá rövid leírást, majd nyomd meg a Hozzáadás gombot.
+      </p>
+      <div className="grid gap-5 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
         <div>
-          <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Kép</label>
+          <label className="block text-sm font-semibold text-slate-700 mb-2">Kép</label>
           <ImagePicker value={imageUrl} onChange={setImageUrl} folder="gallery" />
           <input type="hidden" name="url" value={imageUrl} />
         </div>
         <div className="space-y-3">
           <div>
-            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Leírás</label>
-            <input type="text" name="alt" placeholder="Rövid leírás a képhez" className="w-full h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm" />
+            <label className="block text-sm font-semibold text-slate-700 mb-2">Leírás</label>
+            <input type="text" name="alt" placeholder="Rövid leírás a képhez" className="w-full h-12 rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-950 placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100" />
           </div>
           <div>
-            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Kategória</label>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">Kategória</label>
             <select
               name="category"
-              className="w-full h-10 px-3 rounded border border-white/10 bg-[#111811] text-white focus:border-[#d4a017] focus:outline-none transition-colors text-sm [color-scheme:dark]"
+              className="w-full h-12 rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-950 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100"
             >
-              <option value="general" className="bg-[#0a1f0a] text-white">
-                Általános
-              </option>
-              <option value="training" className="bg-[#0a1f0a] text-white">
-                Edzés
-              </option>
-              <option value="match" className="bg-[#0a1f0a] text-white">
-                Mérkőzés
-              </option>
-              <option value="team" className="bg-[#0a1f0a] text-white">
-                Csapat
-              </option>
-              <option value="event" className="bg-[#0a1f0a] text-white">
-                Esemény
-              </option>
+              <option value="general">Általános</option>
+              <option value="training">Edzés</option>
+              <option value="match">Mérkőzés</option>
+              <option value="team">Csapat</option>
+              <option value="event">Esemény</option>
             </select>
           </div>
         </div>
         <button
           type="submit"
           disabled={!imageUrl || submitting}
-          className="h-10 px-6 bg-[#d4a017] text-[#0a1f0a] text-sm font-semibold hover:bg-[#d4a017]/90 transition-colors disabled:opacity-40"
+          className="min-h-12 w-full rounded-2xl bg-teal-600 px-6 text-base font-bold text-white transition-colors hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-40 lg:w-auto"
         >
           {submitting ? "Mentés…" : "Hozzáadás"}
         </button>

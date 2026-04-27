@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
 import {
   LayoutDashboard, ImageIcon, Tent, ClipboardList,
-  Users, LogOut, ChevronLeft, Menu, Shield, FileText, BookOpen, Info,
+  Users, LogOut, ChevronLeft, Menu, Shield, FileText, BookOpen, Info, X, ExternalLink,
 } from "lucide-react"
 import { useState, useTransition, useEffect } from "react"
 
@@ -38,10 +38,22 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
     }
   }, [pathname, optimisticHref])
 
+  useEffect(() => {
+    if (!mobileOpen) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false)
+    }
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [mobileOpen])
+
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-[#0b1e0b] flex items-center justify-center">
-        <div className="w-10 h-10 border-2 border-[#d4a017] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="rounded-2xl border border-slate-200 bg-white px-8 py-7 text-center shadow-sm">
+          <div className="mx-auto mb-4 h-11 w-11 rounded-full border-4 border-teal-500 border-t-transparent animate-spin" />
+          <p className="text-sm font-medium text-slate-700">Admin felület betöltése...</p>
+        </div>
       </div>
     )
   }
@@ -75,20 +87,33 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
     filteredNav.find((n) => (n.href === "/admin" ? currentHref === "/admin" : currentHref.startsWith(n.href)))
 
   return (
-    <div className="min-h-screen bg-[#0b1e0b] flex">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex">
       {mobileOpen && (
-        <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setMobileOpen(false)} />
+        <div className="fixed inset-0 bg-slate-950/45 z-40 lg:hidden" onClick={() => setMobileOpen(false)} />
       )}
 
-      <aside className={`fixed lg:sticky top-0 left-0 h-screen z-50 bg-[#0a1f0a] border-r border-[#d4a017]/10 flex flex-col transition-[width,transform] duration-200 ${collapsed ? "w-20" : "w-64"} ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
-        <div className="h-16 flex items-center gap-3 px-4 border-b border-[#d4a017]/10">
-          <div className="w-10 h-10 bg-[#d4a017] flex items-center justify-center flex-shrink-0 rounded">
-            <Shield className="w-5 h-5 text-[#0a1f0a]" />
+      <aside className={`fixed lg:sticky top-0 left-0 h-screen z-50 bg-white border-r border-slate-200 flex flex-col transition-[width,transform] duration-200 shadow-xl shadow-slate-900/5 ${collapsed ? "w-20" : "w-72"} ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
+        <div className="min-h-20 flex items-center gap-3 px-4 border-b border-slate-200">
+          <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-sky-600 flex items-center justify-center flex-shrink-0 rounded-2xl shadow-sm">
+            <Shield className="w-6 h-6 text-white" />
           </div>
-          {!collapsed && <span className="font-serif font-bold text-white text-sm">Admin Panel</span>}
+          {!collapsed && (
+            <div className="min-w-0 flex-1">
+              <span className="block font-serif font-bold text-slate-950 text-lg">Admin panel</span>
+              <span className="block text-sm text-slate-500">Weboldal kezelése</span>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={() => setMobileOpen(false)}
+            className="lg:hidden h-11 w-11 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50"
+            aria-label="Menü bezárása"
+          >
+            <X className="mx-auto h-5 w-5" />
+          </button>
         </div>
 
-        <nav className="flex-1 py-4 overflow-y-auto">
+        <nav className="flex-1 py-4 overflow-y-auto px-2" aria-label="Admin navigáció">
           {filteredNav.map((item) => {
             const active = isActive(item.href)
             return (
@@ -101,38 +126,39 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
                   navigate(item.href)
                 }}
                 onMouseEnter={() => router.prefetch(item.href)}
-                className={`flex items-center gap-3 mx-2 px-3 h-11 text-sm font-medium rounded transition-colors duration-100 ${
+                className={`flex items-center gap-3 px-3 min-h-14 text-[15px] font-semibold rounded-2xl transition-colors duration-100 ${
                   active
-                    ? "bg-[#d4a017]/15 text-[#d4a017]"
-                    : "text-white/60 hover:text-white hover:bg-white/5"
+                    ? "bg-teal-50 text-teal-800 ring-1 ring-teal-200"
+                    : "text-slate-600 hover:text-slate-950 hover:bg-slate-100"
                 }`}
                 aria-current={active ? "page" : undefined}
               >
-                <item.icon className="w-5 h-5 flex-shrink-0" />
+                <item.icon className={`w-5 h-5 flex-shrink-0 ${active ? "text-teal-600" : "text-slate-400"}`} />
                 {!collapsed && (
                   <span className="flex-1 min-w-0" title={item.hint}>
                     <span className="block truncate">{item.label}</span>
+                    <span className="mt-0.5 hidden text-xs font-normal leading-snug text-slate-500 xl:block">{item.hint}</span>
                   </span>
                 )}
-                {active && <span className="w-1 h-6 bg-[#d4a017] rounded-full flex-shrink-0" />}
+                {active && <span className="w-1.5 h-8 bg-teal-500 rounded-full flex-shrink-0" />}
               </Link>
             )
           })}
         </nav>
 
-        <div className="border-t border-[#d4a017]/10 p-3">
+        <div className="border-t border-slate-200 p-4">
           {!collapsed && session?.user && (
-            <div className="mb-3 px-2">
-              <p className="text-white text-xs font-medium truncate">{session.user.name}</p>
-              <p className="text-white/40 text-[10px] uppercase tracking-wider">{role}</p>
+            <div className="mb-3 rounded-2xl bg-slate-50 px-3 py-3">
+              <p className="text-slate-900 text-sm font-semibold truncate">{session.user.name}</p>
+              <p className="text-slate-500 text-xs uppercase tracking-wider">{role}</p>
             </div>
           )}
           <div className="flex items-center gap-2">
-            <button onClick={() => signOut({ callbackUrl: "/admin/login" })} className="flex-1 flex items-center justify-center gap-2 h-9 bg-white/5 text-white/50 hover:text-red-400 hover:bg-red-500/10 transition-colors text-xs rounded">
+            <button onClick={() => signOut({ callbackUrl: "/admin/login" })} className="flex-1 flex items-center justify-center gap-2 min-h-11 rounded-xl bg-slate-100 text-slate-600 hover:text-red-700 hover:bg-red-50 transition-colors text-sm font-semibold">
               <LogOut className="w-4 h-4" />
               {!collapsed && "Kijelentkezés"}
             </button>
-            <button onClick={() => setCollapsed(!collapsed)} className="hidden lg:flex w-9 h-9 items-center justify-center bg-white/5 text-white/50 hover:text-white transition-colors rounded">
+            <button onClick={() => setCollapsed(!collapsed)} className="hidden lg:flex w-11 h-11 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:text-slate-900 transition-colors">
               <ChevronLeft className={`w-4 h-4 transition-transform ${collapsed ? "rotate-180" : ""}`} />
             </button>
           </div>
@@ -140,50 +166,56 @@ function DashboardInner({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="flex-1 flex flex-col min-h-screen">
-        <header className="h-16 bg-[#0a1f0a]/80 backdrop-blur border-b border-[#d4a017]/10 flex items-center px-4 lg:px-8 sticky top-0 z-30 relative">
+        <header className="min-h-20 bg-white/90 backdrop-blur border-b border-slate-200 flex items-center px-4 lg:px-8 sticky top-0 z-30 relative">
           {/* Top progress bar while navigating */}
           {pending && (
             <div className="absolute bottom-0 left-0 right-0 h-0.5 overflow-hidden pointer-events-none">
-              <div className="h-full w-1/3 bg-[#d4a017] animate-[adminProgress_1.1s_ease-in-out_infinite]" />
+              <div className="h-full w-1/3 bg-teal-500 animate-[adminProgress_1.1s_ease-in-out_infinite]" />
             </div>
           )}
 
-          <button onClick={() => setMobileOpen(true)} className="lg:hidden w-10 h-10 flex items-center justify-center text-white/50 hover:text-white mr-3">
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="lg:hidden w-12 h-12 flex items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 hover:text-slate-950 mr-3"
+            aria-label="Admin menü megnyitása"
+            aria-expanded={mobileOpen}
+          >
             <Menu className="w-5 h-5" />
           </button>
 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               {activeItem?.icon && (
-                <activeItem.icon className="w-4 h-4 text-[#d4a017] flex-shrink-0 hidden sm:block" />
+                <activeItem.icon className="w-5 h-5 text-teal-600 flex-shrink-0 hidden sm:block" />
               )}
-              <h1 className="text-white font-semibold text-sm md:text-base truncate">
+              <h1 className="text-slate-950 font-bold text-lg md:text-2xl truncate">
                 {activeItem?.label || "Admin"}
               </h1>
               {pending && (
-                <span className="text-white/40 text-xs inline-flex items-center gap-1.5 ml-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#d4a017] animate-pulse" />
+                <span className="text-slate-500 text-sm inline-flex items-center gap-1.5 ml-2">
+                  <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
                   betöltés…
                 </span>
               )}
             </div>
             {activeItem?.hint && (
-              <p className="text-white/40 text-xs mt-0.5 hidden sm:block truncate">{activeItem.hint}</p>
+              <p className="text-slate-500 text-sm mt-1 hidden sm:block truncate">{activeItem.hint}</p>
             )}
           </div>
 
-          <div className="hidden md:flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <Link
               href="/"
               target="_blank"
-              className="text-white/50 hover:text-white text-xs font-medium px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded transition-colors"
+              className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-950 transition-colors"
             >
-              Weboldal megtekintése →
+              <ExternalLink className="h-4 w-4" />
+              <span className="hidden sm:inline">Weboldal megtekintése</span>
             </Link>
           </div>
         </header>
 
-        <main className="flex-1 p-4 lg:p-8">
+        <main className="flex-1 p-4 md:p-6 lg:p-8">
           {children}
         </main>
       </div>

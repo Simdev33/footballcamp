@@ -135,7 +135,7 @@ export async function renderOgImage() {
               lineHeight: 1.25,
             }}
           >
-            Top európai akadémiák módszerei · külföldi edzők · Szeged & Kecskemét · 7–15 év
+            Európai akadémiai szemlélet · külföldi edzők · Szeged & Kecskemét · 7–15 év
           </div>
         </div>
 

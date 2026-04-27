@@ -45,7 +45,7 @@ export const CONTENT_PAGES: ContentPageMeta[] = [
     label: "Helyszínek & Jelentkezés",
     icon: MapPin,
     description: "A Táborok/Jelentkezés szekciók szövegei (a konkrét táborokat külön menüből szerkeszd).",
-    sections: ["locations", "form"],
+    sections: ["campsListPage", "locations", "form"],
   },
   {
     id: "klubok",

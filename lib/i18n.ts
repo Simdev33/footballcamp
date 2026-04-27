@@ -14,14 +14,15 @@ export const translations = {
       register: "Jelentkezés →",
     },
     hero: {
-      campBadge: "Eddz valódi akadémiai módszerekkel, európai top klubok edzőivel!",
+      campBadge: "Eddz valódi akadémiai módszerekkel, az SL Benfica edzőivel!",
       location: "",
       pickLocation: "Válassz tábort",
       line1: "Adj a gyermekednek",
       line2: "valódi élményt,",
       line3: "ne csak egy nyári focitábort!",
-      subtitle: "Focitábor 7-15 éves korosztályig top európai akadémiák edzőivel",
-      tagline: "Top európai akadémiák • Külföldi edzők • Valódi élmény",
+      subtitle: "Focitábor 7-15 éves korosztályig nemzetközi akadémiai szemlélettel",
+      partnerNote: "A tábort a Kickoff Elite Football Camps szervezi az SL Benfica együttműködésével, a programban az SL Benfica edzői vesznek részt.",
+      tagline: "SL Benfica együttműködés • Külföldi edzők • Valódi élmény",
       cta: "Jelentkezés →",
       earlyLabel: "Korlátozott létszám!",
       scroll: "Görgess",
@@ -68,7 +69,7 @@ export const translations = {
       title: "",
       titleHighlight: "",
       items: [
-        { title: "Nemzetközi edzők", desc: "Európai top akadémiák szakembereivel edz a gyermeked, valós nemzetközi szemléletben" },
+        { title: "Nemzetközi edzők", desc: "Európai akadémiai háttérrel érkező szakemberekkel edz a gyermeked, valós nemzetközi szemléletben" },
         { title: "Akadémiai szintű képzés", desc: "Strukturált edzésprogram, amely valódi fejlődést ad, nem csak játékélményt" },
         { title: "Fókuszált edzéskörnyezet", desc: "15 fős csoportok korosztályonként, ahol minden gyerek személyes figyelmet kap" },
         { title: "Napi több edzés", desc: "Technikai, taktikai és mentális fejlődés intenzív, mégis életkorhoz igazított formában" },
@@ -103,13 +104,18 @@ export const translations = {
           cta: "Tudj meg többet",
         },
       ],
+      partnerTile: {
+        title: "Ez itt a te klubod helye",
+        desc: "Jelentkezz partnerprogramunkra.",
+        cta: "Partnerprogram",
+      },
     },
     partnerProgram: {
       badge: "Partnerprogram",
       title: "Legyél a",
       titleHighlight: "partnerünk!",
       titleEnd: "",
-      intro: "Építsünk együtt nemzetközi szintű futballélményt a gyerekeknek – Légy a partnerünk! A KICKOFF Elite Football Camps célja, hogy a legjobb európai futball akadémiák edzésmódszereit, futballszemléletét elhozza Magyarországra, és minél több gyermek számára tegye elérhetővé a magas színvonalú képzést. Ehhez olyan partnereket keresünk, akik velünk együtt szeretnének értéket teremteni a sportban, közösségben és élményekben egyaránt!",
+      intro: "Építsünk együtt nemzetközi szintű futballélményt a gyerekeknek – Légy a partnerünk! A KICKOFF Elite Football Camps célja, hogy európai akadémiai edzésmódszereket és futballszemléletet hozzon Magyarországra, és minél több gyermek számára tegye elérhetővé a magas színvonalú képzést. Ehhez olyan partnereket keresünk, akik velünk együtt szeretnének értéket teremteni a sportban, közösségben és élményekben egyaránt!",
       sections: [
         {
           title: "Hazai partnereknek",
@@ -117,8 +123,8 @@ export const translations = {
           text: "Olyan hazai egyesületek és önkormányzatok jelentkezését várjuk, akik rendelkeznek megfelelő infrastruktúrával (pálya, létesítmény), futballszerető közeggel, és szeretnék egy magas színvonalú, nemzetközi edzőtábor élményét elérhetővé tenni.",
           practiceTitle: "Mit jelent ez a gyakorlatban?",
           practiceItems: [
-            "Külföldi sztárcsapatok edzői érkeznek a helyszínre",
-            "A helyi gyerekek világszínvonalú edzésmódszerekkel találkoznak",
+            "Nemzetközi partnerklubok edzői érkeznek a helyszínre",
+            "A helyi gyerekek európai akadémiai szemléletű edzésmódszerekkel találkoznak",
             "Egyesületek esetén: extra érték a saját utánpótlás számára, szakmai előrelépés az edzőknek",
             "Önkormányzatok esetén: sportturizmus és településmarketing",
           ],
@@ -247,7 +253,7 @@ export const translations = {
       items: [
         {
           question: "Miben különböznek ezek a táborok egy átlagos focitábortól?",
-          answer: "Táborainkban az edzéseket a világ legjobb futball akadémiáinak edzői irányítják. Ők egyenesen külföldről érkező, a klub főállású szakemberei, nem egy-két nap alatt betanított magyar edzők. Top klubok nemzetközi szintű, bizonyítottan sikeres edzésmódszereit ismerhetik meg a résztvevők. Egész héten teljes fókusz a futballon van, általában napi 4 edzéssel. Az edzések részben angol nyelven zajlanak, így a gyerekek az angol tudásukat is fejleszthetik, valamint tapasztalatot szerezhetnek külföldi edzőkkel való közös munkában.",
+          answer: "Táborainkban az edzéseket külföldről érkező, akadémiai háttérrel rendelkező edzők irányítják. A résztvevők nemzetközi szemléletű, strukturált edzésmódszereket ismerhetnek meg. Egész héten teljes fókusz a futballon van, általában napi 4 edzéssel. Az edzések részben angol nyelven zajlanak, így a gyerekek az angol tudásukat is fejleszthetik, valamint tapasztalatot szerezhetnek külföldi edzőkkel való közös munkában.",
         },
         {
           question: "Kik vehetnek részt a táborokban?",
@@ -291,7 +297,7 @@ export const translations = {
       heroTitle: "Jelentkezés",
       heroSubtitle: "Töltsd ki az alábbi űrlapot – testvéreket is regisztrálhatsz egyben.",
       intro:
-        "Köszönjük, hogy itt vagy, már csak egy lépés választ el életed legjobb fociélményétől! Kérjük, töltsd ki az űrlap minden mezőjét pontosan. Ha kérdésed merülne fel, keress minket bizalommal elérhetőségeink valamelyikén!",
+        "Köszönjük, hogy itt vagy, már csak egy lépés választ el a jelentkezéstől! Kérjük, töltsd ki az űrlap minden mezőjét pontosan. Ha kérdésed merülne fel, keress minket bizalommal elérhetőségeink valamelyikén!",
       successTitle: "Köszönjük a jelentkezést!",
       successDesc: "Csapatunk hamarosan felveszi veled a kapcsolatot a megadott elérhetőségeken.",
       parentSection: "Szülő adatai",
@@ -383,13 +389,15 @@ export const translations = {
       errCheckoutFailed: "Nem sikerült a fizetés elindítása.",
       canceledMsg: "A fizetés megszakadt. Próbáld újra — a jelentkezésed addig is rögzítve van.",
       paymentTitle: "Fizetés",
-      paymentDesc: "Válaszd ki, hogyan szeretnél fizetni — mindkét opciónál automatikus elektronikus számlát állítunk ki.",
+      paymentDesc: "Válaszd ki, hogyan szeretnél fizetni — minden opciónál automatikus elektronikus számlát állítunk ki.",
       paymentScheduleLabel: "Fizetési ütemezés",
-      paymentScheduleFull: "Egyben",
-      paymentScheduleFullDesc: "A teljes összeget most fizeted.",
-      paymentScheduleDeposit: "Részletfizetés",
+      paymentScheduleFull: "EarlyBird - egyösszegű fizetés",
+      paymentScheduleFullDesc: "A kedvezményes EarlyBird ár egy összegben fizethető.",
+      paymentScheduleDeposit: "Normál ár - részletfizetéssel",
       paymentScheduleDepositDesc: "Most az első részlet, a hátralévőt a tábor előtt.",
       paymentScheduleDepositLater: "+ {amount} később",
+      paymentScheduleRegularFull: "Normál ár - egyösszegű fizetéssel",
+      paymentScheduleRegularFullDesc: "A normál ár teljes összegét most fizeted.",
       paymentMethodLabel: "Fizetési mód",
       paymentMethodCard: "Bankkártya",
       paymentMethodCardDesc: "Azonnali fizetés a Stripe biztonságos oldalán. Apple Pay és Google Pay is elfogadott.",
@@ -421,7 +429,7 @@ export const translations = {
       age6: "15-16 éves",
     },
     footer: {
-      desc: "Nemzetközi futballtáborok a legjobb európai akadémiák módszereivel. Adj gyermekednek egy életre szóló élményt.",
+      desc: "Nemzetközi futballtáborok európai akadémiai szemléletű módszerekkel. Adj gyermekednek egy életre szóló élményt.",
       navTitle: "Navigáció",
       links: [
         { label: "Rólunk", href: "/rolunk" },
@@ -689,7 +697,7 @@ export const translations = {
       benficaDesc1:
         "A Benfica akadémia a világ egyik legelismertebb utánpótlás-műhelye. Az akadémia módszertana a technikai kiválóságra, a taktikai intelligenciára és a mentális erősségre épül.",
       stampedInLisbon: "★ Stamped in Lisbon",
-      madeInBenficaSubtitle: "Egy akadémia, amely évről évre világklasszis játékosokat nevel. Ők a mi edzőink iskolájának gyümölcsei.",
+      madeInBenficaSubtitle: "Egy nagy múltú akadémia, amely számos nemzetközileg ismert játékost adott a futballnak. Edzőink ebből a szakmai közegből érkeznek.",
       benficaBadge: "Benfica",
       graduatesTitle: "Akadémiai",
       graduatesHighlight: "végzősök",
@@ -698,7 +706,7 @@ export const translations = {
         { value: "120+", label: "év történelem" },
         { value: "80+", label: "országban jelen" },
         { value: "50+", label: "profi akadémiai végzős" },
-        { value: "#1", label: "portugál akadémia" },
+        { value: "Elismert", label: "portugál akadémia" },
       ],
     },
     campsListPage: {
@@ -723,6 +731,11 @@ export const translations = {
       ageRange: "7-15 éves korosztályig",
       earlyBirdLabel: "Early bird ár",
       details: "Részletek",
+      partnerTile: {
+        title: "Ez itt a te helyszíned helye",
+        desc: "Jelentkezz partnerprogramunkra.",
+        cta: "Partnerprogram",
+      },
     },
     campDetailPage: {
       notFound: "Tábor nem található",
@@ -804,14 +817,15 @@ export const translations = {
       register: "Apply →",
     },
     hero: {
-      campBadge: "Train with real academy methods, coached by Europe's top clubs!",
+      campBadge: "Train with real academy methods, coached by SL Benfica coaches!",
       location: "",
       pickLocation: "Choose a camp",
       line1: "Give your child",
       line2: "a real experience,",
       line3: "not just a summer camp!",
-      subtitle: "Football camp for ages 7–15 with coaches from Europe's top academies",
-      tagline: "Top European academies • International coaches • Real experience",
+      subtitle: "Football camp for ages 7–15 with an international academy approach",
+      partnerNote: "The camp is organized by Kickoff Elite Football Camps in cooperation with SL Benfica, with SL Benfica coaches taking part in the programme.",
+      tagline: "SL Benfica cooperation • International coaches • Real experience",
       cta: "Apply & Pay",
       earlyLabel: "Limited spots!",
       scroll: "Scroll",
@@ -858,7 +872,7 @@ export const translations = {
       title: "",
       titleHighlight: "",
       items: [
-        { title: "International coaches", desc: "Your child trains with professionals from Europe's top academies, in a truly international environment" },
+        { title: "International coaches", desc: "Your child trains with professionals with European academy backgrounds, in a truly international environment" },
         { title: "Academy-level training", desc: "Structured training program that delivers real development, not just a play experience" },
         { title: "Focused training environment", desc: "15 per age group, where every child receives personal attention" },
         { title: "Multiple daily sessions", desc: "Technical, tactical and mental development in an intensive yet age-appropriate format" },
@@ -893,13 +907,18 @@ export const translations = {
           cta: "Learn more",
         },
       ],
+      partnerTile: {
+        title: "This could be your club's place",
+        desc: "Apply for our partner program.",
+        cta: "Partner Program",
+      },
     },
     partnerProgram: {
       badge: "Partner Program",
       title: "Become our",
       titleHighlight: "partner!",
       titleEnd: "",
-      intro: "Let's build an international-level football experience for children together – Become our partner! KICKOFF Elite Football Camps aims to bring the best European football academy methods and philosophy to Hungary, making high-quality training accessible to as many children as possible. We're looking for partners who want to create value in sports, community and experiences together!",
+      intro: "Let's build an international-level football experience for children together – Become our partner! KICKOFF Elite Football Camps aims to bring European academy training methods and football philosophy to Hungary, making high-quality training accessible to as many children as possible. We're looking for partners who want to create value in sports, community and experiences together!",
       sections: [
         {
           title: "Local partners",
@@ -908,7 +927,7 @@ export const translations = {
           practiceTitle: "What does this mean in practice?",
           practiceItems: [
             "Coaches from international star clubs arrive at your venue",
-            "Local children experience world-class training methods",
+            "Local children experience European academy-style training methods",
             "For clubs: added value for your youth program, professional development for coaches",
             "For municipalities: sports tourism and city marketing",
           ],
@@ -1037,7 +1056,7 @@ export const translations = {
       items: [
         {
           question: "What makes these camps different from an average football camp?",
-          answer: "Our training sessions are led by coaches from the world's best football academies. They are full-time professionals from the club, flying in directly from abroad – not locally trained coaches rushed through a quick course. Participants learn internationally proven, successful training methods from top clubs. The entire week is fully focused on football, typically with 4 training sessions per day. Sessions are partly conducted in English, helping kids improve their language skills while gaining experience working with international coaches.",
+          answer: "Our training sessions are led by international coaches with academy backgrounds. Participants learn structured training methods with an international football perspective. The entire week is fully focused on football, typically with 4 training sessions per day. Sessions are partly conducted in English, helping kids improve their language skills while gaining experience working with international coaches.",
         },
         {
           question: "Who can participate in the camps?",
@@ -1081,7 +1100,7 @@ export const translations = {
       heroTitle: "Registration",
       heroSubtitle: "Fill in the form below – you can register siblings together.",
       intro:
-        "Thanks for being here – you're just one step away from the best football experience of your life! Please fill in every field of the form accurately. If you have any questions, feel free to reach out to us on any of our contact channels!",
+        "Thanks for being here – you're just one step away from applying! Please fill in every field of the form accurately. If you have any questions, feel free to reach out to us on any of our contact channels!",
       successTitle: "Thank you for your registration!",
       successDesc: "Our team will contact you soon on the details you provided.",
       parentSection: "Parent details",
@@ -1173,13 +1192,15 @@ export const translations = {
       errCheckoutFailed: "Could not start the payment.",
       canceledMsg: "The payment was cancelled. Please try again — your registration is still saved.",
       paymentTitle: "Payment",
-      paymentDesc: "Choose how you'd like to pay — we issue an electronic invoice automatically for either option.",
+      paymentDesc: "Choose how you'd like to pay — we issue an electronic invoice automatically for every option.",
       paymentScheduleLabel: "Payment schedule",
-      paymentScheduleFull: "Pay in full",
-      paymentScheduleFullDesc: "You pay the full amount now.",
-      paymentScheduleDeposit: "Instalment payment",
+      paymentScheduleFull: "EarlyBird - one-time payment",
+      paymentScheduleFullDesc: "The discounted EarlyBird price is available as a one-time payment.",
+      paymentScheduleDeposit: "Regular price - instalment payment",
       paymentScheduleDepositDesc: "First instalment now, the rest before the camp.",
       paymentScheduleDepositLater: "+ {amount} later",
+      paymentScheduleRegularFull: "Regular price - one-time payment",
+      paymentScheduleRegularFullDesc: "You pay the full regular price now.",
       paymentMethodLabel: "Payment method",
       paymentMethodCard: "Bank card",
       paymentMethodCardDesc: "Instant payment on Stripe's secure page. Apple Pay and Google Pay accepted.",
@@ -1211,7 +1232,7 @@ export const translations = {
       age6: "15-16 years",
     },
     footer: {
-      desc: "International football camps with the best European academy methods. Give your child a lifetime experience.",
+      desc: "International football camps with a European academy-style training approach. Give your child a lifetime experience.",
       navTitle: "Navigation",
       links: [
         { label: "About", href: "/rolunk" },
@@ -1480,7 +1501,7 @@ export const translations = {
         "The Benfica academy is one of the most renowned youth football academies in the world. Its methodology is built on technical excellence, tactical intelligence and mental strength.",
       stampedInLisbon: "★ Stamped in Lisbon",
       madeInBenficaSubtitle:
-        "An academy that produces world-class players year after year. They are the fruits of the school our coaches come from.",
+        "A historic academy that has developed many internationally recognized players. Our coaches come from this professional environment.",
       benficaBadge: "Benfica",
       graduatesTitle: "Academy",
       graduatesHighlight: "graduates",
@@ -1489,7 +1510,7 @@ export const translations = {
         { value: "120+", label: "years of history" },
         { value: "80+", label: "countries present" },
         { value: "50+", label: "pro academy graduates" },
-        { value: "#1", label: "Portuguese academy" },
+        { value: "Renowned", label: "Portuguese academy" },
       ],
     },
     campsListPage: {
@@ -1514,6 +1535,11 @@ export const translations = {
       ageRange: "Ages 7-15",
       earlyBirdLabel: "Early bird price",
       details: "Details",
+      partnerTile: {
+        title: "This could be your location's place",
+        desc: "Apply for our partner program.",
+        cta: "Partner Program",
+      },
     },
     campDetailPage: {
       notFound: "Camp not found",

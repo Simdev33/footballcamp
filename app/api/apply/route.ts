@@ -11,6 +11,8 @@ import { sendEmail, renderTransferInstructionsEmail } from "@/lib/email"
 import { billingNameNoteLine } from "@/lib/billing-name"
 import { revalidatePublicCamps } from "@/lib/public-camps"
 
+type PaymentMode = "earlyBirdFull" | "regularDeposit" | "regularFull"
+
 interface ChildPayload {
   childName?: string
   childBirthDate?: string
@@ -34,7 +36,7 @@ interface ApplyPayload {
   parentTaxNumber?: string
   notes?: string
   paymentMethod?: "CARD" | "TRANSFER"
-  paymentMode?: "full" | "deposit"
+  paymentMode?: PaymentMode | "full" | "deposit"
   children?: ChildPayload[]
 }
 
@@ -42,6 +44,12 @@ const KIT_LABELS: Record<string, string> = {
   "home-red": "Piros mez szett",
   "away-white": "Fehér mez szett",
   "goalkeeper-black": "Fekete kapus szett",
+}
+
+function normalizePaymentMode(mode: ApplyPayload["paymentMode"]): PaymentMode {
+  if (mode === "regularDeposit" || mode === "deposit") return "regularDeposit"
+  if (mode === "regularFull") return "regularFull"
+  return "earlyBirdFull"
 }
 
 export async function POST(request: Request) {
@@ -67,7 +75,7 @@ export async function POST(request: Request) {
   } = payload
 
   const paymentMethod: "CARD" | "TRANSFER" = payload.paymentMethod === "TRANSFER" ? "TRANSFER" : "CARD"
-  const paymentMode: "full" | "deposit" = payload.paymentMode === "deposit" ? "deposit" : "full"
+  const paymentMode = normalizePaymentMode(payload.paymentMode)
 
   if (!parentName || !parentEmail || !parentPhone) {
     return new NextResponse("Hiányzó szülői adatok.", { status: 400 })
@@ -124,9 +132,10 @@ export async function POST(request: Request) {
   // know exactly what to charge / transfer per child.
   const perChildAmounts = children.map((c) => {
     const camp = campMap.get(c.campId!)!
-    const { amount: total } = pickEffectivePrice(camp, currency)
-    const { deposit } = splitInstallment(total, camp.depositPercent)
-    const due = paymentMode === "deposit" ? deposit : total
+    const effective = pickEffectivePrice(camp, currency)
+    const total = paymentMode === "earlyBirdFull" ? effective.amount : effective.regular
+    const { deposit } = splitInstallment(effective.regular, camp.depositPercent)
+    const due = paymentMode === "regularDeposit" ? deposit : total
     return { total, deposit, due }
   })
 
@@ -172,7 +181,7 @@ export async function POST(request: Request) {
                 currency,
                 totalAmount: amounts.total,
                 depositAmount: amounts.deposit,
-                isInstallment: paymentMode === "deposit",
+                isInstallment: paymentMode === "regularDeposit",
                 transferReference: transferReference!,
                 transferExpectedAmount: amounts.due,
               }
@@ -221,7 +230,7 @@ export async function POST(request: Request) {
         totalAmount: totalDue,
         reference: transferReference!,
         deadline,
-        isInstallment: paymentMode === "deposit",
+        isInstallment: paymentMode === "regularDeposit",
       })
       await sendEmail({ to: parentEmail!, subject, html, replyTo: "info@kickoffcamps.hu" })
     } catch (err) {

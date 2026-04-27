@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { getSiteContent, getDbSections } from "@/lib/content"
+import { getSiteContentWithDbSections } from "@/lib/content"
 import { translations } from "@/lib/i18n"
 import { ContentEditor } from "@/components/admin/content-editor"
 import { CONTENT_PAGES, type ContentPageId } from "@/lib/admin-content-pages"
@@ -32,9 +32,8 @@ export default async function ContentPageEditor({
   const meta = CONTENT_PAGES.find((p) => p.id === (pageId as ContentPageId))
   if (!meta) notFound()
 
-  const [content, dbSections, imageOverrides] = await Promise.all([
-    getSiteContent(),
-    getDbSections(),
+  const [{ content, dbSections }, imageOverrides] = await Promise.all([
+    getSiteContentWithDbSections(),
     getSiteImages(),
   ])
 
@@ -52,9 +51,9 @@ export default async function ContentPageEditor({
       <div className="flex items-center gap-3">
         <Link
           href="/admin/tartalom"
-          className="inline-flex items-center gap-1.5 text-white/50 hover:text-white text-xs font-medium"
+          className="inline-flex min-h-10 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-600 shadow-sm hover:bg-slate-50 hover:text-slate-950"
         >
-          <ArrowLeft className="w-3.5 h-3.5" />
+          <ArrowLeft className="w-4 h-4" />
           Vissza az összes aloldalhoz
         </Link>
       </div>
@@ -68,9 +67,9 @@ export default async function ContentPageEditor({
             <Link
               href={previewPath}
               target="_blank"
-              className="inline-flex items-center gap-1.5 px-3 py-2 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-xs font-medium rounded transition-colors"
+              className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-teal-50 px-4 text-sm font-bold text-teal-700 transition-colors hover:bg-teal-100"
             >
-              <ExternalLink className="w-3.5 h-3.5" />
+              <ExternalLink className="w-4 h-4" />
               Oldal megtekintése
             </Link>
           ) : null
@@ -85,8 +84,8 @@ export default async function ContentPageEditor({
         pageId={pageId as ContentPageId}
         header={
           <div>
-            <h3 className="font-serif text-lg font-bold text-white">Szövegek</h3>
-            <p className="text-white/50 text-xs mt-0.5">
+            <h3 className="font-serif text-2xl font-bold text-slate-950">Szövegek</h3>
+            <p className="text-slate-600 text-base mt-1">
               Ennek az aloldalnak a szekciói. Kattints bármelyik kártyára a szerkesztéshez.
             </p>
           </div>

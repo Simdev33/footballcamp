@@ -1,69 +1,94 @@
 import { db } from "@/lib/db"
-import { createUser, updateUserRole, deleteUser } from "@/lib/actions"
+import { createUser, deleteUser } from "@/lib/actions"
 import { UserPlus, Trash2, Shield, Pencil, Eye } from "lucide-react"
+import { PageHeader } from "@/components/admin/page-header"
 
 export const dynamic = 'force-dynamic'
 
 const ROLE_CONFIG: Record<string, { label: string; icon: any; class: string }> = {
-  super_admin: { label: "Super Admin", icon: Shield, class: "bg-[#d4a017]/15 text-[#d4a017]" },
-  editor: { label: "Szerkesztő", icon: Pencil, class: "bg-blue-500/15 text-blue-400" },
-  viewer: { label: "Megtekintő", icon: Eye, class: "bg-white/10 text-white/50" },
+  super_admin: { label: "Super Admin", icon: Shield, class: "bg-teal-50 text-teal-700 ring-teal-200" },
+  editor: { label: "Szerkesztő", icon: Pencil, class: "bg-sky-50 text-sky-700 ring-sky-200" },
+  viewer: { label: "Megtekintő", icon: Eye, class: "bg-slate-100 text-slate-600 ring-slate-200" },
 }
 
 export default async function AdminUsersPage() {
-  const users = await db.user.findMany({ orderBy: { createdAt: "asc" } })
+  const users = await db.user.findMany({
+    orderBy: { createdAt: "asc" },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      createdAt: true,
+    },
+  })
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-white">Felhasználók kezelése</h2>
+      <PageHeader
+        icon={UserPlus}
+        title="Felhasználók kezelése"
+        description="Itt hozhatsz létre admin felhasználókat. Csak annak adj hozzáférést, akinek tényleg szerkesztenie kell az oldalt."
+      />
 
       {/* Add user form */}
-      <form action={createUser} className="bg-[#0a1f0a] border border-[#d4a017]/10 p-6">
-        <h3 className="text-white font-medium mb-4 flex items-center gap-2"><UserPlus className="w-5 h-5 text-[#d4a017]" /> Új felhasználó</h3>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <form action={createUser} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+        <h3 className="text-slate-950 text-xl font-bold mb-5 flex items-center gap-3">
+          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-50 text-teal-700 ring-1 ring-teal-100">
+            <UserPlus className="w-5 h-5" />
+          </span>
+          Új felhasználó
+        </h3>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <div>
-            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Név</label>
-            <input type="text" name="name" required className="w-full h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm" />
+            <label className="block text-sm font-semibold text-slate-700 mb-2">Név</label>
+            <input type="text" name="name" required className="w-full h-12 rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-950 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100" />
           </div>
           <div>
-            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Email</label>
-            <input type="email" name="email" required className="w-full h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm" />
+            <label className="block text-sm font-semibold text-slate-700 mb-2">Email</label>
+            <input type="email" name="email" required className="w-full h-12 rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-950 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100" />
           </div>
           <div>
-            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Jelszó</label>
-            <input type="password" name="password" required minLength={6} className="w-full h-10 px-3 bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#d4a017] focus:outline-none transition-colors text-sm" />
+            <label className="block text-sm font-semibold text-slate-700 mb-2">Jelszó</label>
+            <input type="password" name="password" required minLength={6} className="w-full h-12 rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-950 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100" />
           </div>
           <div>
-            <label className="block text-xs text-white/50 uppercase tracking-wider mb-2">Szerepkör</label>
-            <select name="role" className="w-full h-10 px-3 bg-white/5 border border-white/10 text-white focus:border-[#d4a017] focus:outline-none transition-colors text-sm">
+            <label className="block text-sm font-semibold text-slate-700 mb-2">Szerepkör</label>
+            <select name="role" className="w-full h-12 rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-950 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100">
               <option value="editor">Szerkesztő</option>
               <option value="viewer">Megtekintő</option>
               <option value="super_admin">Super Admin</option>
             </select>
           </div>
         </div>
-        <button type="submit" className="mt-4 px-6 h-10 bg-[#d4a017] text-[#0a1f0a] text-sm font-semibold hover:bg-[#d4a017]/90 transition-colors">
+        <button type="submit" className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-teal-600 px-6 text-base font-bold text-white transition-colors hover:bg-teal-700 sm:w-auto">
           Létrehozás
         </button>
       </form>
 
       {/* User list */}
-      <div className="bg-[#0a1f0a] border border-[#d4a017]/10 divide-y divide-white/5">
+      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
         {users.map((user) => {
           const role = ROLE_CONFIG[user.role] || ROLE_CONFIG.viewer
+          const RoleIcon = role.icon
           return (
-            <div key={user.id} className="flex items-center gap-4 px-6 py-4">
-              <div className="w-10 h-10 bg-[#d4a017]/15 flex items-center justify-center flex-shrink-0">
-                <span className="text-[#d4a017] font-serif font-bold text-lg">{user.name[0]}</span>
+            <div key={user.id} className="flex flex-col gap-4 border-b border-slate-100 px-5 py-5 last:border-b-0 sm:flex-row sm:items-center sm:px-6">
+              <div className="w-12 h-12 rounded-2xl bg-sky-50 flex items-center justify-center flex-shrink-0 ring-1 ring-sky-100">
+                <span className="text-sky-700 font-serif font-bold text-xl">{user.name[0]}</span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-white font-medium text-sm">{user.name}</p>
-                <p className="text-white/30 text-xs">{user.email}</p>
+                <p className="text-slate-950 font-bold text-base">{user.name}</p>
+                <p className="text-slate-500 text-sm break-all">{user.email}</p>
+                <p className="text-slate-400 text-xs mt-1">Létrehozva: {user.createdAt.toLocaleDateString("hu-HU")}</p>
               </div>
-              <span className={`text-xs px-3 py-1 font-medium ${role.class}`}>{role.label}</span>
+              <span className={`inline-flex min-h-9 items-center justify-center gap-2 rounded-full px-3 text-xs font-semibold ring-1 ${role.class}`}>
+                <RoleIcon className="h-3.5 w-3.5" />
+                {role.label}
+              </span>
               <form action={async () => { "use server"; await deleteUser(user.id) }}>
-                <button type="submit" className="w-8 h-8 flex items-center justify-center text-white/20 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Törlés">
+                <button type="submit" className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-red-50 px-4 text-sm font-bold text-red-700 transition-colors hover:bg-red-100 sm:w-auto" title="Törlés">
                   <Trash2 className="w-4 h-4" />
+                  Törlés
                 </button>
               </form>
             </div>

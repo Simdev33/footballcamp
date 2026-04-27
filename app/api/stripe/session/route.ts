@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     const session = await stripe.checkout.sessions.retrieve(sessionId)
 
     const currency = (session.metadata?.currency as "HUF" | "EUR") || (session.currency?.toUpperCase() as "HUF" | "EUR") || "HUF"
-    const paymentMode = (session.metadata?.paymentMode as "full" | "deposit") || "full"
+    const paymentMode = (session.metadata?.paymentMode as "earlyBirdFull" | "regularDeposit" | "regularFull" | "full" | "deposit") || "earlyBirdFull"
     const amountTotalRaw = session.amount_total ?? 0
     // Stripe smallest-unit → human-visible for HUF (special-case ×100) and EUR (cents).
     const amountTotal = Math.round(amountTotalRaw / 100)

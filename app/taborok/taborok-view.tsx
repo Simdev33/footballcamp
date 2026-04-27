@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { MapPin, Calendar, ArrowRight, Tag, Shirt, Utensils, Dumbbell, Heart, Clock } from "lucide-react"
+import { MapPin, Calendar, ArrowRight, Tag, Shirt, Utensils, Dumbbell, Heart, Clock, Handshake } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import type { CampTranslation } from "@/lib/camp-translations"
 import { formatEarlyBirdLabel } from "@/lib/early-bird-label"
@@ -40,6 +40,11 @@ type CampsListStrings = {
   ageRange: string
   earlyBirdLabel: string
   details: string
+  partnerTile: {
+    title: string
+    desc: string
+    cta: string
+  }
 }
 
 export function TaborokView({ camps, heroImg }: { camps: Camp[]; heroImg: string }) {
@@ -197,6 +202,28 @@ export function TaborokView({ camps, heroImg }: { camps: Camp[]; heroImg: string
                 </Link>
                 )
               })}
+              <Link href="/partnerprogram" className="group block">
+                <div className="relative flex h-full min-h-[360px] flex-col justify-between overflow-hidden bg-[#0f2b0f] border border-dashed border-[#d4a017]/40 p-8 transition-[transform,box-shadow,border-color] duration-500 hover:-translate-y-2 hover:border-[#d4a017] hover:shadow-[0_40px_100px_#d4a01733]">
+                  <div>
+                    <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-full bg-[#d4a017]/15 text-[#d4a017] transition-colors duration-300 group-hover:bg-[#d4a017] group-hover:text-[#0a1f0a]">
+                      <Handshake className="h-8 w-8" />
+                    </div>
+                    <h3 className="font-serif text-3xl md:text-4xl font-bold text-white">
+                      {p.partnerTile.title}
+                    </h3>
+                    <p className="mt-4 max-w-md text-sm md:text-base leading-relaxed text-white/60">
+                      {p.partnerTile.desc}
+                    </p>
+                  </div>
+
+                  <span className="mt-8 inline-flex items-center gap-2 text-[#d4a017] text-sm font-semibold group-hover:underline">
+                    {p.partnerTile.cta} <ArrowRight className="w-4 h-4" />
+                  </span>
+
+                  <div className="absolute top-0 left-0 w-16 h-16 border-l-2 border-t-2 border-[#d4a017]/20" />
+                  <div className="absolute bottom-0 right-0 w-16 h-16 border-r-2 border-b-2 border-[#d4a017]/20" />
+                </div>
+              </Link>
             </div>
           )}
         </div>

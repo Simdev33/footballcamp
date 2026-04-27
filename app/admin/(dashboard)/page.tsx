@@ -17,7 +17,13 @@ async function getStats() {
       db.application.findMany({
         take: 5,
         orderBy: { createdAt: "desc" },
-        include: { camp: true },
+        select: {
+          id: true,
+          childName: true,
+          parentName: true,
+          status: true,
+          camp: { select: { city: true } },
+        },
       }),
     ])
     return { campCount, applicationCount, blogCount, galleryCount, newApplications, recentApplications }
@@ -44,9 +50,9 @@ export default async function AdminDashboard() {
 
   const cards = [
     { label: "Aktív táborok", value: stats.campCount, icon: Tent, color: "bg-emerald-500", href: "/admin/taborok" },
-    { label: "Jelentkezések", value: stats.applicationCount, sub: stats.newApplications > 0 ? `${stats.newApplications} új` : undefined, icon: ClipboardList, color: "bg-blue-500", href: "/admin/jelentkezesek" },
+    { label: "Jelentkezések", value: stats.applicationCount, sub: stats.newApplications > 0 ? `${stats.newApplications} új` : undefined, icon: ClipboardList, color: "bg-sky-500", href: "/admin/jelentkezesek" },
     { label: "Publikált hírek", value: stats.blogCount, icon: BookOpen, color: "bg-amber-500", href: "/admin/blog" },
-    { label: "Galéria képek", value: stats.galleryCount, icon: ImageIcon, color: "bg-purple-500", href: "/admin/galeria" },
+    { label: "Galéria képek", value: stats.galleryCount, icon: ImageIcon, color: "bg-indigo-500", href: "/admin/galeria" },
   ]
 
   const quickActions: { href: string; label: string; description: string; icon: React.ComponentType<{ className?: string }>; }[] = [
@@ -69,9 +75,9 @@ export default async function AdminDashboard() {
   return (
     <div className="space-y-8">
       {/* Welcome banner */}
-      <div className="bg-[#0a1f0a] border border-[#d4a017]/20 p-6 rounded-lg">
-        <h2 className="font-serif text-2xl font-bold text-white">Üdv az admin felületen!</h2>
-        <p className="text-white/60 text-sm mt-2 leading-relaxed max-w-2xl">
+      <div className="rounded-3xl border border-sky-100 bg-gradient-to-br from-white to-sky-50 p-6 shadow-sm md:p-8">
+        <h2 className="font-serif text-3xl font-bold text-slate-950">Üdv az admin felületen!</h2>
+        <p className="text-slate-600 text-base mt-3 leading-relaxed max-w-3xl">
           Itt tudod kezelni a weboldal teljes tartalmát. A bal oldali menüben vagy az alábbi kártyákon
           válaszd ki, mit szeretnél szerkeszteni. Ha elakadsz, minden oldalon találsz rövid leírást.
         </p>
@@ -83,39 +89,39 @@ export default async function AdminDashboard() {
           <Link
             key={card.label}
             href={card.href}
-            className="bg-[#0a1f0a] border border-[#d4a017]/10 p-6 hover:border-[#d4a017]/40 transition-colors rounded-lg group"
+            className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-teal-200 hover:shadow-md"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className={`w-10 h-10 ${card.color} flex items-center justify-center rounded`}>
+              <div className={`w-12 h-12 ${card.color} flex items-center justify-center rounded-2xl shadow-sm`}>
                 <card.icon className="w-5 h-5 text-white" />
               </div>
-              {card.sub && <span className="text-xs bg-[#d4a017]/15 text-[#d4a017] px-2 py-1 font-medium rounded">{card.sub}</span>}
+              {card.sub && <span className="rounded-full bg-sky-50 px-3 py-1 text-xs font-bold text-sky-700 ring-1 ring-sky-200">{card.sub}</span>}
             </div>
-            <p className="font-serif text-3xl font-bold text-white">{card.value}</p>
-            <p className="text-white/40 text-xs mt-1 uppercase tracking-wider">{card.label}</p>
+            <p className="font-serif text-4xl font-bold text-slate-950">{card.value}</p>
+            <p className="text-slate-500 text-sm mt-1 font-semibold">{card.label}</p>
           </Link>
         ))}
       </div>
 
       {/* Quick actions */}
       <div>
-        <h3 className="text-white font-semibold text-lg mb-4">Mit szeretnél most csinálni?</h3>
+        <h3 className="text-slate-950 font-bold text-2xl mb-4">Mit szeretnél most csinálni?</h3>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {quickActions.map((q) => (
             <Link
               key={q.href}
               href={q.href}
-              className="group bg-[#0a1f0a] border border-[#d4a017]/10 hover:border-[#d4a017]/40 transition-colors rounded-lg p-5 flex gap-4"
+              className="group rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-200 hover:shadow-md flex gap-4"
             >
-              <div className="w-10 h-10 bg-[#d4a017]/15 text-[#d4a017] flex items-center justify-center flex-shrink-0 rounded">
+              <div className="w-12 h-12 bg-teal-50 text-teal-700 flex items-center justify-center flex-shrink-0 rounded-2xl ring-1 ring-teal-100">
                 <q.icon className="w-5 h-5" />
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <h4 className="text-white font-semibold text-sm">{q.label}</h4>
-                  <ArrowRight className="w-4 h-4 text-white/30 group-hover:text-[#d4a017] transition-colors" />
+                  <h4 className="text-slate-950 font-bold text-base">{q.label}</h4>
+                  <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-teal-600 transition-colors" />
                 </div>
-                <p className="text-white/50 text-xs mt-1.5 leading-relaxed">{q.description}</p>
+                <p className="text-slate-600 text-sm mt-2 leading-relaxed">{q.description}</p>
               </div>
             </Link>
           ))}
@@ -123,28 +129,28 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Recent Applications */}
-      <div className="bg-[#0a1f0a] border border-[#d4a017]/10 rounded-lg">
-        <div className="px-6 py-4 border-b border-[#d4a017]/10 flex items-center justify-between">
-          <h2 className="text-white font-medium">Legutóbbi jelentkezések</h2>
-          <Link href="/admin/jelentkezesek" className="text-[#d4a017] text-xs hover:underline inline-flex items-center gap-1">
+      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <div className="px-6 py-5 border-b border-slate-100 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="text-slate-950 text-xl font-bold">Legutóbbi jelentkezések</h2>
+          <Link href="/admin/jelentkezesek" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-teal-50 px-4 text-sm font-bold text-teal-700 hover:bg-teal-100">
             Összes megtekintése <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
         {stats.recentApplications.length === 0 ? (
-          <div className="px-6 py-12 text-center text-white/30 text-sm">Még nincs jelentkezés</div>
+          <div className="px-6 py-12 text-center text-slate-500 text-sm">Még nincs jelentkezés</div>
         ) : (
-          <div className="divide-y divide-white/5">
+          <div className="divide-y divide-slate-100">
             {stats.recentApplications.map((app) => (
-              <div key={app.id} className="px-6 py-3 flex items-center justify-between">
+              <div key={app.id} className="px-6 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-white text-sm font-medium">{app.childName}</p>
-                  <p className="text-white/40 text-xs">{app.parentName} &middot; {app.camp.city}</p>
+                  <p className="text-slate-950 text-base font-bold">{app.childName}</p>
+                  <p className="text-slate-500 text-sm">{app.parentName} &middot; {app.camp.city}</p>
                 </div>
-                <span className={`text-xs px-2 py-1 font-medium rounded ${
-                  app.status === "new" ? "bg-blue-500/15 text-blue-400" :
-                  app.status === "paid" ? "bg-emerald-500/15 text-emerald-400" :
-                  app.status === "cancelled" ? "bg-red-500/15 text-red-400" :
-                  "bg-[#d4a017]/15 text-[#d4a017]"
+                <span className={`inline-flex min-h-9 items-center rounded-full px-3 text-xs font-bold ring-1 ${
+                  app.status === "new" ? "bg-sky-50 text-sky-700 ring-sky-200" :
+                  app.status === "paid" ? "bg-emerald-50 text-emerald-700 ring-emerald-200" :
+                  app.status === "cancelled" ? "bg-red-50 text-red-700 ring-red-200" :
+                  "bg-amber-50 text-amber-700 ring-amber-200"
                 }`}>
                   {STATUS_LABELS[app.status] || app.status}
                 </span>

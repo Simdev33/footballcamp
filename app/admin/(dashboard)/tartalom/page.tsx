@@ -40,30 +40,30 @@ export default async function ContentHubPage() {
             <Link
               key={page.id}
               href={`/admin/tartalom/${page.id}`}
-              className="group relative flex items-start gap-4 bg-[#0a1f0a] border border-white/10 hover:border-[#d4a017]/50 rounded-lg p-5 transition-all"
+              className="group relative flex items-start gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:border-teal-200 hover:shadow-md"
             >
-              <div className="w-11 h-11 bg-[#d4a017]/15 text-[#d4a017] flex items-center justify-center rounded-md flex-shrink-0 group-hover:bg-[#d4a017] group-hover:text-[#0a1f0a] transition-colors">
+              <div className="w-12 h-12 bg-teal-50 text-teal-700 flex items-center justify-center rounded-2xl flex-shrink-0 ring-1 ring-teal-100 group-hover:bg-teal-600 group-hover:text-white transition-colors">
                 <Icon className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-serif font-bold text-white text-base">{page.label}</h3>
+                <h3 className="font-serif font-bold text-slate-950 text-lg">{page.label}</h3>
                 {page.description && (
-                  <p className="mt-1 text-white/50 text-xs leading-relaxed">{page.description}</p>
+                  <p className="mt-2 text-slate-600 text-sm leading-relaxed">{page.description}</p>
                 )}
-                <div className="mt-2 flex items-center gap-3 text-[11px] text-white/40">
-                  <span className="inline-flex items-center gap-1">
+                <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-600">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1">
                     <FileText className="w-3 h-3" />
                     {page.sections.length} szekció
                   </span>
                   {imageCount > 0 && (
-                    <span className="inline-flex items-center gap-1">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-sky-50 px-3 py-1 text-sky-700 ring-1 ring-sky-100">
                       <ImgIcon className="w-3 h-3" />
                       {imageCount} kép
                     </span>
                   )}
                 </div>
               </div>
-              <ArrowRight className="w-4 h-4 text-white/30 group-hover:text-[#d4a017] group-hover:translate-x-1 transition-all flex-shrink-0 mt-1" />
+              <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-teal-600 group-hover:translate-x-1 transition-all flex-shrink-0 mt-1" />
             </Link>
           )
         })}

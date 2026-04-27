@@ -9,11 +9,18 @@ type PaymentMethodType = NonNullable<CreateParams["payment_method_types"]>[numbe
 
 export const dynamic = "force-dynamic"
 
-type PaymentMode = "full" | "deposit"
+type PaymentMode = "earlyBirdFull" | "regularDeposit" | "regularFull"
 
 interface CreateCheckoutBody {
   applicationIds?: string[]
-  paymentMode?: PaymentMode
+  paymentMode?: PaymentMode | "full" | "deposit"
+}
+
+function normalizePaymentMode(mode: CreateCheckoutBody["paymentMode"]): PaymentMode | null {
+  if (mode === "regularDeposit" || mode === "deposit") return "regularDeposit"
+  if (mode === "regularFull") return "regularFull"
+  if (mode === "earlyBirdFull" || mode === "full") return "earlyBirdFull"
+  return null
 }
 
 export async function POST(request: Request) {
@@ -24,12 +31,13 @@ export async function POST(request: Request) {
     return new NextResponse("Érvénytelen kérés.", { status: 400 })
   }
 
-  const { applicationIds, paymentMode } = body
+  const { applicationIds } = body
+  const paymentMode = normalizePaymentMode(body.paymentMode)
   const currency = "HUF" as const
   if (!applicationIds?.length) {
     return new NextResponse("Hiányzó applicationIds.", { status: 400 })
   }
-  if (paymentMode !== "full" && paymentMode !== "deposit") {
+  if (!paymentMode) {
     return new NextResponse("Érvénytelen fizetési mód.", { status: 400 })
   }
 
@@ -49,20 +57,21 @@ export async function POST(request: Request) {
 
   for (const app of applications) {
     const effective = pickEffectivePrice(app.camp, currency)
-    if (effective.amount <= 0) {
+    const total = paymentMode === "earlyBirdFull" ? effective.amount : effective.regular
+    if (total <= 0) {
       return new NextResponse(
         `A(z) "${app.camp.city}" táborhoz nincs ${currency} ár beállítva.`,
         { status: 400 },
       )
     }
 
-    const { deposit } = splitInstallment(effective.amount, app.camp.depositPercent)
-    const amountForThisChild = paymentMode === "full" ? effective.amount : deposit
+    const { deposit } = splitInstallment(effective.regular, app.camp.depositPercent)
+    const amountForThisChild = paymentMode === "regularDeposit" ? deposit : total
 
-    updates.push({ id: app.id, total: effective.amount, deposit })
+    updates.push({ id: app.id, total, deposit })
     totalDue += amountForThisChild
 
-    const descriptor = paymentMode === "deposit"
+    const descriptor = paymentMode === "regularDeposit"
       ? `Elso reszlet - ${app.camp.city} - ${app.childName}`
       : `Tabor - ${app.camp.city} - ${app.childName}`
 
@@ -120,7 +129,7 @@ export async function POST(request: Request) {
             currency,
             totalAmount: u.total,
             depositAmount: u.deposit,
-            isInstallment: paymentMode === "deposit",
+            isInstallment: paymentMode === "regularDeposit",
             stripeCheckoutSessionId: session.id,
           },
         })

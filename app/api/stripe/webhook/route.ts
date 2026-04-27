@@ -76,7 +76,9 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     return
   }
 
-  const paymentMode = (session.metadata?.paymentMode as "full" | "deposit" | "remainder") || "full"
+  const paymentMode = (session.metadata?.paymentMode as "earlyBirdFull" | "regularDeposit" | "regularFull" | "full" | "deposit" | "remainder") || "earlyBirdFull"
+  const isDepositPayment = paymentMode === "regularDeposit" || paymentMode === "deposit"
+  const isFullPayment = paymentMode !== "remainder" && !isDepositPayment
   const currency = (session.metadata?.currency as "HUF" | "EUR") || "HUF"
   const paidAmountTotal = session.amount_total ?? 0
   // Stripe returns amounts in the smallest currency unit. Both HUF (special
@@ -113,13 +115,13 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     for (const app of applications) {
       const remainderExpected = Math.max(0, app.totalAmount - app.depositAmount)
       const perAppExpected =
-        paymentMode === "deposit"
+        isDepositPayment
           ? app.depositAmount
           : paymentMode === "remainder"
             ? remainderExpected
             : app.totalAmount
       const already =
-        paymentMode === "deposit"
+        isDepositPayment
           ? app.depositPaidAmount
           : paymentMode === "remainder"
             ? app.remainderPaidAmount
@@ -135,7 +137,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         stripeCustomerId: customerId,
       }
 
-      if (paymentMode === "full" || !app.isInstallment) {
+      if (isFullPayment || !app.isInstallment) {
         data.paymentStatus = "FULLY_PAID"
         data.depositPaidAmount = app.depositAmount || perAppExpected
         data.remainderPaidAmount = Math.max(0, (app.totalAmount || perAppExpected) - (app.depositAmount || 0))
@@ -157,13 +159,13 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       await tx.application.update({ where: { id: app.id }, data })
 
       const invoiceKind: InvoiceKind =
-        paymentMode === "deposit" ? "deposit" : paymentMode === "remainder" ? "remainder" : "full"
+        isDepositPayment ? "deposit" : paymentMode === "remainder" ? "remainder" : "full"
 
       const createdEvent = await tx.paymentEvent.create({
         data: {
           applicationId: app.id,
           type:
-            paymentMode === "deposit"
+            isDepositPayment
               ? "deposit_paid"
               : paymentMode === "remainder"
                 ? "remainder_paid"
