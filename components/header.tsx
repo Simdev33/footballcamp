@@ -11,6 +11,19 @@ const CLUB_ITEMS = [
   { label: "SL Benfica", href: "/klubok/benfica" },
 ]
 
+function NavLabel({ href, label }: { href: string; label: string }) {
+  if (href !== "/partnerprogram") return <>{label}</>
+
+  const words = label.trim().split(/\s+/)
+  const [firstWord, ...rest] = words.length > 1 ? words : ["Partner", "Klubok"]
+  return (
+    <span className="inline-flex flex-col items-center leading-tight">
+      <span>{firstWord}</span>
+      <span>{rest.join(" ")}</span>
+    </span>
+  )
+}
+
 type CampNavItem = { label: string; href: string }
 type CampNavApiItem = {
   city: string
@@ -26,7 +39,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [campItems, setCampItems] = useState<CampNavItem[]>([])
-  const dropdownTimeout = useRef<ReturnType<typeof setTimeout>>()
+  const dropdownTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isHome = pathname === "/"
 
   useEffect(() => {
@@ -113,7 +126,7 @@ export function Header() {
                     className="relative"
                     onMouseEnter={() => {
                       if (hasDropdown) {
-                        clearTimeout(dropdownTimeout.current)
+                        if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current)
                         setOpenDropdown(link.href)
                       }
                     }}
@@ -131,7 +144,7 @@ export function Header() {
                             ? "text-muted-foreground group-hover:text-primary"
                             : "text-white/80 group-hover:text-primary"
                       }`}>
-                        {link.label}
+                        <NavLabel href={link.href} label={link.label} />
                       </span>
                       {hasDropdown && <ChevronDown className={`w-3.5 h-3.5 transition-colors duration-300 ${isActive ? "text-primary" : showSolid ? "text-muted-foreground" : "text-white/60"}`} />}
                       <span className={`absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-secondary origin-left transition-transform duration-300 ${isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`} />
@@ -215,7 +228,7 @@ export function Header() {
               return (
                 <div key={link.href} className="text-center">
                   <Link href={link.href} className={`font-serif text-3xl sm:text-4xl transition-colors ${isActive ? "text-primary" : "text-foreground hover:text-primary"}`}>
-                    {link.label}
+                    <NavLabel href={link.href} label={link.label} />
                   </Link>
                   {dd && (
                     <div className="mt-3 flex flex-col items-center gap-2">

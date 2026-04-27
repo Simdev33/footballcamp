@@ -6,7 +6,7 @@ export const translations = {
       about: "Rólunk",
       camps: "Tábor",
       clubs: "Klub",
-      partnerProgram: "Partnerprogram",
+      partnerProgram: "Partner Klubok",
       gallery: "Galéria",
       contact: "Kapcsolat",
       faq: "GYIK",
@@ -96,6 +96,11 @@ export const translations = {
       titleHighlight: "állnak",
       titleEnd: "mögöttünk?",
       subtitle: "Külföldi partner egyesületeink, akikkel közösen szervezzük táborainkat.",
+      generalSection: {
+        badge: "Általános információ",
+        title: "Partnerklubok és nemzetközi szakmai háttér",
+        text: "Kluboldalunkon azokat a partner egyesületeket mutatjuk be, amelyekkel közösen hozzuk el Magyarországra a nemzetközi akadémiai szemléletet. A szekció szövege az admin felületről szabadon módosítható.",
+      },
       cards: [
         {
           name: "SL Benfica",
@@ -698,6 +703,8 @@ export const translations = {
         "A Benfica akadémia a világ egyik legelismertebb utánpótlás-műhelye. Az akadémia módszertana a technikai kiválóságra, a taktikai intelligenciára és a mentális erősségre épül.",
       stampedInLisbon: "★ Stamped in Lisbon",
       madeInBenficaSubtitle: "Egy nagy múltú akadémia, amely számos nemzetközileg ismert játékost adott a futballnak. Edzőink ebből a szakmai közegből érkeznek.",
+      academyPlayersTitle: "Benfica akadémia játékosai",
+      starPlayersTitle: "Sztárjátékosok, akik a Benfica mezét viselték",
       benficaBadge: "Benfica",
       graduatesTitle: "Akadémiai",
       graduatesHighlight: "végzősök",
@@ -712,6 +719,11 @@ export const translations = {
     campsListPage: {
       heroTitle: "Táborok",
       heroSubtitle: "Részletek, időpont, ár",
+      generalSection: {
+        badge: "Általános információ",
+        title: "Mit érdemes tudni a táborokról?",
+        text: "A táborok általános tudnivalói, szervezési információi és kiemelt üzenetei itt jelennek meg. Ezt a szekciót az admin felületen, a Táborok főoldal tartalmai között lehet szerkeszteni.",
+      },
       kidsBadge: "Mit kap a gyerek",
       kidsTitle: "Minden",
       kidsTitleHighlight: "benne",
@@ -809,7 +821,7 @@ export const translations = {
       about: "About",
       camps: "Camp",
       clubs: "Club",
-      partnerProgram: "Partner Program",
+      partnerProgram: "Partner Clubs",
       gallery: "Gallery",
       contact: "Contact",
       faq: "FAQ",
@@ -899,6 +911,11 @@ export const translations = {
       titleHighlight: "stands",
       titleEnd: "behind us?",
       subtitle: "Our international partner clubs we organize camps with.",
+      generalSection: {
+        badge: "General information",
+        title: "Partner clubs and international expertise",
+        text: "On this page we introduce the partner clubs that help us bring an international academy mindset to Hungary. This section can be edited freely from the admin panel.",
+      },
       cards: [
         {
           name: "SL Benfica",
@@ -1502,6 +1519,8 @@ export const translations = {
       stampedInLisbon: "★ Stamped in Lisbon",
       madeInBenficaSubtitle:
         "A historic academy that has developed many internationally recognized players. Our coaches come from this professional environment.",
+      academyPlayersTitle: "Benfica academy players",
+      starPlayersTitle: "Star players who wore the Benfica shirt",
       benficaBadge: "Benfica",
       graduatesTitle: "Academy",
       graduatesHighlight: "graduates",
@@ -1516,6 +1535,11 @@ export const translations = {
     campsListPage: {
       heroTitle: "Camps",
       heroSubtitle: "Details, dates, pricing",
+      generalSection: {
+        badge: "General information",
+        title: "What should you know about the camps?",
+        text: "General camp information, organisation details and key messages appear here. This section is editable in the admin panel under the Camps page content.",
+      },
       kidsBadge: "What kids get",
       kidsTitle: "Everything's",
       kidsTitleHighlight: "included",

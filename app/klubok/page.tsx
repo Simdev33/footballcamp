@@ -44,6 +44,22 @@ export default function KlubokPage() {
         </div>
       </section>
 
+      {t.coaches.generalSection && (
+        <section className="py-14 md:py-20 bg-background">
+          <div className="max-w-[1000px] mx-auto px-4 md:px-12 text-center">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#d4a017]/10 border border-[#d4a017]/30 text-[#d4a017] text-[10px] md:text-xs font-bold tracking-[0.25em] uppercase">
+              {t.coaches.generalSection.badge}
+            </span>
+            <h2 className="mt-5 font-serif text-3xl md:text-4xl font-bold text-foreground">
+              {t.coaches.generalSection.title}
+            </h2>
+            <p className="mt-5 text-sm md:text-lg text-muted-foreground leading-relaxed">
+              {t.coaches.generalSection.text}
+            </p>
+          </div>
+        </section>
+      )}
+
       <section className="py-14 md:py-24 bg-background">
         <div className="max-w-[1200px] mx-auto px-4 md:px-12 lg:px-24">
           <div className="grid md:grid-cols-2 gap-5 md:gap-8">

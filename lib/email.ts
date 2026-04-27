@@ -281,19 +281,19 @@ export function renderDepositPaidEmail(args: {
   remainderAmount: string
   totalAmount: string
 }): { subject: string; html: string } {
-  const subject = `Foglaló fogadva – ${args.campCity} tábor`
+  const subject = `Részletfizetés foglalója fogadva – ${args.campCity} tábor`
   const html = wrap(
     {
-      title: "Köszönjük a foglalót!",
+      title: "Köszönjük, a foglaló beérkezett!",
       eyebrow: "Sikeres fizetés",
-      preheader: `${args.childName} helye foglalva a ${args.campCity} táborra.`,
+      preheader: `${args.childName} helye foglalva a ${args.campCity} táborra részletfizetéssel.`,
     },
     `
     ${greeting(args.parentName)}
-    ${paragraph(`Megerősítjük, hogy <strong>${escapeHtml(args.childName)}</strong> jelentkezésének foglalóját megkaptuk. A helyét <strong>lefoglaltuk</strong>!`)}
+    ${paragraph(`Megerősítjük, hogy <strong>${escapeHtml(args.childName)}</strong> részletfizetéses jelentkezésének <strong>foglalóját</strong> megkaptuk. A helyét <strong>lefoglaltuk</strong>!`)}
     ${campCard(args.campCity, args.campDates)}
     ${amountTable(
-      amountRow("Befizetett foglaló", args.depositAmount, { bold: true }) +
+      amountRow("Befizetett foglaló (részletfizetés)", args.depositAmount, { bold: true }) +
       amountRow("Hátralévő összeg", args.remainderAmount) +
       amountRow("Teljes összeg", args.totalAmount, { highlight: true, bold: true }),
     )}
@@ -352,6 +352,7 @@ export function renderTransferInstructionsEmail(args: {
 
   const deadlineStr = formatDeadline(args.deadline, "hu")
   const amountStr = formatPrice(args.totalAmount, args.currency)
+  const amountLabel = args.isInstallment ? "Utalandó foglaló" : "Utalandó összeg"
 
   const kidsRows = args.children
     .map((c) =>
@@ -380,7 +381,7 @@ export function renderTransferInstructionsEmail(args: {
         </div>
 
         <div style="margin-top:14px;">
-          <div style="font-size:11px;color:rgba(250,247,240,0.6);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">Utalandó összeg</div>
+          <div style="font-size:11px;color:rgba(250,247,240,0.6);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">${escapeHtml(amountLabel)}</div>
           <div style="color:#ffffff;font-size:22px;font-weight:700;">${escapeHtml(amountStr)}</div>
         </div>
 
@@ -394,7 +395,7 @@ export function renderTransferInstructionsEmail(args: {
 
   const html = wrap(
     {
-      title: args.isInstallment ? "Köszönjük a jelentkezést!" : "Köszönjük a jelentkezést!",
+      title: args.isInstallment ? "Köszönjük a jelentkezést, jöhet a foglaló!" : "Köszönjük a jelentkezést!",
       eyebrow: "Átutalás szükséges",
       preheader: `${args.reference} — ${amountStr} átutalása a megadott számlaszámra.`,
     },
@@ -402,7 +403,7 @@ export function renderTransferInstructionsEmail(args: {
     ${greeting(args.parentName)}
     ${paragraph(
       args.isInstallment
-        ? `A jelentkezést rögzítettük. A hely véglegesítéséhez, kérlek, utald át a <strong>foglaló</strong> összegét az alábbi adatokkal. A hátralévő összegről a tábor előtt külön tájékoztatunk.`
+        ? `A részletfizetéses jelentkezést rögzítettük. A hely véglegesítéséhez, kérlek, utald át a <strong>foglaló</strong> összegét az alábbi adatokkal. A hátralévő összegről a tábor előtt külön tájékoztatunk.`
         : `A jelentkezést rögzítettük. A hely véglegesítéséhez, kérlek, utald át a teljes összeget az alábbi adatokkal.`,
     )}
 

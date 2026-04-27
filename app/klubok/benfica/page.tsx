@@ -7,9 +7,12 @@ import { useSiteImage } from "@/lib/site-images-context"
 const CDN = "https://focis.b-cdn.net"
 const BENFICA_LOGO = "https://upload.wikimedia.org/wikipedia/en/thumb/a/a2/SL_Benfica_logo.svg/1280px-SL_Benfica_logo.svg.png"
 
-const BENFICA_PLAYERS = [
-  "João Félix", "Bernardo Silva", "Rúben Dias", "Gonçalo Ramos",
-  "Ángel Di María", "Jan Oblak", "Ederson", "Renato Sanches",
+const BENFICA_ACADEMY_PLAYERS = [
+  "João Félix", "Bernardo Silva", "Rúben Dias", "Gonçalo Ramos", "Renato Sanches",
+]
+
+const BENFICA_STAR_PLAYERS = [
+  "Ángel Di María", "Jan Oblak", "Ederson", "Nicolás Otamendi", "Vangelis Pavlidis",
 ]
 
 const PLAYER_PHOTOS = [
@@ -29,6 +32,8 @@ type ClubsStrings = {
   benficaDesc1: string
   stampedInLisbon: string
   madeInBenficaSubtitle: string
+  academyPlayersTitle: string
+  starPlayersTitle: string
   benficaBadge: string
   graduatesTitle: string
   graduatesHighlight: string
@@ -95,12 +100,32 @@ export default function BenficaClubPage() {
             </h2>
             <p className="mt-4 text-white/50 text-xs md:text-sm max-w-xl mx-auto">{c.madeInBenficaSubtitle}</p>
           </div>
-          <div className="flex flex-wrap justify-center gap-2 md:gap-3">
-            {BENFICA_PLAYERS.map((player, i) => (
-              <span key={player} className={`px-3 py-1.5 md:px-5 md:py-2 font-serif text-xs md:text-sm font-bold border transition-colors duration-300 ${i % 3 === 0 ? "bg-[#d4a017] text-[#0a1f0a] border-[#d4a017]" : "bg-transparent text-white/70 border-[#d4a017]/20 hover:bg-[#d4a017]/10"}`}>
-                {player}
-              </span>
-            ))}
+          <div className="grid gap-5 md:grid-cols-2">
+            <div className="border border-[#d4a017]/25 bg-black/20 p-5 md:p-6">
+              <h3 className="font-serif text-xl md:text-2xl font-bold text-[#d4a017]">
+                {c.academyPlayersTitle}
+              </h3>
+              <div className="mt-4 flex flex-wrap justify-center gap-2 md:justify-start md:gap-3">
+                {BENFICA_ACADEMY_PLAYERS.map((player, i) => (
+                  <span key={player} className={`px-3 py-1.5 md:px-5 md:py-2 font-serif text-xs md:text-sm font-bold border transition-colors duration-300 ${i % 2 === 0 ? "bg-[#d4a017] text-[#0a1f0a] border-[#d4a017]" : "bg-transparent text-white/70 border-[#d4a017]/20 hover:bg-[#d4a017]/10"}`}>
+                    {player}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="border border-white/10 bg-black/20 p-5 md:p-6">
+              <h3 className="font-serif text-xl md:text-2xl font-bold text-white">
+                {c.starPlayersTitle}
+              </h3>
+              <div className="mt-4 flex flex-wrap justify-center gap-2 md:justify-start md:gap-3">
+                {BENFICA_STAR_PLAYERS.map((player) => (
+                  <span key={player} className="px-3 py-1.5 md:px-5 md:py-2 font-serif text-xs md:text-sm font-bold border border-white/15 bg-transparent text-white/70 transition-colors duration-300 hover:border-[#d4a017]/40 hover:bg-[#d4a017]/10">
+                    {player}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="mt-14 md:mt-20 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">

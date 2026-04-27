@@ -44,14 +44,14 @@ export const CONTENT_PAGES: ContentPageMeta[] = [
     id: "helyszinek",
     label: "Helyszínek & Jelentkezés",
     icon: MapPin,
-    description: "A Táborok/Jelentkezés szekciók szövegei (a konkrét táborokat külön menüből szerkeszd).",
+    description: "A Táborok/Jelentkezés általános szekciói (a konkrét táborokat külön menüből szerkeszd).",
     sections: ["campsListPage", "locations", "form"],
   },
   {
     id: "klubok",
     label: "Klubok oldal",
     icon: Shield,
-    description: "A Klubok aloldal szövegei és képei.",
+    description: "A Klubok aloldal általános szövegei, kártyái és képei.",
     sections: ["coaches"],
   },
   {
