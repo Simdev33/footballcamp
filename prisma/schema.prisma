@@ -56,7 +56,7 @@ model Camp {
   earlyBirdPriceHuf Int           @default(0)
   earlyBirdPriceEur Int           @default(0)
   earlyBirdUntil    DateTime?
-  depositPercent    Int           @default(40)
+  depositPercent    Int           @default(0)
   totalSpots        Int
   remainingSpots    Int
   active            Boolean       @default(true)

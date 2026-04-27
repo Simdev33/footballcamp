@@ -5,6 +5,7 @@ import Link from "next/link"
 import { MapPin, Calendar, ArrowRight, Tag, Shirt, Utensils, Dumbbell, Heart, Clock } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import type { CampTranslation } from "@/lib/camp-translations"
+import { formatEarlyBirdLabel } from "@/lib/early-bird-label"
 
 const KID_ICONS = [Shirt, Utensils, Dumbbell, Heart]
 
@@ -16,6 +17,7 @@ type Camp = {
   dates: string
   price: string
   earlyBirdPrice: string
+  earlyBirdUntil: string | null
   clubName: string
   imageUrl: string | null
   translationEn?: CampTranslation
@@ -48,6 +50,11 @@ export function TaborokView({ camps, heroImg }: { camps: Camp[]; heroImg: string
     city: locale === "en" ? camp.translationEn?.city?.trim() || camp.city : camp.city,
     venue: locale === "en" ? camp.translationEn?.venue?.trim() || camp.venue : camp.venue,
     dates: locale === "en" ? camp.translationEn?.dates?.trim() || camp.dates : camp.dates,
+    earlyBirdLabel: formatEarlyBirdLabel({
+      earlyBirdUntil: camp.earlyBirdUntil,
+      fallbackLabel: p.earlyBirdLabel,
+      locale,
+    }),
   })
 
   return (
@@ -172,7 +179,7 @@ export function TaborokView({ camps, heroImg }: { camps: Camp[]; heroImg: string
 
                       <div className="flex items-end justify-between border-t border-white/10 pt-4">
                         <div>
-                          <p className="text-xs text-[#d4a017] uppercase tracking-wider mb-1 font-medium">{p.earlyBirdLabel}</p>
+                          <p className="text-xs text-[#d4a017] uppercase tracking-wider mb-1 font-medium">{camp.earlyBirdLabel}</p>
                           <div className="flex items-baseline gap-3">
                             <span className="font-serif text-2xl md:text-3xl font-bold text-white">{camp.earlyBirdPrice}</span>
                             <span className="text-sm text-white/40 line-through">{camp.price}</span>

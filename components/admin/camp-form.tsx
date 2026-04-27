@@ -46,6 +46,11 @@ function toDateInput(value: Date | string | null | undefined): string {
   return d.toISOString().slice(0, 10)
 }
 
+function depositAmountInputValue(camp?: CampData): string {
+  if (!camp?.depositPercent) return ""
+  return String(camp.depositPercent)
+}
+
 const DEFAULT_INCLUDES = [
   "Hivatalos klub felszereles (mez, nadrag, sportszar)",
   "Napi haromszori etkezes",
@@ -173,7 +178,7 @@ export function CampForm({ camp, campTranslationEn = {} }: { camp?: CampData; ca
 
           <div className="grid sm:grid-cols-2 gap-4">
             <Field label="Early Bird lejarati datum" name="earlyBirdUntil" type="date" defaultValue={toDateInput(camp?.earlyBirdUntil)} placeholder="" />
-            <Field label="Foglalo % (a maradek reszletkent fizetheto)" name="depositPercent" type="number" defaultValue={String(camp?.depositPercent || 40)} placeholder="40" />
+            <Field label="Elso reszlet fix ara (Ft)" name="depositPercent" type="number" required defaultValue={depositAmountInputValue(camp)} placeholder="30000" />
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">

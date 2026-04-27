@@ -2,13 +2,20 @@
 
 import { useEffect, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
-import type { Translations } from "@/lib/i18n"
 import type { PublicCamp } from "@/lib/public-camps"
 
-export type DynamicCamp = Translations["locations"]["camps"][number] & {
+export type DynamicCamp = {
+  city: string
+  venue: string
+  dates: string
+  price: string
+  earlyBird: string
+  spots: string
+  cta?: string
   id?: string
   slug?: string
   imageUrl?: string | null
+  earlyBirdUntil?: Date | string | null
 }
 
 type ApiCamp = PublicCamp
@@ -29,7 +36,7 @@ function fetchPublicCamps() {
  */
 export function useDynamicCamps(initialCamps: ApiCamp[] = []): { camps: DynamicCamp[]; loaded: boolean } {
   const { t, locale } = useLanguage()
-  const staticCamps = t.locations.camps
+  const staticCamps = t.locations.camps as DynamicCamp[]
   const spotsLabel = t.locations.spots
   const defaultCta = staticCamps[0]?.cta?.trim() || t.form.cta
   const mapCamps = (data: ApiCamp[]): DynamicCamp[] =>
@@ -44,6 +51,7 @@ export function useDynamicCamps(initialCamps: ApiCamp[] = []): { camps: DynamicC
       id: c.id,
       slug: c.slug,
       imageUrl: c.imageUrl,
+      earlyBirdUntil: c.earlyBirdUntil,
     }))
 
   const [camps, setCamps] = useState<DynamicCamp[]>(

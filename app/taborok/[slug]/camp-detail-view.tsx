@@ -7,6 +7,7 @@ import { CampFaq } from "./camp-faq"
 import { CampGallery } from "./camp-gallery"
 import { useLanguage } from "@/lib/language-context"
 import type { CampTranslation } from "@/lib/camp-translations"
+import { formatEarlyBirdLabel } from "@/lib/early-bird-label"
 
 type ScheduleItem = { time: string; activity: string }
 type CoachItem = { name: string; role: string; image: string; bio: string }
@@ -19,6 +20,7 @@ export type CampDetail = {
   dates: string
   price: string
   earlyBirdPrice: string
+  earlyBirdUntil: string | null
   clubName: string
   ageRange: string
   imageUrl: string | null
@@ -110,6 +112,11 @@ export function CampDetailView({
       }))
     : camp.coaches
   const faq = translated.faq?.length ? translated.faq : camp.faq
+  const earlyBirdLabel = formatEarlyBirdLabel({
+    earlyBirdUntil: camp.earlyBirdUntil,
+    fallbackLabel: d.earlyBirdLabel,
+    locale,
+  })
 
   return (
     <main>
@@ -241,7 +248,7 @@ export function CampDetailView({
             <div className="lg:sticky lg:top-28 lg:self-start">
               <div className="bg-[#0a1f0a] border border-[#d4a017]/20 overflow-hidden">
                 <div className="bg-[#d4a017] px-6 py-4">
-                  <p className="text-[#0a1f0a] text-xs font-bold uppercase tracking-wider">{d.earlyBirdLabel}</p>
+                  <p className="text-[#0a1f0a] text-xs font-bold uppercase tracking-wider">{earlyBirdLabel}</p>
                   <div className="flex items-baseline gap-3 mt-1">
                     <span className="font-serif text-3xl font-bold text-[#0a1f0a]">{camp.earlyBirdPrice}</span>
                     <span className="text-[#0a1f0a]/60 line-through text-base">{camp.price}</span>

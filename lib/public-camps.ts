@@ -17,7 +17,7 @@ export type PublicCamp = {
   priceEur: number
   earlyBirdPriceHuf: number
   earlyBirdPriceEur: number
-  earlyBirdUntil: Date | null
+  earlyBirdUntil: string | null
   depositPercent: number
   remainingSpots: number
   totalSpots: number
@@ -74,6 +74,7 @@ export const getPublicCamps = unstable_cache(
         ...camp,
         price: camp.priceHuf > 0 ? formatPrice(camp.priceHuf, "HUF") : camp.price,
         earlyBirdPrice: camp.earlyBirdPriceHuf > 0 ? formatPrice(camp.earlyBirdPriceHuf, "HUF") : camp.earlyBirdPrice,
+        earlyBirdUntil: camp.earlyBirdUntil?.toISOString() || null,
         effectiveHuf: huf.amount,
         effectiveEur: eur.amount,
         earlyBirdActiveHuf: huf.earlyBird,

@@ -2,6 +2,7 @@
 
 import { Suspense, useState, useEffect, useRef } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { SubpageHero } from "@/components/subpage-hero"
 import { SizeChart, SIZE_OPTIONS } from "@/components/size-chart"
 import { Send, Loader2, Plus, Trash2, CreditCard, Banknote } from "lucide-react"
@@ -63,9 +64,9 @@ const FieldError = ({ msg }: { msg?: string }) =>
   msg ? <p className="mt-1 text-xs text-red-600">{msg}</p> : null
 
 const KIT_OPTIONS = [
-  { id: "home-red", color: "bg-red-700", accent: "bg-white", labelKey: "kitHome" },
-  { id: "away-white", color: "bg-white", accent: "bg-red-700", labelKey: "kitAway" },
-  { id: "goalkeeper-black", color: "bg-neutral-950", accent: "bg-[#d4a017]", labelKey: "kitGoalkeeper" },
+  { id: "home-red", imageSrc: "/kits/piros-mez.png", labelKey: "kitHome" },
+  { id: "away-white", imageSrc: "/kits/feher-mez.png", labelKey: "kitAway" },
+  { id: "goalkeeper-black", imageSrc: "/kits/fekete-mez.png", labelKey: "kitGoalkeeper" },
 ] as const
 
 function BirthDateInput({
@@ -93,8 +94,8 @@ function BirthDateInput({
   }, [value])
 
   const commit = (nextYear: string, nextMonth: string, nextDay: string) => {
-    if (nextYear.length === 4 && nextMonth.length >= 1 && nextDay.length >= 1) {
-      onChange(`${nextYear}-${nextMonth.padStart(2, "0")}-${nextDay.padStart(2, "0")}`)
+    if (nextYear.length === 4 && nextMonth.length === 2 && nextDay.length === 2) {
+      onChange(`${nextYear}-${nextMonth}-${nextDay}`)
     } else {
       onChange("")
     }
@@ -693,11 +694,14 @@ function JelentkezesForm() {
                               : "border-border bg-background hover:border-[#d4a017]/60"
                         }`}
                       >
-                        <div className="mx-auto mb-3 h-24 w-20 relative">
-                          <div className={`absolute left-1/2 top-3 h-20 w-14 -translate-x-1/2 rounded-b-lg ${option.color} border border-black/10 shadow-sm`} />
-                          <div className={`absolute left-0 top-5 h-7 w-5 -rotate-12 rounded ${option.color} border border-black/10`} />
-                          <div className={`absolute right-0 top-5 h-7 w-5 rotate-12 rounded ${option.color} border border-black/10`} />
-                          <div className={`absolute left-1/2 top-4 h-1.5 w-8 -translate-x-1/2 rounded-full ${option.accent}`} />
+                        <div className="relative mx-auto mb-3 h-44 w-28">
+                          <Image
+                            src={option.imageSrc}
+                            alt={label}
+                            fill
+                            sizes="112px"
+                            className="object-contain"
+                          />
                         </div>
                         <span className="block text-sm font-semibold text-foreground text-center">{label}</span>
                       </button>

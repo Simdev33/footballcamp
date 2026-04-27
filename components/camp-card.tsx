@@ -4,12 +4,11 @@ import { MapPin, Calendar, ArrowRight, Tag } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
-import type { Translations } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
+import { formatEarlyBirdLabel } from "@/lib/early-bird-label"
+import type { DynamicCamp } from "@/lib/use-dynamic-camps"
 
-export type CampCardCamp = Translations["locations"]["camps"][number] & {
-  slug?: string
-}
+export type CampCardCamp = DynamicCamp
 
 type CampCardProps = {
   camp: CampCardCamp
@@ -19,7 +18,12 @@ type CampCardProps = {
 }
 
 export function CampCard({ camp, imageSrc, className, priority }: CampCardProps) {
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
+  const earlyBirdLabel = formatEarlyBirdLabel({
+    earlyBirdUntil: camp.earlyBirdUntil,
+    fallbackLabel: t.locations.earlyBirdLabel,
+    locale,
+  })
 
   return (
     <div className={cn("group relative", className)}>
@@ -63,7 +67,7 @@ export function CampCard({ camp, imageSrc, className, priority }: CampCardProps)
           </div>
 
           <div className="border-t border-white/10 pt-4 md:pt-5">
-            <p className="mb-2 md:mb-3 text-xs md:text-sm font-bold uppercase tracking-widest text-primary">{t.locations.earlyBirdLabel}</p>
+            <p className="mb-2 md:mb-3 text-xs md:text-sm font-bold uppercase tracking-widest text-primary">{earlyBirdLabel}</p>
             <div className="flex items-baseline gap-4 md:gap-5">
               <span className="font-serif text-3xl font-bold text-white md:text-4xl">{camp.earlyBird}</span>
               <span className="text-base md:text-lg text-white/50 line-through decoration-primary/50">{camp.price}</span>

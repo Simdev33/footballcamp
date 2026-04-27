@@ -63,7 +63,7 @@ export async function POST(request: Request) {
     totalDue += amountForThisChild
 
     const descriptor = paymentMode === "deposit"
-      ? `Foglalo (${app.camp.depositPercent}%) - ${app.camp.city} - ${app.childName}`
+      ? `Elso reszlet - ${app.camp.city} - ${app.childName}`
       : `Tabor - ${app.camp.city} - ${app.childName}`
 
     lineItems.push({

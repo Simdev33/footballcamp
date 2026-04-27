@@ -7,6 +7,7 @@ import { hash } from "bcryptjs"
 import { formatPrice } from "@/lib/pricing"
 import { revalidatePublicCamps } from "@/lib/public-camps"
 import { parseCampTranslation, saveCampTranslation } from "@/lib/camp-translations"
+import { INVOICE_GENERATION_ENABLED } from "@/lib/invoice-toggle"
 
 // ─── Camps ───
 
@@ -45,7 +46,9 @@ function buildCampPriceData(formData: FormData) {
   const earlyBirdPriceHuf = parseIntField(formData, "earlyBirdPriceHuf")
   const earlyBirdPriceEur = parseIntField(formData, "earlyBirdPriceEur")
   const earlyBirdUntil = parseDateField(formData, "earlyBirdUntil")
-  const depositPercent = parseIntField(formData, "depositPercent", 40)
+  // Legacy DB field name: the admin now stores a fixed first-instalment amount
+  // in forints here.
+  const depositPercent = parseIntField(formData, "depositPercent")
 
   // Keep legacy string columns in sync so the public site (which still reads
   // `price` / `earlyBirdPrice`) stays on the same values.
@@ -185,9 +188,11 @@ export async function markTransferPaid(
 ) {
   const { db } = await import("@/lib/db")
   const { sendEmail, renderDepositPaidEmail, renderFullyPaidEmail } = await import("@/lib/email")
-  const { createInvoiceForApplicationPayment } = await import("@/lib/szamlazz")
   const { extractBillingName } = await import("@/lib/billing-name")
   const { formatPrice } = await import("@/lib/pricing")
+  const invoiceApi = INVOICE_GENERATION_ENABLED
+    ? await import("@/lib/szamlazz")
+    : null
 
   const anchor = await db.application.findUnique({ where: { id } })
   if (!anchor) return { ok: false, error: "Jelentkezés nem található." }
@@ -311,8 +316,13 @@ export async function markTransferPaid(
       }
     }),
     ...invoiceTargets.map(async (t) => {
+      if (!INVOICE_GENERATION_ENABLED || !invoiceApi) {
+        console.info("[markTransferPaid] Invoice generation temporarily disabled; skipping Szamlazz.hu invoice.")
+        return
+      }
+
       try {
-        const result = await createInvoiceForApplicationPayment({
+        const result = await invoiceApi.createInvoiceForApplicationPayment({
           kind: t.kind,
           amount: t.amount,
           currency,

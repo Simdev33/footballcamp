@@ -14,6 +14,7 @@ export type CampPriceFields = {
   earlyBirdPriceHuf: number
   earlyBirdPriceEur: number
   earlyBirdUntil: Date | string | null
+  // Legacy DB field name: this stores the fixed first-instalment amount.
   depositPercent: number
 }
 
@@ -54,12 +55,13 @@ export function pickEffectivePrice(
 
 /**
  * Computes deposit / remainder split for an installment payment.
- * Depositpercent is an integer 1-99 stored on the Camp.
+ * `depositValue` is a fixed amount in the camp currency.
  */
-export function splitInstallment(total: number, depositPercent: number): { deposit: number; remainder: number } {
-  const pct = Math.max(1, Math.min(99, depositPercent || 40))
-  const deposit = Math.round((total * pct) / 100)
-  const remainder = total - deposit
+export function splitInstallment(total: number, depositValue: number): { deposit: number; remainder: number } {
+  const normalizedTotal = Math.max(0, Math.round(total || 0))
+  const fixedDeposit = Math.max(0, Math.round(depositValue || 0))
+  const deposit = Math.min(normalizedTotal, fixedDeposit)
+  const remainder = normalizedTotal - deposit
   return { deposit, remainder }
 }
 

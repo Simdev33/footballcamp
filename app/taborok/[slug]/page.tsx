@@ -60,6 +60,7 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
     dates: camp.dates,
     price: camp.price,
     earlyBirdPrice: camp.earlyBirdPrice,
+    earlyBirdUntil: camp.earlyBirdUntil?.toISOString() || null,
     clubName: camp.clubName,
     ageRange: camp.ageRange,
     imageUrl: camp.imageUrl,

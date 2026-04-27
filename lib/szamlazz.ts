@@ -280,7 +280,7 @@ export async function createInvoiceForApplicationPayment(
   input: InvoiceForApplicationInput,
 ): Promise<InvoiceResult | null> {
   const kindLabel =
-    input.kind === "deposit" ? "Foglaló" : input.kind === "remainder" ? "Hátralévő összeg" : "Teljes részvételi díj"
+    input.kind === "deposit" ? "Első részlet" : input.kind === "remainder" ? "Hátralévő összeg" : "Teljes részvételi díj"
 
   const itemName = `${kindLabel} - ${input.camp.city} tábor - ${input.child.name}`
   const itemDescription = `${input.camp.venue} • ${input.camp.dates}`

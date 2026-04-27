@@ -6,6 +6,7 @@ import { formatPrice, type Currency } from "@/lib/pricing"
 import { sendEmail, renderDepositPaidEmail, renderFullyPaidEmail } from "@/lib/email"
 import { createInvoiceForApplicationPayment, type InvoiceKind } from "@/lib/szamlazz"
 import { extractBillingName } from "@/lib/billing-name"
+import { INVOICE_GENERATION_ENABLED } from "@/lib/invoice-toggle"
 
 export const dynamic = "force-dynamic"
 // We need the raw body for signature verification, so disable body parsing
@@ -199,6 +200,11 @@ async function issueInvoice(
   target: { app: AppWithCamp; paymentEventId: string; amount: number; kind: InvoiceKind },
   currency: Currency,
 ) {
+  if (!INVOICE_GENERATION_ENABLED) {
+    console.info("[stripe/webhook] Invoice generation temporarily disabled; skipping Szamlazz.hu invoice.")
+    return
+  }
+
   try {
     const { app } = target
     const result = await createInvoiceForApplicationPayment({
