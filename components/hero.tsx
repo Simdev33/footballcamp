@@ -90,11 +90,6 @@ export function Hero({ initialCamps = [] }: { initialCamps?: PublicCamp[] }) {
             <h2 className="mt-5 md:mt-7 max-w-xl text-sm font-light leading-relaxed text-white/60 md:text-lg">
               {t.hero.subtitle}
             </h2>
-            {t.hero.partnerNote && (
-              <p className="mt-3 max-w-xl text-xs leading-relaxed text-white/55 md:text-sm">
-                {t.hero.partnerNote}
-              </p>
-            )}
 
             {/* Trust indicators */}
             <div className="mt-3 md:mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 md:gap-x-6">
