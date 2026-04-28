@@ -1,90 +1,24 @@
-import { db } from "@/lib/db"
-import { stripe, STRIPE_WEBHOOK_SECRET } from "@/lib/stripe"
-import { NextResponse } from "next/server"
 import type Stripe from "stripe"
+import { db } from "@/lib/db"
 import { formatPrice, type Currency } from "@/lib/pricing"
 import { sendEmail, renderDepositPaidEmail, renderFullyPaidEmail } from "@/lib/email"
 import { createInvoiceForApplicationPayment, type InvoiceKind } from "@/lib/szamlazz"
 import { extractBillingName } from "@/lib/billing-name"
 import { INVOICE_GENERATION_ENABLED } from "@/lib/invoice-toggle"
-import { processPaidCheckoutSession } from "@/lib/stripe-checkout-sync"
 
-export const dynamic = "force-dynamic"
-// We need the raw body for signature verification, so disable body parsing
-// by always reading request.text() below.
-export const runtime = "nodejs"
-
-export async function POST(request: Request) {
-  if (!STRIPE_WEBHOOK_SECRET) {
-    console.error("[stripe/webhook] STRIPE_WEBHOOK_SECRET missing")
-    return new NextResponse("Webhook not configured.", { status: 500 })
-  }
-
-  const signature = request.headers.get("stripe-signature")
-  if (!signature) {
-    return new NextResponse("Missing stripe-signature header.", { status: 400 })
-  }
-
-  const rawBody = await request.text()
-
-  let event: Stripe.Event
-  try {
-    event = stripe.webhooks.constructEvent(rawBody, signature, STRIPE_WEBHOOK_SECRET)
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "invalid signature"
-    console.error("[stripe/webhook] Signature verification failed:", message)
-    return new NextResponse(`Webhook Error: ${message}`, { status: 400 })
-  }
-
-  try {
-    switch (event.type) {
-      case "checkout.session.completed":
-      case "checkout.session.async_payment_succeeded": {
-        const session = event.data.object as Stripe.Checkout.Session
-        await processPaidCheckoutSession(session)
-        break
-      }
-      case "checkout.session.async_payment_failed": {
-        const session = event.data.object as Stripe.Checkout.Session
-        await handleCheckoutFailed(session)
-        break
-      }
-      case "checkout.session.expired": {
-        const session = event.data.object as Stripe.Checkout.Session
-        await handleCheckoutExpired(session)
-        break
-      }
-      default:
-        // Unhandled event types — acknowledge to avoid Stripe retries.
-        break
-    }
-  } catch (err) {
-    console.error(`[stripe/webhook] Handler failed for ${event.type}:`, err)
-    // Return 500 so Stripe retries.
-    return new NextResponse("Handler failure.", { status: 500 })
-  }
-
-  return NextResponse.json({ received: true })
-}
-
-async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
-  // Only act on paid sessions.
-  if (session.payment_status !== "paid") return
+export async function processPaidCheckoutSession(session: Stripe.Checkout.Session) {
+  if (session.payment_status !== "paid") return { processed: 0 }
 
   const applicationIds = parseApplicationIds(session)
   if (applicationIds.length === 0) {
-    console.warn("[stripe/webhook] checkout.session.completed without applicationIds", session.id)
-    return
+    console.warn("[stripe/sync] paid checkout session without applicationIds", session.id)
+    return { processed: 0 }
   }
 
   const paymentMode = (session.metadata?.paymentMode as "earlyBirdFull" | "regularDeposit" | "regularFull" | "full" | "deposit" | "remainder") || "earlyBirdFull"
   const isDepositPayment = paymentMode === "regularDeposit" || paymentMode === "deposit"
   const isFullPayment = paymentMode !== "remainder" && !isDepositPayment
   const currency = (session.metadata?.currency as "HUF" | "EUR") || "HUF"
-  const paidAmountTotal = session.amount_total ?? 0
-  // Stripe returns amounts in the smallest currency unit. Both HUF (special
-  // two-decimal case) and EUR are ×100 compared to the human-visible value.
-  const paidAmount = Math.round(paidAmountTotal / 100)
 
   const paymentIntentId = typeof session.payment_intent === "string" ? session.payment_intent : session.payment_intent?.id ?? null
   const customerId = typeof session.customer === "string" ? session.customer : session.customer?.id ?? null
@@ -93,15 +27,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     where: { id: { in: applicationIds } },
     include: { camp: true },
   })
-  if (applications.length === 0) return
+  if (applications.length === 0) return { processed: 0 }
 
-  // Track which applications transitioned to a new paid state so we can
-  // send a confirmation email after the DB transaction.
   const newlyDepositPaid: typeof applications = []
   const newlyFullyPaid: typeof applications = []
-
-  // Collected per successful per-app payment — used to generate invoices
-  // via Számlázz.hu after the DB transaction commits.
   const invoiceTargets: {
     app: AppWithCamp
     paymentEventId: string
@@ -109,9 +38,6 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     kind: InvoiceKind
   }[] = []
 
-  // Split the paid amount evenly per application (Stripe doesn't break
-  // line-items down by application after checkout; the planned per-app
-  // amounts live in totalAmount / depositAmount).
   await db.$transaction(async (tx) => {
     for (const app of applications) {
       const remainderExpected = Math.max(0, app.totalAmount - app.depositAmount)
@@ -127,10 +53,8 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
           : paymentMode === "remainder"
             ? app.remainderPaidAmount
             : app.depositPaidAmount + app.remainderPaidAmount
-      if (already >= perAppExpected && perAppExpected > 0) {
-        // Already settled for this mode — skip duplicate webhook delivery.
-        continue
-      }
+
+      if (already >= perAppExpected && perAppExpected > 0) continue
 
       const now = new Date()
       const data: Parameters<typeof tx.application.update>[0]["data"] = {
@@ -187,16 +111,13 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     }
   })
 
-  // Fire confirmation emails + Számlázz.hu invoice creation outside the DB
-  // transaction so provider hiccups cannot roll back the payment state.
-  // Failures are logged only — an admin can retry from the dashboard.
   await Promise.all([
     ...newlyDepositPaid.map((app) => sendDepositPaidEmail(app, currency)),
     ...newlyFullyPaid.map((app) => sendFullyPaidEmail(app, currency)),
     ...invoiceTargets.map((target) => issueInvoice(target, currency)),
   ])
 
-  void paidAmount // acknowledged via metadata split above
+  return { processed: invoiceTargets.length }
 }
 
 async function issueInvoice(
@@ -204,7 +125,7 @@ async function issueInvoice(
   currency: Currency,
 ) {
   if (!INVOICE_GENERATION_ENABLED) {
-    console.info("[stripe/webhook] Invoice generation temporarily disabled; skipping Szamlazz.hu invoice.")
+    console.info("[stripe/sync] Invoice generation temporarily disabled; skipping Szamlazz.hu invoice.")
     return
   }
 
@@ -231,7 +152,7 @@ async function issueInvoice(
     })
 
     if (!result) {
-      console.warn("[stripe/webhook] Számlázz.hu invoice was not generated for application", app.id)
+      console.warn("[stripe/sync] Számlázz.hu invoice was not generated for application", app.id)
       return
     }
 
@@ -243,7 +164,7 @@ async function issueInvoice(
       },
     })
   } catch (err) {
-    console.error("[stripe/webhook] Invoice creation failed:", err)
+    console.error("[stripe/sync] Invoice creation failed:", err)
   }
 }
 
@@ -271,9 +192,9 @@ async function sendDepositPaidEmail(app: AppWithCamp, currency: Currency) {
       totalAmount: formatPrice(app.totalAmount, currency),
     })
     const res = await sendEmail({ to: app.parentEmail, subject, html })
-    if (!res.sent) console.warn("[stripe/webhook] deposit email not sent:", res.error)
+    if (!res.sent) console.warn("[stripe/sync] deposit email not sent:", res.error)
   } catch (err) {
-    console.warn("[stripe/webhook] deposit email error:", err)
+    console.warn("[stripe/sync] deposit email error:", err)
   }
 }
 
@@ -287,33 +208,10 @@ async function sendFullyPaidEmail(app: AppWithCamp, currency: Currency) {
       totalAmount: formatPrice(app.totalAmount, currency),
     })
     const res = await sendEmail({ to: app.parentEmail, subject, html })
-    if (!res.sent) console.warn("[stripe/webhook] fully paid email not sent:", res.error)
+    if (!res.sent) console.warn("[stripe/sync] fully paid email not sent:", res.error)
   } catch (err) {
-    console.warn("[stripe/webhook] fully paid email error:", err)
+    console.warn("[stripe/sync] fully paid email error:", err)
   }
-}
-
-async function handleCheckoutFailed(session: Stripe.Checkout.Session) {
-  const applicationIds = parseApplicationIds(session)
-  if (applicationIds.length === 0) return
-  await db.application.updateMany({
-    where: { id: { in: applicationIds }, paymentStatus: "PENDING" },
-    data: { paymentStatus: "FAILED" },
-  })
-  for (const id of applicationIds) {
-    await db.paymentEvent.create({
-      data: { applicationId: id, type: "failed", amount: 0, stripeId: session.id },
-    })
-  }
-}
-
-async function handleCheckoutExpired(session: Stripe.Checkout.Session) {
-  const applicationIds = parseApplicationIds(session)
-  if (applicationIds.length === 0) return
-  await db.application.updateMany({
-    where: { id: { in: applicationIds }, paymentStatus: "PENDING" },
-    data: { paymentStatus: "EXPIRED" },
-  })
 }
 
 function parseApplicationIds(session: Stripe.Checkout.Session): string[] {

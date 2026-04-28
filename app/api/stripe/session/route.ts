@@ -1,6 +1,7 @@
 import { db } from "@/lib/db"
 import { stripe } from "@/lib/stripe"
 import { NextResponse } from "next/server"
+import { processPaidCheckoutSession } from "@/lib/stripe-checkout-sync"
 
 export const dynamic = "force-dynamic"
 
@@ -18,6 +19,10 @@ export async function GET(request: Request) {
 
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId)
+
+    if (session.payment_status === "paid") {
+      await processPaidCheckoutSession(session)
+    }
 
     const currency = (session.metadata?.currency as "HUF" | "EUR") || (session.currency?.toUpperCase() as "HUF" | "EUR") || "HUF"
     const paymentMode = (session.metadata?.paymentMode as "earlyBirdFull" | "regularDeposit" | "regularFull" | "full" | "deposit") || "earlyBirdFull"
