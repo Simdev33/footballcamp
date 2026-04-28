@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Táborok',
   description:
-    'Nyári futballtáborok Szegeden és Kecskeméten. Időpontok, árak, early bird kedvezmény — európai akadémiai szemléletű módszerekkel.',
+    'Nemzetközi futballtáborok Szegeden külföldi edzőkkel. Strukturált edzések, akadémiai módszerek és valódi fejlődés.',
   alternates: { canonical: '/taborok' },
   openGraph: {
     title: 'Táborok | Kickoff Elite Football Camps',

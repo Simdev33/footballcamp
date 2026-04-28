@@ -10,6 +10,7 @@ const GOOGLE_ADS_ID = 'AW-18106758812'
 const GOOGLE_ANALYTICS_ID = 'G-N2FFRQZVXN'
 const META_PIXEL_ID = '804886405638081'
 const SITE_URL = 'https://kickoffcamps.hu'
+const SITE_DESCRIPTION = 'Nemzetközi futballtáborok Szegeden külföldi edzőkkel. Strukturált edzések, akadémiai módszerek és valódi fejlődés. Jelentkezés most!'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -45,8 +46,7 @@ export const metadata: Metadata = {
     default: 'Kickoff Elite Football Camps | Nemzetközi Futballtáborok',
     template: '%s | Kickoff Elite Football Camps',
   },
-  description:
-    'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény európai akadémiai szemléletű módszerekkel.',
+  description: SITE_DESCRIPTION,
   applicationName: 'Kickoff Elite Football Camps',
   keywords: [
     'focitábor',
@@ -54,7 +54,6 @@ export const metadata: Metadata = {
     'Benfica tábor',
     'nyári focitábor',
     'Szeged focitábor',
-    'Kecskemét focitábor',
     'nemzetközi focitábor',
     'gyerek focitábor',
     'Kickoff Elite Football Camps',
@@ -84,14 +83,12 @@ export const metadata: Metadata = {
     url: SITE_URL,
     siteName: 'Kickoff Elite Football Camps',
     title: 'Kickoff Elite Football Camps | Nemzetközi Futballtáborok',
-    description:
-      'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény európai akadémiai szemléletű módszerekkel.',
+    description: SITE_DESCRIPTION,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Kickoff Elite Football Camps | Nemzetközi Futballtáborok',
-    description:
-      'Nemzetközi futballtáborok külföldi edzőkkel, európai akadémiai szemléletű módszerekkel Szegeden és Kecskeméten.',
+    description: SITE_DESCRIPTION,
   },
   robots: {
     index: true,
@@ -106,12 +103,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/kickoff-logo.png?v=2', type: 'image/png', sizes: '512x512' },
-      { url: '/kickoff-logo.png?v=2', type: 'image/png', sizes: '192x192' },
-      { url: '/kickoff-logo.png?v=2', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon.ico', sizes: '48x48' },
+      { url: '/favicon-48x48.png', type: 'image/png', sizes: '48x48' },
+      { url: '/favicon-192x192.png', type: 'image/png', sizes: '192x192' },
+      { url: '/favicon-512x512.png', type: 'image/png', sizes: '512x512' },
     ],
-    shortcut: '/kickoff-logo.png?v=2',
-    apple: [{ url: '/kickoff-logo.png?v=2', sizes: '180x180', type: 'image/png' }],
+    shortcut: '/favicon.ico',
+    apple: [{ url: '/favicon-192x192.png', sizes: '192x192', type: 'image/png' }],
   },
   category: 'sports',
 }
@@ -135,8 +133,7 @@ export default async function RootLayout({
     url: SITE_URL,
     logo: `${SITE_URL}/kickoff-logo.png`,
     image: `${SITE_URL}/opengraph-image`,
-    description:
-      'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten. Fejlődés és életre szóló élmény európai akadémiai szemléletű módszerekkel.',
+    description: SITE_DESCRIPTION,
     telephone: '+36 30 755 1110',
     email: 'info@kickoffcamps.hu',
     priceRange: '€€',
@@ -150,7 +147,6 @@ export default async function RootLayout({
     },
     areaServed: [
       { '@type': 'City', name: 'Szeged' },
-      { '@type': 'City', name: 'Kecskemét' },
     ],
     sameAs: [
       'https://www.facebook.com/kickoffcamps',
@@ -163,8 +159,7 @@ export default async function RootLayout({
     '@id': `${SITE_URL}#website`,
     url: SITE_URL,
     name: 'Kickoff Elite Football Camps',
-    description:
-      'Nemzetközi futballtáborok külföldi edzőkkel Szegeden és Kecskeméten.',
+    description: SITE_DESCRIPTION,
     inLanguage: ['hu-HU', 'en-US'],
     publisher: { '@id': `${SITE_URL}#organization` },
   }
