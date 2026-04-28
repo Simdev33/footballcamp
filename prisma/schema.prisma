@@ -190,11 +190,46 @@ model NewsletterSubscriber {
   source         String    @default("footer")
   status         String    @default("active")
   consentText    String    @default("")
+  unsubscribeToken String  @unique @default(cuid())
   subscribedAt   DateTime  @default(now())
   unsubscribedAt DateTime?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+  deliveries      NewsletterDelivery[]
 
   @@index([status])
   @@index([subscribedAt])
+}
+
+model NewsletterTemplate {
+  id          String   @id @default(cuid())
+  slot        String   @unique
+  label       String
+  subject     String
+  previewText String   @default("")
+  body        String
+  enabled     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deliveries  NewsletterDelivery[]
+}
+
+model NewsletterDelivery {
+  id           String               @id @default(cuid())
+  subscriberId String
+  subscriber   NewsletterSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+  templateId   String
+  template     NewsletterTemplate   @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  slot         String
+  sentDate     String
+  email        String
+  status       String               @default("pending")
+  providerId   String?
+  error        String?
+  sentAt       DateTime?
+  createdAt    DateTime             @default(now())
+
+  @@unique([subscriberId, slot, sentDate])
+  @@index([status])
+  @@index([sentDate])
 }

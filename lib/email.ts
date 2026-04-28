@@ -237,9 +237,46 @@ function infoBox(title: string, body: string): string {
   </table>`
 }
 
+function textBodyToHtml(body: string): string {
+  return body
+    .split(/\n{2,}/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block) => paragraph(escapeHtml(block).replace(/\n/g, "<br>")))
+    .join("")
+}
+
 // ─────────────────────────────────────────────────────────────
 // Templates
 // ─────────────────────────────────────────────────────────────
+
+export function renderNewsletterEmail(args: {
+  subject: string
+  previewText?: string
+  body: string
+  slotLabel: string
+  recipientEmail: string
+  unsubscribeUrl: string
+}): { subject: string; html: string } {
+  const html = wrap(
+    {
+      title: args.subject,
+      eyebrow: `${args.slotLabel} hírlevél`,
+      preheader: args.previewText || args.subject,
+    },
+    `
+    ${textBodyToHtml(args.body)}
+    ${button("Táborok megtekintése", `${SITE_URL}/taborok`)}
+    ${infoBox(
+      "Leiratkozás",
+      `Ezt a hírlevelet azért kaptad, mert feliratkoztál a KickOff Camps oldalán a(z) <strong>${escapeHtml(args.recipientEmail)}</strong> címmel. Ha nem szeretnél több hírlevelet kapni, <a href="${args.unsubscribeUrl}" style="color:${C.goldDark};font-weight:700;">kattints ide a leiratkozáshoz</a>.`,
+    )}
+    <p style="font-size:15px;line-height:1.7;margin:22px 0 0;color:${C.ink};">Sportbaráti üdvözlettel,<br><strong>KickOff Camps csapata</strong></p>
+  `,
+  )
+
+  return { subject: args.subject, html }
+}
 
 export function renderRemainderEmail(args: {
   parentName: string
