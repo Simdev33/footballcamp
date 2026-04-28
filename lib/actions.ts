@@ -4,7 +4,7 @@ import { db } from "@/lib/db"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { hash } from "bcryptjs"
-import { formatPrice } from "@/lib/pricing"
+import { formatPrice, type Currency } from "@/lib/pricing"
 import { revalidatePublicCamps } from "@/lib/public-camps"
 import { parseCampTranslation, saveCampTranslation } from "@/lib/camp-translations"
 import { INVOICE_GENERATION_ENABLED } from "@/lib/invoice-toggle"
@@ -176,6 +176,61 @@ export async function updateApplicationStatus(id: string, status: string) {
 export async function updateApplicationNotes(id: string, notes: string) {
   await db.application.update({ where: { id }, data: { notes } })
   revalidatePath("/admin/jelentkezesek")
+}
+
+export async function resendPaymentConfirmationEmail(id: string) {
+  const { sendEmail, renderDepositPaidEmail, renderFullyPaidEmail } = await import("@/lib/email")
+
+  const app = await db.application.findUnique({ where: { id }, include: { camp: true } })
+  if (!app) return { ok: false, error: "Jelentkezés nem található." }
+  if (app.paymentStatus !== "DEPOSIT_PAID" && app.paymentStatus !== "FULLY_PAID") {
+    return { ok: false, error: "Ehhez a jelentkezéshez még nincs sikeres fizetés." }
+  }
+
+  const currency = (app.currency as Currency) || "HUF"
+  const email =
+    app.paymentStatus === "DEPOSIT_PAID"
+      ? renderDepositPaidEmail({
+          parentName: app.parentName,
+          childName: app.childName,
+          campCity: app.camp.city,
+          campDates: app.camp.dates,
+          depositAmount: formatPrice(app.depositPaidAmount || app.depositAmount, currency),
+          remainderAmount: formatPrice(Math.max(0, app.totalAmount - (app.depositPaidAmount || app.depositAmount)), currency),
+          totalAmount: formatPrice(app.totalAmount, currency),
+        })
+      : renderFullyPaidEmail({
+          parentName: app.parentName,
+          childName: app.childName,
+          campCity: app.camp.city,
+          campDates: app.camp.dates,
+          totalAmount: formatPrice(app.depositPaidAmount + app.remainderPaidAmount || app.totalAmount, currency),
+        })
+
+  const result = await sendEmail({
+    to: app.parentEmail,
+    subject: email.subject,
+    html: email.html,
+    replyTo: "info@kickoffcamps.hu",
+  })
+
+  if (!result.sent) {
+    return { ok: false, error: result.error || "Az email küldése sikertelen." }
+  }
+
+  await db.paymentEvent.create({
+    data: {
+      applicationId: app.id,
+      type: "confirmation_email_resent",
+      amount: 0,
+      currency,
+      note: `Fizetési visszaigazoló email újraküldve: ${app.parentEmail}`,
+    },
+  })
+
+  revalidatePath(`/admin/jelentkezesek/${id}`)
+  revalidatePath("/admin/jelentkezesek")
+  return { ok: true, email: app.parentEmail }
 }
 
 /**

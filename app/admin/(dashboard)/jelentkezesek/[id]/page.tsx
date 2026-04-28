@@ -8,6 +8,7 @@ import { formatPrice } from "@/lib/pricing"
 import type { PaymentStatus } from "@prisma/client"
 import { RemainderButton } from "@/components/admin/remainder-button"
 import { TransferPaidButton } from "@/components/admin/transfer-paid-button"
+import { ResendPaymentConfirmationButton } from "@/components/admin/resend-payment-confirmation-button"
 
 export const dynamic = 'force-dynamic'
 
@@ -198,6 +199,18 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
                 <RemainderButton applicationId={app.id} />
               </div>
             )}
+
+            {(app.paymentStatus === "DEPOSIT_PAID" || app.paymentStatus === "FULLY_PAID") && (
+              <div className="space-y-3 border-t border-slate-100 pt-4">
+                <div>
+                  <p className="text-sm font-bold text-slate-950">Visszaigazoló email</p>
+                  <p className="mt-1 text-sm text-slate-600">
+                    Újraküldi a fizetési visszaigazolást a szülő email címére, számla generálása nélkül.
+                  </p>
+                </div>
+                <ResendPaymentConfirmationButton applicationId={app.id} />
+              </div>
+            )}
           </>
         ) : (
           <p className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">Nincs még fizetési adat (a jelentkezés még nem indított Stripe checkoutot).</p>
@@ -297,6 +310,7 @@ function eventLabel(type: string): string {
     case "failed": return "Sikertelen fizetés"
     case "refund": return "Visszatérítés"
     case "link_sent": return "Fizetési link generálva"
+    case "confirmation_email_resent": return "Visszaigazoló email újraküldve"
     default: return type
   }
 }
