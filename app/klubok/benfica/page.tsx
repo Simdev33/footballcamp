@@ -15,15 +15,6 @@ const BENFICA_STAR_PLAYERS = [
   "Ángel Di María", "Jan Oblak", "Ederson", "Nicolás Otamendi", "Vangelis Pavlidis",
 ]
 
-const PLAYER_PHOTOS = [
-  { src: `${CDN}/Photos/14-Pavlidis_2.png`, name: "Pavlidis", number: "14" },
-  { src: `${CDN}/Photos/30-Otamendi_2.png`, name: "Otamendi", number: "30" },
-  { src: `${CDN}/Photos/5-BARRENECHEA-3.png`, name: "Barrenechea", number: "5" },
-  { src: `${CDN}/Photos/44-Tom%C3%A1s-Ara%C3%BAjo-2.png`, name: "Tomás Araújo", number: "44" },
-  { src: `${CDN}/Photos/66-J.Wynder_2.png`, name: "Wynder", number: "66" },
-  { src: `${CDN}/Photos/84-Joao-Rego.png`, name: "João Rego", number: "84" },
-]
-
 type ClubsStrings = {
   heroTitle: string
   heroTitleHighlight: string
@@ -128,21 +119,18 @@ export default function BenficaClubPage() {
             </div>
           </div>
 
-          <div className="mt-14 md:mt-20 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
-            {PLAYER_PHOTOS.map((player) => (
-              <div key={player.name} className="group relative aspect-[3/4] overflow-hidden bg-gradient-to-b from-[#1a0a0a] to-[#0a1f0a]">
-                <Image src={player.src} alt={player.name} fill sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 16vw" className="object-cover object-top group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                <div className="absolute top-2 right-2 md:top-3 md:right-3 px-2 py-0.5 bg-[#d4a017] text-[#0a1f0a] text-[9px] md:text-[10px] font-black tracking-wider uppercase">
-                  {c.benficaBadge}
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-2.5 md:p-3">
-                  <span className="block text-[#d4a017] font-serif text-xl md:text-2xl font-bold leading-none">#{player.number}</span>
-                  <span className="block text-white text-xs md:text-sm font-medium mt-1">{player.name}</span>
-                </div>
-                <div className="absolute inset-0 border-2 border-[#d4a017]/0 group-hover:border-[#d4a017]/50 transition-colors duration-300" />
-              </div>
-            ))}
+          <div className="mt-14 md:mt-20">
+            <div className="relative overflow-hidden border border-[#d4a017]/25 bg-black/20 shadow-2xl shadow-black/30">
+              <Image
+                src="/made-in-benfica.png"
+                alt="Made in Benfica akadémiai játékosok"
+                width={1019}
+                height={610}
+                className="h-auto w-full"
+                sizes="(max-width: 768px) 100vw, 1200px"
+              />
+              <div className="absolute inset-0 border-2 border-[#d4a017]/0 transition-colors duration-300 hover:border-[#d4a017]/50" />
+            </div>
           </div>
         </div>
       </section>

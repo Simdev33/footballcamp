@@ -112,6 +112,11 @@ export function CampDetailView({
       }))
     : camp.coaches
   const faq = translated.faq?.length ? translated.faq : camp.faq
+  const normalizedCampKey = `${camp.slug} ${city}`
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+  const showFaq = !normalizedCampKey.includes("algyo") && faq && faq.length > 0
   const earlyBirdLabel = formatEarlyBirdLabel({
     earlyBirdUntil: camp.earlyBirdUntil,
     fallbackLabel: d.earlyBirdLabel,
@@ -331,7 +336,7 @@ export function CampDetailView({
       )}
 
       {/* FAQ */}
-      {faq && faq.length > 0 && (
+      {showFaq && (
         <section className="py-16 md:py-24 bg-background">
           <div className="max-w-[800px] mx-auto px-6 md:px-12 lg:px-24">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-10 text-center">{d.faqTitle}</h2>
