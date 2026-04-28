@@ -7,6 +7,7 @@ import { getSiteContent } from '@/lib/content'
 import { getSiteImages } from '@/lib/site-images'
 
 const GOOGLE_ADS_ID = 'AW-18106758812'
+const GOOGLE_ANALYTICS_ID = 'G-N2FFRQZVXN'
 const META_PIXEL_ID = '804886405638081'
 const SITE_URL = 'https://kickoffcamps.hu'
 import './globals.css'
@@ -208,8 +209,20 @@ gtag('consent', 'default', {
   security_storage: 'granted',
   wait_for_update: 500,
 });
+try {
+  var consent = JSON.parse(localStorage.getItem('kickoff.cookie-consent') || 'null');
+  if (consent) {
+    gtag('consent', 'update', {
+      ad_storage: consent.marketing === true ? 'granted' : 'denied',
+      ad_user_data: consent.marketing === true ? 'granted' : 'denied',
+      ad_personalization: consent.marketing === true ? 'granted' : 'denied',
+      analytics_storage: consent.analytics === true ? 'granted' : 'denied',
+    });
+  }
+} catch (e) {}
 gtag('js', new Date());
-gtag('config', '${GOOGLE_ADS_ID}', { allow_enhanced_conversions: true });`}
+gtag('config', '${GOOGLE_ADS_ID}', { allow_enhanced_conversions: true });
+gtag('config', '${GOOGLE_ANALYTICS_ID}');`}
         </Script>
         {/*
           Google Ads tag — lazyOnload so it doesn't block LCP/TBT on mobile.

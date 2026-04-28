@@ -88,5 +88,5 @@ export const getPublicCamps = unstable_cache(
 )
 
 export function revalidatePublicCamps() {
-  revalidateTag(PUBLIC_CAMPS_TAG)
+  revalidateTag(PUBLIC_CAMPS_TAG, "max")
 }

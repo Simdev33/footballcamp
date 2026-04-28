@@ -449,6 +449,7 @@ export const translations = {
       newsletterTitle: "Hírlevél",
       newsletterDesc: "Iratkozz fel hírlevelünkre a legfrissebb hírekért és ajánlatokért.",
       emailPlaceholder: "Email címed",
+      subscribeButton: "Feliratkozás",
       subscribed: "Sikeresen feliratkoztál!",
       copyright: "© 2026 Kickoff Elite Football Camps. Minden jog fenntartva.",
       motto: "\u201CA futball több, mint sport – egy életforma\u201D",
@@ -503,7 +504,7 @@ export const translations = {
           heading: "4. Díjak, lemondási és visszatérítési feltételek",
           paragraphs: [
             "4.1. A Szolgáltatások Díját a Szolgáltató a Honlapon teszi közzé. Ezen kívül tájékoztató jelleggel feltüntetheti különböző hirdetési felületeken (közösségi média), szórólapokon stb.",
-            "4.2. A Díj megfizetését a Résztvevőnek lehetősége van átutalással vagy bankkártyás fizetés útján teljesíteni. A Szolgáltató mindenkori bankszámlaszáma, illetve a kártyás fizetési rendszer a Honlapon keresztül elérhető, megtalálható.",
+            "4.2. A Díj megfizetését a Résztvevőnek lehetősége van átutalással vagy bankkártyás fizetés útján teljesíteni. A bankkártyás fizetés a Stripe Technology Europe Limited biztonságos fizetési rendszerén keresztül történik; a Résztvevő a fizetés során a Stripe fizetési felületére kerülhet átirányításra. A Szolgáltató a bankkártyaadatokat nem ismeri meg, nem kezeli és nem tárolja. A Szolgáltató mindenkori bankszámlaszáma, illetve a kártyás fizetési rendszer a Honlapon keresztül elérhető.",
             "4.3. A Szolgáltatás díját egy- vagy kettő részletben van lehetősége megfizetni a Résztvevőnek. A Szolgáltatás díja, és maga a Szolgáltatás időtartama is 5 naptári napra vonatkozik. A Szolgáltatást Résztvevő abban az időintervallumban (turnus) veheti igénybe, amelyik turnusra a Díjat az ÁSZF-nek megfelelően megfizette.",
             "4.4. A megfizetett Díjról a Szolgáltató elektronikus vagy papír alapú számlát állít ki, amelyet e-mailben küld meg Résztvevőnek.",
             "4.5. A Szolgáltató garantálja, hogy a meghirdetett Díjat a közzétételt követően, az adott turnusra vonatkozóan időközben nem változtatja meg.",
@@ -1264,6 +1265,7 @@ export const translations = {
       newsletterTitle: "Newsletter",
       newsletterDesc: "Subscribe to our newsletter for the latest news and offers.",
       emailPlaceholder: "Your email",
+      subscribeButton: "Subscribe",
       subscribed: "Successfully subscribed!",
       copyright: "© 2026 Kickoff Elite Football Camps. All rights reserved.",
       motto: '"Football is more than a sport – it\'s a way of life"',
@@ -1318,7 +1320,7 @@ export const translations = {
           heading: "4. Fees, cancellation and refund terms",
           paragraphs: [
             "4.1. The Fees for the Services are published by the Service Provider on the Website. They may also be indicated, for information, on various advertising surfaces (social media), flyers, etc.",
-            "4.2. The Participant may pay the Fee by bank transfer or by card. The Service Provider's prevailing bank account number and the card payment system are available via the Website.",
+            "4.2. The Participant may pay the Fee by bank transfer or by card. Card payments are processed through the secure payment system of Stripe Technology Europe Limited; during payment, the Participant may be redirected to Stripe's payment page. The Service Provider does not access, process or store bank card data. The Service Provider's prevailing bank account number and the card payment system are available via the Website.",
             "4.3. The Participant may pay the Fee for the Service in one or two instalments. Both the Fee and the duration of the Service relate to 5 calendar days. The Participant may use the Service in the time interval (turn) for which they have paid the Fee in accordance with these GTC.",
             "4.4. The Service Provider issues an electronic or paper invoice for the Fee paid and sends it to the Participant by e-mail.",
             "4.5. The Service Provider guarantees that, once published, it will not change the advertised Fee for the given turn.",

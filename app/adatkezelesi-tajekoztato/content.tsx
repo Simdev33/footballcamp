@@ -236,14 +236,19 @@ export function PrivacyContentHU() {
           </dl>
         </SubSection>
         <SubSection title="2. Az online fizetéssel kapcsolatos adatfeldolgozás">
-          <p className="text-sm text-muted-foreground">Az adatfeldolgozó adatai későbbi időpontban kerülnek meghatározásra.</p>
+          <dl className="grid sm:grid-cols-[120px_1fr] gap-x-6 gap-y-1 text-sm mt-2 text-muted-foreground">
+            <dt>Név</dt><dd>Stripe Technology Europe Limited</dd>
+            <dt>Székhely</dt><dd>The One Building, Lower Grand Canal Street, Dublin 2, Írország</dd>
+            <dt>E-mail</dt><dd>dpo@stripe.com</dd>
+            <dt>Adószám</dt><dd>IE3396855EH</dd>
+          </dl>
         </SubSection>
       </Section>
 
       <Section title="A vevők részére kiállított számlák és az azokon szereplő személyes adatok kezelése">
         <p>
           A weboldalon megvásárolt termékről, szolgáltatásról a Társaság számlát állít ki a Vevő
-          részére. A számla a Vevő nevét, címét, adószámát tartalmazza. A számlán szereplő
+          részére. A számla a Vevő nevét, címét, adószámát tartalmazhatja. A számlán szereplő
           személyes adatok kezelésére a megrendelés (szerződésben vállalt kötelezettség)
           teljesítése érdekében, majd azt követően a számvitelről szóló 2000. évi C. törvény 169.
           §-ában írt rendelkezések értelmében, az ott írt megőrzési idő figyelembevételével,{" "}
@@ -693,7 +698,12 @@ export function PrivacyContentEN() {
           </dl>
         </SubSection>
         <SubSection title="2. Online payment processing">
-          <p className="text-sm text-muted-foreground">The processor's details will be specified at a later date.</p>
+          <dl className="grid sm:grid-cols-[120px_1fr] gap-x-6 gap-y-1 text-sm mt-2 text-muted-foreground">
+            <dt>Name</dt><dd>Stripe Technology Europe Limited</dd>
+            <dt>Seat</dt><dd>The One Building, Lower Grand Canal Street, Dublin 2, Ireland</dd>
+            <dt>Email</dt><dd>dpo@stripe.com</dd>
+            <dt>Tax no.</dt><dd>IE3396855EH</dd>
+          </dl>
         </SubSection>
       </Section>
 

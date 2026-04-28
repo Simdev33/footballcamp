@@ -181,3 +181,20 @@ model SiteContent {
 
   @@unique([section, locale])
 }
+
+model NewsletterSubscriber {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  name           String    @default("")
+  locale         String    @default("hu")
+  source         String    @default("footer")
+  status         String    @default("active")
+  consentText    String    @default("")
+  subscribedAt   DateTime  @default(now())
+  unsubscribedAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([status])
+  @@index([subscribedAt])
+}

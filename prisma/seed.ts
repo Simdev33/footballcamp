@@ -22,6 +22,7 @@ async function main() {
   await prisma.camp.createMany({
     data: [
       {
+        slug: "szeged-2026",
         city: "Szeged",
         venue: "Szegedi Sportközpont",
         dates: "2026. július 7-11.",
@@ -32,6 +33,7 @@ async function main() {
         active: true,
       },
       {
+        slug: "kecskemet-2026",
         city: "Kecskemét",
         venue: "Kecskeméti Futball Aréna",
         dates: "2026. július 14-18.",

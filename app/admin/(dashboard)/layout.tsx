@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
 import {
   LayoutDashboard, ImageIcon, Tent, ClipboardList,
-  Users, LogOut, ChevronLeft, Menu, Shield, FileText, BookOpen, Info, X, ExternalLink,
+  Users, LogOut, ChevronLeft, Menu, Shield, FileText, BookOpen, Info, X, ExternalLink, Mail,
 } from "lucide-react"
 import { useState, useTransition, useEffect } from "react"
 
@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { href: "/admin", label: "Áttekintés", icon: LayoutDashboard, hint: "Admin kezdőlap – rövid összefoglaló" },
   { href: "/admin/taborok", label: "Táborok", icon: Tent, hint: "Táborok létrehozása, szerkesztése" },
   { href: "/admin/jelentkezesek", label: "Jelentkezések", icon: ClipboardList, hint: "A beérkezett jelentkezések listája" },
+  { href: "/admin/hirlevel", label: "Hírlevél", icon: Mail, hint: "Feliratkozók és e-mail címek listája" },
   { href: "/admin/blog", label: "Hírek", icon: BookOpen, hint: "A weboldal Hírek aloldalán megjelenő cikkek" },
   { href: "/admin/rolunk", label: "Rólunk oldal", icon: Info, hint: "A „Rólunk” aloldal szövegeinek szerkesztése" },
   { href: "/admin/tartalom", label: "Oldalak szövegei és képei", icon: FileText, hint: "Főoldal, Klubok, Partnerprogram, GYIK stb. – szekciónként szövegek és képek egy helyen" },

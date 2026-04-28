@@ -5,6 +5,7 @@ import { reopenCookieBanner } from "@/components/cookie-banner"
 import Image from "next/image"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
+import { useState, type FormEvent } from "react"
 
 export function Footer() {
   const { t } = useLanguage()
@@ -25,7 +26,7 @@ export function Footer() {
       <div className="relative z-10 max-w-[1800px] mx-auto px-4 md:px-12 lg:px-24 py-10 lg:py-16">
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-8">
           {/* Brand */}
-          <div className="lg:col-span-6">
+          <div className="lg:col-span-5">
             <Link href="/" className="flex items-center mb-6">
               <Image
                 src="/kickoff-logo.png"
@@ -66,9 +67,9 @@ export function Footer() {
           </div>
 
           {/* Links */}
-          <div className="lg:col-span-6 lg:col-start-7 lg:pl-10">
+          <div className="lg:col-span-3 lg:pl-4">
             <h3 className="text-xs text-[#d4a017] tracking-[0.3em] uppercase mb-6 font-medium">{t.footer.navTitle}</h3>
-            <ul className="grid grid-cols-2 gap-x-6 gap-y-3">
+            <ul className="grid gap-y-3">
               {t.footer.links.map((link) => (
                 <li key={link.label}>
                   <Link href={link.href} className="text-white/60 hover:text-white transition-colors inline-flex items-center gap-2 text-sm">
@@ -88,6 +89,8 @@ export function Footer() {
               </li>
             </ul>
           </div>
+
+          <FooterNewsletter />
         </div>
 
         {/* Legal / imprint line */}
@@ -108,5 +111,86 @@ export function Footer() {
         </div>
       </div>
     </footer>
+  )
+}
+
+function FooterNewsletter() {
+  const { t, locale } = useLanguage()
+  const [email, setEmail] = useState("")
+  const [website, setWebsite] = useState("")
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
+  const [message, setMessage] = useState("")
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setStatus("loading")
+    setMessage("")
+
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, locale, source: "footer", website }),
+      })
+      const data = (await res.json().catch(() => null)) as { message?: string } | null
+
+      if (!res.ok) {
+        setStatus("error")
+        setMessage(data?.message || "A feliratkozás most nem sikerült.")
+        return
+      }
+
+      setEmail("")
+      setStatus("success")
+      setMessage(t.footer.subscribed)
+    } catch {
+      setStatus("error")
+      setMessage("A feliratkozás most nem sikerült.")
+    }
+  }
+
+  return (
+    <div className="lg:col-span-4">
+      <h3 className="text-xs text-[#d4a017] tracking-[0.3em] uppercase mb-4 font-medium">{t.footer.newsletterTitle}</h3>
+      <p className="text-white/60 text-sm leading-relaxed mb-4">{t.footer.newsletterDesc}</p>
+      <form onSubmit={submit} className="space-y-3">
+        <input
+          type="text"
+          name="website"
+          value={website}
+          onChange={(event) => setWebsite(event.target.value)}
+          className="hidden"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+        />
+        <div className="flex flex-col gap-2 sm:flex-row lg:flex-col xl:flex-row">
+          <label className="sr-only" htmlFor="newsletter-email">
+            {t.footer.emailPlaceholder}
+          </label>
+          <input
+            id="newsletter-email"
+            type="email"
+            required
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder={t.footer.emailPlaceholder}
+            className="min-h-11 flex-1 rounded-xl border border-white/15 bg-white/10 px-4 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-[#d4a017]/70 focus:bg-white/15"
+          />
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="min-h-11 rounded-xl bg-[#d4a017] px-5 text-sm font-bold text-[#0a1f0a] transition hover:bg-[#e5b62e] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {status === "loading" ? "..." : t.footer.subscribeButton}
+          </button>
+        </div>
+        {message && (
+          <p className={`text-xs ${status === "error" ? "text-red-200" : "text-emerald-200"}`} role="status">
+            {message}
+          </p>
+        )}
+      </form>
+    </div>
   )
 }

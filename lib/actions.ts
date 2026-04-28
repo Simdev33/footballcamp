@@ -142,6 +142,11 @@ export async function deleteCamp(id: string) {
 
 export async function createApplication(formData: FormData) {
   const campId = formData.get("campId") as string
+  const rawBirthDate = formData.get("childBirthDate") as string | null
+  const rawChildAge = Number(formData.get("childAge"))
+  const childBirthDate = rawBirthDate
+    ? new Date(rawBirthDate)
+    : new Date(new Date().getFullYear() - (Number.isFinite(rawChildAge) ? rawChildAge : 10), 0, 1)
 
   await db.application.create({
     data: {
@@ -149,7 +154,7 @@ export async function createApplication(formData: FormData) {
       parentEmail: formData.get("parentEmail") as string,
       parentPhone: formData.get("parentPhone") as string,
       childName: formData.get("childName") as string,
-      childAge: Number(formData.get("childAge")),
+      childBirthDate,
       campId,
     },
   })
