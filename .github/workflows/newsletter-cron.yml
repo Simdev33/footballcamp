@@ -1,0 +1,43 @@
+name: Newsletter cron
+
+on:
+  schedule:
+    # UTC times. These map to the intended Hungary slots most of the year;
+    # the endpoint receives the explicit slot, so DST does not affect content.
+    - cron: "0 6 * * *"
+    - cron: "0 10 * * *"
+    - cron: "0 17 * * *"
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: "Newsletter slot to send"
+        required: true
+        default: "morning"
+        type: choice
+        options:
+          - morning
+          - noon
+          - evening
+
+jobs:
+  send-newsletter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve newsletter slot
+        id: slot
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "value=${{ inputs.slot }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "0 6 * * *" ]; then
+            echo "value=morning" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "0 10 * * *" ]; then
+            echo "value=noon" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=evening" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger newsletter endpoint
+        run: |
+          curl --fail --show-error --silent \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://kickoffcamps.hu/api/cron/newsletter?slot=${{ steps.slot.outputs.value }}"
