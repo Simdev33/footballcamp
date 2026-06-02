@@ -77,7 +77,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     return
   }
 
-  const paymentMode = (session.metadata?.paymentMode as "earlyBirdFull" | "regularDeposit" | "regularFull" | "full" | "deposit" | "remainder") || "earlyBirdFull"
+  const paymentMode = (session.metadata?.paymentMode as "regularDeposit" | "regularFull" | "full" | "deposit" | "remainder") || "regularFull"
   const isDepositPayment = paymentMode === "regularDeposit" || paymentMode === "deposit"
   const isFullPayment = paymentMode !== "remainder" && !isDepositPayment
   const currency = (session.metadata?.currency as "HUF" | "EUR") || "HUF"

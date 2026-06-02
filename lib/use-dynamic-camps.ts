@@ -9,13 +9,11 @@ export type DynamicCamp = {
   venue: string
   dates: string
   price: string
-  earlyBird: string
   spots: string
   cta?: string
   id?: string
   slug?: string
   imageUrl?: string | null
-  earlyBirdUntil?: Date | string | null
 }
 
 type ApiCamp = PublicCamp
@@ -45,13 +43,11 @@ export function useDynamicCamps(initialCamps: ApiCamp[] = []): { camps: DynamicC
       venue: locale === "en" ? c.translationEn?.venue?.trim() || c.venue : c.venue,
       dates: locale === "en" ? c.translationEn?.dates?.trim() || c.dates : c.dates,
       price: c.price,
-      earlyBird: c.earlyBirdPrice,
       spots: String(c.remainingSpots),
       cta: defaultCta,
       id: c.id,
       slug: c.slug,
       imageUrl: c.imageUrl,
-      earlyBirdUntil: c.earlyBirdUntil,
     }))
 
   const [camps, setCamps] = useState<DynamicCamp[]>(

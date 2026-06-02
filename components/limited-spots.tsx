@@ -42,7 +42,7 @@ export function LimitedSpots() {
             </p>
 
             <p className="mt-3 md:mt-4 text-xs md:text-sm text-[#d4a017]/70 font-medium max-w-xl mx-auto">
-              {t.limitedSpots.earlyBirdNote}
+              {t.limitedSpots.note}
             </p>
 
             <div className="mt-6 md:mt-8">

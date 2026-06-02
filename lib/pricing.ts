@@ -1,9 +1,5 @@
 /**
  * Pricing helpers for camps.
- *
- * A camp has a regular price and an early-bird price, each in HUF and EUR.
- * The effective price depends on whether today is before the camp's
- * `earlyBirdUntil` cut-off date.
  */
 
 export type Currency = "HUF" | "EUR"
@@ -11,46 +7,21 @@ export type Currency = "HUF" | "EUR"
 export type CampPriceFields = {
   priceHuf: number
   priceEur: number
-  earlyBirdPriceHuf: number
-  earlyBirdPriceEur: number
-  earlyBirdUntil: Date | string | null
   // Legacy DB field name: this stores the fixed first-instalment amount.
   depositPercent: number
 }
 
 /**
- * Returns true if today is on/before the early-bird cut-off date.
- * If `earlyBirdUntil` is null, early bird is considered always-on
- * (pre-migration behaviour, can be tightened later per camp).
- */
-export function isEarlyBirdActive(earlyBirdUntil: Date | string | null, now: Date = new Date()): boolean {
-  if (!earlyBirdUntil) return true
-  const cutoff = typeof earlyBirdUntil === "string" ? new Date(earlyBirdUntil) : earlyBirdUntil
-  // Include the whole cut-off day
-  const endOfDay = new Date(cutoff)
-  endOfDay.setHours(23, 59, 59, 999)
-  return now <= endOfDay
-}
-
-/**
  * Picks the effective price (in minor-amount-agnostic integer units — for HUF
  * that's just forints, for EUR cents we handle separately on the Stripe side).
- * Returns both the effective amount and whether early bird was applied.
  */
 export function pickEffectivePrice(
   camp: CampPriceFields,
   currency: Currency,
-  now: Date = new Date(),
-): { amount: number; earlyBird: boolean; regular: number; earlyBirdAmount: number } {
+): { amount: number; regular: number } {
   const regular = currency === "HUF" ? camp.priceHuf : camp.priceEur
-  const earlyBirdAmount = currency === "HUF" ? camp.earlyBirdPriceHuf : camp.earlyBirdPriceEur
 
-  const eb = isEarlyBirdActive(camp.earlyBirdUntil)
-  const hasEb = earlyBirdAmount > 0 && eb
-  const amount = hasEb ? earlyBirdAmount : regular
-
-  return { amount, earlyBird: hasEb, regular, earlyBirdAmount }
-  void now
+  return { amount: regular, regular }
 }
 
 /**

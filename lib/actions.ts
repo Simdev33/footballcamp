@@ -43,24 +43,15 @@ function parseDateField(formData: FormData, key: string): Date | null {
 function buildCampPriceData(formData: FormData) {
   const priceHuf = parseIntField(formData, "priceHuf")
   const priceEur = parseIntField(formData, "priceEur")
-  const earlyBirdPriceHuf = parseIntField(formData, "earlyBirdPriceHuf")
-  const earlyBirdPriceEur = parseIntField(formData, "earlyBirdPriceEur")
-  const earlyBirdUntil = parseDateField(formData, "earlyBirdUntil")
   // Legacy DB field name: the admin now stores a fixed first-instalment amount
   // in forints here.
   const depositPercent = parseIntField(formData, "depositPercent")
 
-  // Keep legacy string columns in sync so the public site (which still reads
-  // `price` / `earlyBirdPrice`) stays on the same values.
   return {
     priceHuf,
     priceEur,
-    earlyBirdPriceHuf,
-    earlyBirdPriceEur,
-    earlyBirdUntil,
     depositPercent,
     price: formatPrice(priceHuf, "HUF"),
-    earlyBirdPrice: formatPrice(earlyBirdPriceHuf, "HUF"),
   }
 }
 

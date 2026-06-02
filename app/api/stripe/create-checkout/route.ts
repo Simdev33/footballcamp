@@ -9,7 +9,7 @@ type PaymentMethodType = NonNullable<CreateParams["payment_method_types"]>[numbe
 
 export const dynamic = "force-dynamic"
 
-type PaymentMode = "earlyBirdFull" | "regularDeposit" | "regularFull"
+type PaymentMode = "regularDeposit" | "regularFull"
 
 interface CreateCheckoutBody {
   applicationIds?: string[]
@@ -18,8 +18,7 @@ interface CreateCheckoutBody {
 
 function normalizePaymentMode(mode: CreateCheckoutBody["paymentMode"]): PaymentMode | null {
   if (mode === "regularDeposit" || mode === "deposit") return "regularDeposit"
-  if (mode === "regularFull") return "regularFull"
-  if (mode === "earlyBirdFull" || mode === "full") return "earlyBirdFull"
+  if (mode === "regularFull" || mode === "full") return "regularFull"
   return null
 }
 
@@ -57,7 +56,7 @@ export async function POST(request: Request) {
 
   for (const app of applications) {
     const effective = pickEffectivePrice(app.camp, currency)
-    const total = paymentMode === "earlyBirdFull" ? effective.amount : effective.regular
+    const total = effective.regular
     if (total <= 0) {
       return new NextResponse(
         `A(z) "${app.camp.city}" táborhoz nincs ${currency} ár beállítva.`,

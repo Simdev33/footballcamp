@@ -18,8 +18,6 @@ export default async function TaborokPage() {
     venue: c.venue,
     dates: c.dates,
     price: c.price,
-    earlyBirdPrice: c.earlyBirdPrice,
-    earlyBirdUntil: c.earlyBirdUntil,
     clubName: c.clubName,
     imageUrl: c.imageUrl,
     translationEn: c.translationEn,

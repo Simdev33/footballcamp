@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Jelentkezés',
   description:
-    'Jelentkezz a Kickoff Elite Football Camps nemzetközi futballtáborába. Kis létszámú csoportok, külföldi edzők, early bird kedvezmény.',
+    'Jelentkezz a Kickoff Elite Football Camps nemzetközi futballtáborába. Kis létszámú csoportok, külföldi edzők, részletfizetési lehetőség.',
   alternates: { canonical: '/jelentkezes' },
   openGraph: {
     title: 'Jelentkezés | Kickoff Elite Football Camps',

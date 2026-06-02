@@ -1,11 +1,10 @@
 "use client"
 
-import { MapPin, Calendar, ArrowRight, Tag } from "lucide-react"
+import { MapPin, Calendar, ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
 import { cn } from "@/lib/utils"
-import { formatEarlyBirdLabel } from "@/lib/early-bird-label"
 import type { DynamicCamp } from "@/lib/use-dynamic-camps"
 
 export type CampCardCamp = DynamicCamp
@@ -18,12 +17,7 @@ type CampCardProps = {
 }
 
 export function CampCard({ camp, imageSrc, className, priority }: CampCardProps) {
-  const { t, locale } = useLanguage()
-  const earlyBirdLabel = formatEarlyBirdLabel({
-    earlyBirdUntil: camp.earlyBirdUntil,
-    fallbackLabel: t.locations.earlyBirdLabel,
-    locale,
-  })
+  const { t } = useLanguage()
 
   return (
     <div className={cn("group relative", className)}>
@@ -48,11 +42,6 @@ export function CampCard({ camp, imageSrc, className, priority }: CampCardProps)
             </div>
             <p className="ml-6 md:ml-8 mt-0.5 md:mt-1 text-[10px] md:text-xs text-white/70">{camp.venue}</p>
           </div>
-
-          <div className="absolute right-3 top-3 md:right-4 md:top-4 bg-primary px-2 py-1.5 md:px-3 md:py-2 text-[10px] md:text-xs font-bold text-primary-foreground">
-            <Tag className="mr-1 md:mr-2 inline-block h-3 w-3 md:h-4 md:w-4" />
-            {t.locations.earlyBirdBadge}
-          </div>
         </div>
 
         <div className="p-3 md:p-4 lg:p-5">
@@ -67,10 +56,9 @@ export function CampCard({ camp, imageSrc, className, priority }: CampCardProps)
           </div>
 
           <div className="border-t border-white/10 pt-4 md:pt-5">
-            <p className="mb-2 md:mb-3 text-xs md:text-sm font-bold uppercase tracking-widest text-primary">{earlyBirdLabel}</p>
+            <p className="mb-2 md:mb-3 text-xs md:text-sm font-bold uppercase tracking-widest text-primary">{t.locations.priceLabel}</p>
             <div className="flex items-baseline gap-4 md:gap-5">
-              <span className="font-serif text-3xl font-bold text-white md:text-4xl">{camp.earlyBird}</span>
-              <span className="text-base md:text-lg text-white/50 line-through decoration-primary/50">{camp.price}</span>
+              <span className="font-serif text-3xl font-bold text-white md:text-4xl">{camp.price}</span>
             </div>
           </div>
 

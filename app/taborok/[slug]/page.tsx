@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const description =
     camp.description?.slice(0, 160) ||
-    `${camp.clubName} futballtábor ${camp.city} — ${camp.dates}. ${camp.ageRange} éves korosztálynak. Early bird ár: ${camp.earlyBirdPrice}.`
+    `${camp.clubName} futballtábor ${camp.city} — ${camp.dates}. ${camp.ageRange} éves korosztálynak. Ár: ${camp.price}.`
   const canonical = `/taborok/${camp.slug}`
 
   return {
@@ -59,8 +59,6 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
     venue: camp.venue,
     dates: camp.dates,
     price: camp.price,
-    earlyBirdPrice: camp.earlyBirdPrice,
-    earlyBirdUntil: camp.earlyBirdUntil?.toISOString() || null,
     clubName: camp.clubName,
     ageRange: camp.ageRange,
     imageUrl: camp.imageUrl,
@@ -79,7 +77,7 @@ export default async function CampDetailPage({ params }: { params: Promise<{ slu
     slug: o.slug,
     city: o.city,
     dates: o.dates,
-    earlyBirdPrice: o.earlyBirdPrice,
+    price: o.price,
     imageUrl: o.imageUrl,
   }))
 

@@ -19,13 +19,9 @@ interface Camp {
   city: string
   venue: string
   dates: string
-  earlyBirdPrice: string
   remainingSpots: number
   priceHuf: number
-  earlyBirdPriceHuf: number
-  earlyBirdUntil: string | null
   depositPercent: number
-  effectiveHuf: number
 }
 
 interface ChildForm {
@@ -41,7 +37,7 @@ interface ChildForm {
   campId: string
 }
 
-type PaymentMode = "earlyBirdFull" | "regularDeposit" | "regularFull"
+type PaymentMode = "regularDeposit" | "regularFull"
 
 const emptyChild = (): ChildForm => ({
   childName: "",
@@ -182,7 +178,7 @@ function JelentkezesForm() {
   const [privacyAccepted, setPrivacyAccepted] = useState(false)
   const [healthAccepted, setHealthAccepted] = useState(false)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
-  const [paymentMode, setPaymentMode] = useState<PaymentMode>("earlyBirdFull")
+  const [paymentMode, setPaymentMode] = useState<PaymentMode>("regularFull")
   const [paymentMethod, setPaymentMethod] = useState<"CARD" | "TRANSFER">("CARD")
 
   useEffect(() => {
@@ -206,7 +202,6 @@ function JelentkezesForm() {
     .map((child) => campMap.get(child.campId))
     .filter((c): c is Camp => Boolean(c))
 
-  const earlyBirdTotal = selectedCamps.reduce((s, c) => s + c.effectiveHuf, 0)
   const regularTotal = selectedCamps.reduce((s, c) => s + c.priceHuf, 0)
   const regularDeposit = selectedCamps.reduce((s, c) => {
     return s + splitInstallment(c.priceHuf, c.depositPercent).deposit
@@ -214,9 +209,7 @@ function JelentkezesForm() {
   const dueNow =
     paymentMode === "regularDeposit"
       ? regularDeposit
-      : paymentMode === "regularFull"
-        ? regularTotal
-        : earlyBirdTotal
+      : regularTotal
   const remainderAfterDeposit = regularTotal - regularDeposit
 
   const clearFieldErrors = (...keys: string[]) => {
@@ -825,20 +818,7 @@ function JelentkezesForm() {
 
               <div>
                 <label className={labelClass}>{f.paymentScheduleLabel}</label>
-                <div className="grid gap-3 lg:grid-cols-3">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMode("earlyBirdFull")}
-                    className={`p-4 border text-left rounded-md transition-colors ${
-                      paymentMode === "earlyBirdFull"
-                        ? "bg-[#d4a017] border-[#d4a017] text-[#0a1f0a]"
-                        : "bg-background border-border text-foreground hover:border-[#d4a017]/60"
-                    }`}
-                  >
-                    <div className="font-semibold text-sm">{f.paymentScheduleFull}</div>
-                    <div className="text-xs mt-1 opacity-80">{f.paymentScheduleFullDesc}</div>
-                    <div className="mt-2 font-bold text-base">{formatPrice(earlyBirdTotal, "HUF")}</div>
-                  </button>
+                <div className="grid gap-3 lg:grid-cols-2">
                   <button
                     type="button"
                     onClick={() => setPaymentMode("regularDeposit")}

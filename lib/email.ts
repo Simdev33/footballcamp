@@ -389,7 +389,7 @@ export function renderTransferInstructionsEmail(args: {
 
   const deadlineStr = formatDeadline(args.deadline, "hu")
   const amountStr = formatPrice(args.totalAmount, args.currency)
-  const amountLabel = args.isInstallment ? "Utalandó foglaló" : "Utalandó összeg"
+  const amountLabel = args.isInstallment ? "Utalandó első részlet" : "Utalandó összeg"
 
   const kidsRows = args.children
     .map((c) =>
@@ -440,7 +440,7 @@ export function renderTransferInstructionsEmail(args: {
     ${greeting(args.parentName)}
     ${paragraph(
       args.isInstallment
-        ? `A részletfizetéses jelentkezést rögzítettük. A hely véglegesítéséhez, kérlek, utald át a <strong>foglaló</strong> összegét az alábbi adatokkal. A hátralévő összegről a tábor előtt külön tájékoztatunk.`
+        ? `A részletfizetéses jelentkezést rögzítettük. A hely véglegesítéséhez, kérlek, utald át az <strong>első részlet</strong> összegét az alábbi adatokkal, lehetőség szerint <strong>3 napon belül</strong>. A hátralévő összegről a tábor előtt külön tájékoztatunk.`
         : `A jelentkezést rögzítettük. A hely véglegesítéséhez, kérlek, utald át a teljes összeget az alábbi adatokkal.`,
     )}
 

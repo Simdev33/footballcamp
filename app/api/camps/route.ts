@@ -15,11 +15,7 @@ export async function GET() {
       dates: true,
       priceHuf: true,
       priceEur: true,
-      earlyBirdPriceHuf: true,
-      earlyBirdPriceEur: true,
-      earlyBirdUntil: true,
       depositPercent: true,
-      earlyBirdPrice: true, // legacy string, kept for backward-compat
       remainingSpots: true,
     },
     orderBy: { createdAt: "asc" },
@@ -32,8 +28,6 @@ export async function GET() {
       ...c,
       effectiveHuf: huf.amount,
       effectiveEur: eur.amount,
-      earlyBirdActiveHuf: huf.earlyBird,
-      earlyBirdActiveEur: eur.earlyBird,
     }
   })
 

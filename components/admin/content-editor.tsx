@@ -49,12 +49,12 @@ const FIELD_LABELS: Record<string, string> = {
   line1: "Cím 1. sor", line2: "Cím 2. sor", line3: "Cím 3. sor",
   tagline: "Tagline (• elválasztó)", earlyLabel: "Korlátozott felirat",
   scroll: "Görgetés felirat", carouselPrev: "Előző gomb", carouselNext: "Következő gomb",
-  earlyBirdNote: "Early bird megjegyzés",
+  note: "Megjegyzés",
   text1: "Szöveg 1", text1End: "Szöveg 1 vége", textHighlight: "Kiemelt szöveg",
   text2: "Idézet szöveg", quote: "Idézet", quoteHighlight: "Idézet kiemelt",
   quoteAuthor: "Idézet szerző", quoteRole: "Idézet beosztás",
   dateLabel: "Dátum felirat", spotsLabel: "Férőhely felirat",
-  earlyBirdLabel: "Early bird felirat", earlyBirdBadge: "Early bird badge", spots: "Fő felirat",
+  priceLabel: "Ár felirat", spots: "Fő felirat",
   trust: "Trust elemek", security: "Biztonsági szöveg", label: "Felirat",
   about: "Rólunk", partnerProgram: "Partnerprogram", gallery: "Galéria",
   contact: "Kapcsolat", faq: "GYIK", register: "Jelentkezés",
@@ -442,7 +442,7 @@ function LiveSectionPreview({ sectionId, data }: { sectionId: string; data: Reco
             <h2 className="font-serif text-sm font-bold text-[#d4a017]">{d.title as string}</h2>
           </div>
           <p className="text-[10px] text-white/65 max-w-sm mx-auto">{d.text as string}</p>
-          <p className="mt-2 text-[9px] text-[#d4a017]/70">{d.earlyBirdNote as string}</p>
+          <p className="mt-2 text-[9px] text-[#d4a017]/70">{d.note as string}</p>
           {d.cta && (
             <span className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 bg-[#d4a017] text-[#0a1f0a] text-[10px] font-bold">
               {d.cta as string} <ArrowRight className="w-3 h-3" />
@@ -672,7 +672,7 @@ function LiveSectionPreview({ sectionId, data }: { sectionId: string; data: Reco
                 <div className="mt-1 text-[9px] text-[#0a1f0a]/50 space-y-0.5">
                   <p>{d.dateLabel as string}: ...</p>
                   <p>{d.spotsLabel as string}: ...</p>
-                  <p className="text-[#d4a017] font-medium">{d.earlyBirdLabel as string}</p>
+                  <p className="text-[#d4a017] font-medium">{d.priceLabel as string}</p>
                 </div>
               </div>
             ))}

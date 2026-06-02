@@ -7,7 +7,6 @@ import { CampFaq } from "./camp-faq"
 import { CampGallery } from "./camp-gallery"
 import { useLanguage } from "@/lib/language-context"
 import type { CampTranslation } from "@/lib/camp-translations"
-import { formatEarlyBirdLabel } from "@/lib/early-bird-label"
 
 type ScheduleItem = { time: string; activity: string }
 type CoachItem = { name: string; role: string; image: string; bio: string }
@@ -19,8 +18,6 @@ export type CampDetail = {
   venue: string
   dates: string
   price: string
-  earlyBirdPrice: string
-  earlyBirdUntil: string | null
   clubName: string
   ageRange: string
   imageUrl: string | null
@@ -39,7 +36,7 @@ type OtherCamp = {
   slug: string
   city: string
   dates: string
-  earlyBirdPrice: string
+  price: string
   imageUrl: string | null
 }
 
@@ -52,7 +49,7 @@ type DetailStrings = {
   dateLabel: string
   venueLabel: string
   coachesTitle: string
-  earlyBirdLabel: string
+  priceLabel: string
   ageLabel: string
   ageRange: string
   apply: string
@@ -117,12 +114,6 @@ export function CampDetailView({
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
   const showFaq = !normalizedCampKey.includes("algyo") && faq && faq.length > 0
-  const earlyBirdLabel = formatEarlyBirdLabel({
-    earlyBirdUntil: camp.earlyBirdUntil,
-    fallbackLabel: d.earlyBirdLabel,
-    locale,
-  })
-
   return (
     <main>
       {/* HERO */}
@@ -253,10 +244,9 @@ export function CampDetailView({
             <div className="lg:sticky lg:top-28 lg:self-start">
               <div className="bg-[#0a1f0a] border border-[#d4a017]/20 overflow-hidden">
                 <div className="bg-[#d4a017] px-6 py-4">
-                  <p className="text-[#0a1f0a] text-xs font-bold uppercase tracking-wider">{earlyBirdLabel}</p>
+                  <p className="text-[#0a1f0a] text-xs font-bold uppercase tracking-wider">{d.priceLabel}</p>
                   <div className="flex items-baseline gap-3 mt-1">
-                    <span className="font-serif text-3xl font-bold text-[#0a1f0a]">{camp.earlyBirdPrice}</span>
-                    <span className="text-[#0a1f0a]/60 line-through text-base">{camp.price}</span>
+                    <span className="font-serif text-3xl font-bold text-[#0a1f0a]">{camp.price}</span>
                   </div>
                 </div>
 
@@ -379,7 +369,7 @@ export function CampDetailView({
                     <div className="p-4">
                       <p className="text-white/50 text-sm">{other.dates}</p>
                       <div className="flex items-baseline justify-between mt-2">
-                        <span className="font-serif text-lg font-bold text-white">{other.earlyBirdPrice}</span>
+                        <span className="font-serif text-lg font-bold text-white">{other.price}</span>
                         <span className="text-[#d4a017] text-sm font-medium group-hover:underline flex items-center gap-1">
                           {d.details} <ArrowRight className="w-3.5 h-3.5" />
                         </span>

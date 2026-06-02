@@ -18,8 +18,6 @@ export default async function AdminCampsPage() {
       active: true,
       remainingSpots: true,
       totalSpots: true,
-      earlyBirdPrice: true,
-      earlyBirdPriceHuf: true,
       price: true,
       priceHuf: true,
       _count: { select: { applications: true } },
@@ -73,10 +71,9 @@ export default async function AdminCampsPage() {
 
               <div className="flex items-end gap-3 mb-5 flex-wrap">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">EarlyBird ár</p>
-                  <span className="text-teal-700 text-xl font-bold">{formatPrice(camp.earlyBirdPriceHuf, "HUF") || camp.earlyBirdPrice}</span>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Ár</p>
+                  <span className="text-teal-700 text-xl font-bold">{formatPrice(camp.priceHuf, "HUF") || camp.price}</span>
                 </div>
-                <span className="pb-0.5 text-slate-400 line-through text-sm">{formatPrice(camp.priceHuf, "HUF") || camp.price}</span>
                 <span className="ml-auto rounded-full bg-sky-50 px-3 py-1.5 text-xs font-bold text-sky-700 ring-1 ring-sky-100">{camp._count.applications} jelentkező</span>
               </div>
 

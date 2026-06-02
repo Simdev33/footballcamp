@@ -11,7 +11,7 @@ import { sendEmail, renderTransferInstructionsEmail } from "@/lib/email"
 import { billingNameNoteLine } from "@/lib/billing-name"
 import { revalidatePublicCamps } from "@/lib/public-camps"
 
-type PaymentMode = "earlyBirdFull" | "regularDeposit" | "regularFull"
+type PaymentMode = "regularDeposit" | "regularFull"
 
 interface ChildPayload {
   childName?: string
@@ -48,8 +48,7 @@ const KIT_LABELS: Record<string, string> = {
 
 function normalizePaymentMode(mode: ApplyPayload["paymentMode"]): PaymentMode {
   if (mode === "regularDeposit" || mode === "deposit") return "regularDeposit"
-  if (mode === "regularFull") return "regularFull"
-  return "earlyBirdFull"
+  return "regularFull"
 }
 
 export async function POST(request: Request) {
@@ -133,7 +132,7 @@ export async function POST(request: Request) {
   const perChildAmounts = children.map((c) => {
     const camp = campMap.get(c.campId!)!
     const effective = pickEffectivePrice(camp, currency)
-    const total = paymentMode === "earlyBirdFull" ? effective.amount : effective.regular
+    const total = effective.regular
     const { deposit } = splitInstallment(effective.regular, camp.depositPercent)
     const due = paymentMode === "regularDeposit" ? deposit : total
     return { total, deposit, due }

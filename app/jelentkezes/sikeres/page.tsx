@@ -14,7 +14,7 @@ type SessionInfo = {
   status: string | null
   paymentStatus: string | null
   currency: Currency
-  paymentMode: "earlyBirdFull" | "regularDeposit" | "regularFull" | "full" | "deposit"
+  paymentMode: "regularDeposit" | "regularFull" | "full" | "deposit"
   amountTotal: number
   customerEmail: string | null
   applications: Array<{

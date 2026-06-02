@@ -20,9 +20,6 @@ type CampData = {
   dates: string
   priceHuf: number
   priceEur: number
-  earlyBirdPriceHuf: number
-  earlyBirdPriceEur: number
-  earlyBirdUntil: Date | string | null
   depositPercent: number
   totalSpots: number
   remainingSpots: number
@@ -38,13 +35,6 @@ type CampData = {
   schedule: unknown
   coaches: unknown
   faq: unknown
-}
-
-function toDateInput(value: Date | string | null | undefined): string {
-  if (!value) return ""
-  const d = typeof value === "string" ? new Date(value) : value
-  if (isNaN(d.getTime())) return ""
-  return d.toISOString().slice(0, 10)
 }
 
 function depositAmountInputValue(camp?: CampData): string {
@@ -208,19 +198,12 @@ export function CampForm({ camp, campTranslationEn = {} }: { camp?: CampData; ca
 
           <Field label="Mikor lesz a tábor?" name="dates" required defaultValue={camp?.dates} placeholder="pl. 2026. július 7-11." />
 
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Normál ár forintban" name="priceHuf" type="number" required defaultValue={String(camp?.priceHuf || "")} placeholder="133000" />
-            <Field label="EarlyBird ár forintban" name="earlyBirdPriceHuf" type="number" required defaultValue={String(camp?.earlyBirdPriceHuf || "")} placeholder="99000" />
-          </div>
+          <Field label="Ár forintban" name="priceHuf" type="number" required defaultValue={String(camp?.priceHuf || "")} placeholder="133000" />
 
-          {/* EUR arak - DB mezo marad, UI-n elrejtve, alapertelmezett 0 megy at */}
+          {/* EUR ar - DB mezo marad, UI-n elrejtve, alapertelmezett 0 megy at */}
           <input type="hidden" name="priceEur" value="0" />
-          <input type="hidden" name="earlyBirdPriceEur" value="0" />
 
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Meddig él az EarlyBird ár?" name="earlyBirdUntil" type="date" defaultValue={toDateInput(camp?.earlyBirdUntil)} placeholder="" />
-            <Field label="Részletfizetés első összege forintban" name="depositPercent" type="number" required defaultValue={depositAmountInputValue(camp)} placeholder="30000" />
-          </div>
+          <Field label="Részletfizetés első összege forintban" name="depositPercent" type="number" required defaultValue={depositAmountInputValue(camp)} placeholder="30000" />
 
           <div className="grid sm:grid-cols-2 gap-4">
             <Field label="Összes férőhely" name="totalSpots" type="number" required defaultValue={String(camp?.totalSpots || "")} placeholder="40" />

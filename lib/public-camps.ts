@@ -12,12 +12,8 @@ export type PublicCamp = {
   venue: string
   dates: string
   price: string
-  earlyBirdPrice: string
   priceHuf: number
   priceEur: number
-  earlyBirdPriceHuf: number
-  earlyBirdPriceEur: number
-  earlyBirdUntil: string | null
   depositPercent: number
   remainingSpots: number
   totalSpots: number
@@ -26,8 +22,6 @@ export type PublicCamp = {
   imageUrl: string | null
   effectiveHuf: number
   effectiveEur: number
-  earlyBirdActiveHuf: boolean
-  earlyBirdActiveEur: boolean
   translationEn?: CampTranslation
 }
 
@@ -42,12 +36,8 @@ export const getPublicCamps = unstable_cache(
         venue: true,
         dates: true,
         price: true,
-        earlyBirdPrice: true,
         priceHuf: true,
         priceEur: true,
-        earlyBirdPriceHuf: true,
-        earlyBirdPriceEur: true,
-        earlyBirdUntil: true,
         depositPercent: true,
         remainingSpots: true,
         totalSpots: true,
@@ -73,12 +63,8 @@ export const getPublicCamps = unstable_cache(
       return {
         ...camp,
         price: camp.priceHuf > 0 ? formatPrice(camp.priceHuf, "HUF") : camp.price,
-        earlyBirdPrice: camp.earlyBirdPriceHuf > 0 ? formatPrice(camp.earlyBirdPriceHuf, "HUF") : camp.earlyBirdPrice,
-        earlyBirdUntil: camp.earlyBirdUntil?.toISOString() || null,
         effectiveHuf: huf.amount,
         effectiveEur: eur.amount,
-        earlyBirdActiveHuf: huf.earlyBird,
-        earlyBirdActiveEur: eur.earlyBird,
         translationEn: translationMap.get(campTranslationSection(camp.id)) || {},
       }
     })
