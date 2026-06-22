@@ -3,6 +3,14 @@
 import { useState, useEffect } from "react"
 import { signIn, useSession } from "next-auth/react"
 import { Loader2, Shield } from "lucide-react"
+import { PASSWORD_MIN_LENGTH } from "@/lib/password-policy"
+
+const ERROR_MESSAGES: Record<string, string> = {
+  database_unreachable: "Nem sikerült csatlakozni az adatbázishoz. Ellenőrizd a DATABASE_URL-t.",
+  too_many_attempts: "Túl sok sikertelen próbálkozás. Próbáld újra később.",
+  account_locked: "A fiók ideiglenesen zárolva van túl sok sikertelen bejelentkezés miatt. Próbáld 30 perc múlva.",
+  CredentialsSignin: "Hibás email vagy jelszó",
+}
 
 export default function AdminLoginPage() {
   const { status } = useSession()
@@ -30,9 +38,9 @@ export default function AdminLoginPage() {
 
     if (result?.error) {
       setError(
-        result.code === "database_unreachable"
-          ? "Nem sikerült csatlakozni az adatbázishoz. Ellenőrizd a DATABASE_URL-t."
-          : "Hibás email vagy jelszó"
+        ERROR_MESSAGES[result.code || ""] ||
+          ERROR_MESSAGES[result.error] ||
+          "Hibás email vagy jelszó",
       )
     } else {
       window.location.href = "/admin"

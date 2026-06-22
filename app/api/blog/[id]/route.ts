@@ -1,4 +1,5 @@
 import { db } from "@/lib/db"
+import { auth } from "@/lib/auth"
 import { NextResponse } from "next/server"
 
 export async function GET(
@@ -19,5 +20,13 @@ export async function GET(
     },
   })
   if (!post) return NextResponse.json(null, { status: 404 })
+
+  if (!post.published) {
+    const session = await auth()
+    if (!session?.user) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 })
+    }
+  }
+
   return NextResponse.json(post)
 }

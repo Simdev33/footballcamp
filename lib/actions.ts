@@ -8,6 +8,8 @@ import { formatPrice, type Currency } from "@/lib/pricing"
 import { revalidatePublicCamps } from "@/lib/public-camps"
 import { parseCampTranslation, saveCampTranslation } from "@/lib/camp-translations"
 import { INVOICE_GENERATION_ENABLED } from "@/lib/invoice-toggle"
+import { requireAdmin } from "@/lib/require-admin"
+import { validatePassword } from "@/lib/password-policy"
 
 // ─── Camps ───
 
@@ -56,6 +58,7 @@ function buildCampPriceData(formData: FormData) {
 }
 
 export async function createCamp(formData: FormData) {
+  await requireAdmin()
   const city = formData.get("city") as string
   const camp = await db.camp.create({
     data: {
@@ -89,6 +92,7 @@ export async function createCamp(formData: FormData) {
 }
 
 export async function updateCamp(id: string, formData: FormData) {
+  await requireAdmin()
   const camp = await db.camp.update({
     where: { id },
     data: {
@@ -122,6 +126,7 @@ export async function updateCamp(id: string, formData: FormData) {
 }
 
 export async function deleteCamp(id: string) {
+  await requireAdmin()
   await db.camp.delete({ where: { id } })
   revalidatePublicCamps()
   revalidatePath("/admin/taborok")
@@ -160,16 +165,19 @@ export async function createApplication(formData: FormData) {
 }
 
 export async function updateApplicationStatus(id: string, status: string) {
+  await requireAdmin()
   await db.application.update({ where: { id }, data: { status } })
   revalidatePath("/admin/jelentkezesek")
 }
 
 export async function updateApplicationNotes(id: string, notes: string) {
+  await requireAdmin()
   await db.application.update({ where: { id }, data: { notes } })
   revalidatePath("/admin/jelentkezesek")
 }
 
 export async function resendPaymentConfirmationEmail(id: string) {
+  await requireAdmin()
   const { sendEmail, renderDepositPaidEmail, renderFullyPaidEmail } = await import("@/lib/email")
 
   const app = await db.application.findUnique({ where: { id }, include: { camp: true } })
@@ -237,6 +245,7 @@ export async function markTransferPaid(
   id: string,
   kind: "deposit" | "full" | "remainder",
 ) {
+  await requireAdmin()
   const { db } = await import("@/lib/db")
   const { sendEmail, renderDepositPaidEmail, renderFullyPaidEmail } = await import("@/lib/email")
   const { extractBillingName } = await import("@/lib/billing-name")
@@ -410,6 +419,7 @@ export async function markTransferPaid(
 }
 
 export async function sendRemainderLink(id: string, opts: { send: boolean }) {
+  await requireAdmin()
   const { stripe } = await import("@/lib/stripe")
   const { toStripeUnitAmount, formatPrice: fp } = await import("@/lib/pricing")
   const { sendEmail, renderRemainderEmail } = await import("@/lib/email")
@@ -508,6 +518,7 @@ function slugify(text: string): string {
 }
 
 export async function createNews(formData: FormData) {
+  await requireAdmin()
   const title = formData.get("title") as string
   await db.news.create({
     data: {
@@ -524,6 +535,7 @@ export async function createNews(formData: FormData) {
 }
 
 export async function updateNews(id: string, formData: FormData) {
+  await requireAdmin()
   await db.news.update({
     where: { id },
     data: {
@@ -538,6 +550,7 @@ export async function updateNews(id: string, formData: FormData) {
 }
 
 export async function deleteNews(id: string) {
+  await requireAdmin()
   await db.news.delete({ where: { id } })
   revalidatePath("/admin/hirek")
 }
@@ -545,6 +558,7 @@ export async function deleteNews(id: string) {
 // ─── Blog ───
 
 export async function createBlogPost(formData: FormData) {
+  await requireAdmin()
   const title = formData.get("title") as string
   await db.blogPost.create({
     data: {
@@ -564,6 +578,7 @@ export async function createBlogPost(formData: FormData) {
 }
 
 export async function updateBlogPost(id: string, formData: FormData) {
+  await requireAdmin()
   await db.blogPost.update({
     where: { id },
     data: {
@@ -581,6 +596,7 @@ export async function updateBlogPost(id: string, formData: FormData) {
 }
 
 export async function deleteBlogPost(id: string) {
+  await requireAdmin()
   await db.blogPost.delete({ where: { id } })
   revalidatePath("/admin/blog")
   revalidatePath("/blog")
@@ -589,6 +605,7 @@ export async function deleteBlogPost(id: string) {
 // ─── Gallery ───
 
 export async function addGalleryImage(formData: FormData) {
+  await requireAdmin()
   await db.galleryImage.create({
     data: {
       url: formData.get("url") as string,
@@ -601,6 +618,7 @@ export async function addGalleryImage(formData: FormData) {
 }
 
 export async function deleteGalleryImage(id: string) {
+  await requireAdmin()
   await db.galleryImage.delete({ where: { id } })
   revalidatePath("/admin/galeria")
   revalidatePath("/galeria")
@@ -609,11 +627,18 @@ export async function deleteGalleryImage(id: string) {
 // ─── Users ───
 
 export async function createUser(formData: FormData) {
+  await requireAdmin("super_admin")
   const password = formData.get("password") as string
+  const passwordError = validatePassword(password)
+  if (passwordError) throw new Error(passwordError)
+
+  const email = String(formData.get("email") || "").trim().toLowerCase()
+  if (!email) throw new Error("Email kötelező.")
+
   await db.user.create({
     data: {
       name: formData.get("name") as string,
-      email: formData.get("email") as string,
+      email,
       password: await hash(password, 12),
       role: formData.get("role") as string,
     },
@@ -623,11 +648,36 @@ export async function createUser(formData: FormData) {
 }
 
 export async function updateUserRole(id: string, role: string) {
+  await requireAdmin("super_admin")
+
+  const user = await db.user.findUnique({ where: { id }, select: { role: true } })
+  if (!user) return
+
+  if (user.role === "super_admin" && role !== "super_admin") {
+    const superAdmins = await db.user.count({ where: { role: "super_admin" } })
+    if (superAdmins <= 1) throw new Error("Az utolsó super admin szerepkörét nem lehet módosítani.")
+  }
+
   await db.user.update({ where: { id }, data: { role } })
   revalidatePath("/admin/felhasznalok")
 }
 
 export async function deleteUser(id: string) {
+  const session = await requireAdmin("super_admin")
+  const currentUserId = (session.user as { id?: string }).id
+
+  if (currentUserId === id) {
+    throw new Error("Saját fiókodat nem törölheted.")
+  }
+
+  const user = await db.user.findUnique({ where: { id }, select: { role: true } })
+  if (!user) return
+
+  if (user.role === "super_admin") {
+    const superAdmins = await db.user.count({ where: { role: "super_admin" } })
+    if (superAdmins <= 1) throw new Error("Az utolsó super admin fiókot nem lehet törölni.")
+  }
+
   await db.user.delete({ where: { id } })
   revalidatePath("/admin/felhasznalok")
 }
@@ -639,6 +689,7 @@ export async function updateSiteContent(
   locale: string,
   content: Record<string, unknown>,
 ) {
+  await requireAdmin()
   const json = content as unknown as import("@prisma/client").Prisma.InputJsonValue
   await db.siteContent.upsert({
     where: { section_locale: { section, locale } },
@@ -650,6 +701,7 @@ export async function updateSiteContent(
 }
 
 export async function resetSiteContent(section: string, locale: string) {
+  await requireAdmin()
   await db.siteContent.deleteMany({ where: { section, locale } })
   revalidatePath("/", "layout")
   revalidatePath("/admin/tartalom")

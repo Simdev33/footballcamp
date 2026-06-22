@@ -3,12 +3,14 @@ import { db } from "@/lib/db"
 import { ensureNewsletterTemplates } from "@/lib/newsletter"
 import { Mail, Save } from "lucide-react"
 import { revalidatePath } from "next/cache"
+import { requireAdmin } from "@/lib/require-admin"
 
 export const dynamic = "force-dynamic"
 
 async function updateNewsletterTemplate(formData: FormData) {
   "use server"
 
+  await requireAdmin()
   const id = String(formData.get("id") || "")
   const subject = String(formData.get("subject") || "").trim()
   const previewText = String(formData.get("previewText") || "").trim()

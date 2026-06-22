@@ -3,6 +3,8 @@ import { createUser } from "@/lib/actions"
 import { UserPlus, Shield, Pencil, Eye } from "lucide-react"
 import { PageHeader } from "@/components/admin/page-header"
 import { DeleteUserForm } from "@/components/admin/delete-user-form"
+import { requireAdmin } from "@/lib/require-admin"
+import { PASSWORD_MIN_LENGTH } from "@/lib/password-policy"
 
 export const dynamic = 'force-dynamic'
 
@@ -13,6 +15,8 @@ const ROLE_CONFIG: Record<string, { label: string; icon: any; class: string }> =
 }
 
 export default async function AdminUsersPage() {
+  await requireAdmin("super_admin")
+
   const users = await db.user.findMany({
     orderBy: { createdAt: "asc" },
     select: {
@@ -51,7 +55,8 @@ export default async function AdminUsersPage() {
           </div>
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">Jelszó</label>
-            <input type="password" name="password" required minLength={6} className="w-full h-12 rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-950 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100" />
+            <input type="password" name="password" required minLength={PASSWORD_MIN_LENGTH} className="w-full h-12 rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-950 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-100" />
+            <p className="mt-1.5 text-xs text-slate-500">Min. {PASSWORD_MIN_LENGTH} karakter, kis- és nagybetű, szám.</p>
           </div>
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">Szerepkör</label>

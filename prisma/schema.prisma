@@ -167,6 +167,14 @@ model BlogPost {
   updatedAt DateTime @updatedAt
 }
 
+model LoginRateLimit {
+  key          String    @id
+  failCount    Int       @default(0)
+  windowStart  DateTime  @default(now())
+  lockedUntil  DateTime?
+  updatedAt    DateTime  @updatedAt
+}
+
 model SiteContent {
   id        String   @id @default(cuid())
   section   String

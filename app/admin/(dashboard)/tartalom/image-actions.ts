@@ -4,8 +4,10 @@ import { db } from "@/lib/db"
 import { revalidatePath } from "next/cache"
 import type { Prisma } from "@prisma/client"
 import type { SiteImageKey } from "@/lib/site-images"
+import { requireAdmin } from "@/lib/require-admin"
 
 export async function saveSiteImages(patch: Partial<Record<SiteImageKey, string>>) {
+  await requireAdmin()
   const existing = await db.siteContent.findUnique({
     where: { section_locale: { section: "images", locale: "hu" } },
   })
