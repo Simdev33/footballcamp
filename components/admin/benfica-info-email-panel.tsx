@@ -137,7 +137,7 @@ export function BenficaInfoEmailPanel() {
                 {result.dryRun
                   ? `Dry-run kész: ${result.total} szülő kapná meg a levelet.`
                   : result.sent === 1 && result.total > 1
-                    ? `Teszt email elküldve. (Éles címzettek: ${result.total})`
+                    ? `Teszt email elküldve. Élesben minden szülő a saját nevét kapja (${result.total} cím).`
                     : `Kiküldve: ${result.sent} / ${result.total}`}
               </span>
             </div>

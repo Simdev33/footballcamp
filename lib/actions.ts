@@ -763,7 +763,7 @@ function sleep(ms: number) {
  * (DEPOSIT_PAID or FULLY_PAID). One email per distinct parentEmail.
  *
  * - dryRun: return recipient list only
- * - testEmail: send a single preview to that address (uses first recipient's data, or placeholders)
+ * - testEmail: send a single preview to that address (matched parent if on list, else "Teszt Szülő")
  * - otherwise: blast to all recipients with a short delay between sends
  */
 export async function sendBenficaCampInfoEmails(opts: {
@@ -812,7 +812,22 @@ export async function sendBenficaCampInfoEmails(opts: {
 
   const testTo = opts.testEmail?.trim()
   if (testTo) {
-    const sample = recipients[0]
+    // Prefer a real recipient if the test address is on the paid list;
+    // otherwise use neutral placeholders so the preview isn't a random parent.
+    const matched = recipients.find(
+      (r) => r.parentEmail.toLowerCase() === testTo.toLowerCase(),
+    )
+    const camp = matched || recipients[0]
+    const sample = matched
+      ? matched
+      : {
+          parentName: "Teszt Szülő",
+          childNames: ["Teszt Gyerek"],
+          campCity: camp.campCity,
+          campDates: camp.campDates,
+          venue: camp.venue,
+          parentEmail: testTo,
+        }
     const { subject, html } = renderBenficaCampInfoEmail({
       parentName: sample.parentName,
       childNames: sample.childNames,
