@@ -5,6 +5,7 @@ import { PAYMENT_STATUS_CONFIG } from "@/lib/payment-status"
 import { formatPrice } from "@/lib/pricing"
 import type { PaymentStatus } from "@prisma/client"
 import { PageHeader } from "@/components/admin/page-header"
+import { BenficaInfoEmailPanel } from "@/components/admin/benfica-info-email-panel"
 
 export const dynamic = "force-dynamic"
 
@@ -65,6 +66,8 @@ export default async function AdminApplicationsPage({ searchParams }: { searchPa
         title={`Jelentkezések (${total})`}
         description="A weboldalon keresztül érkezett összes jelentkezés. Kattints egy sorra a részletekhez, státusz és fizetési állapot módosításához."
       />
+
+      <BenficaInfoEmailPanel />
 
       {applications.length === 0 ? (
         <div className="rounded-3xl border border-slate-200 bg-white py-20 text-center text-slate-500 shadow-sm">

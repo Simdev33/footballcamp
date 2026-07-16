@@ -435,11 +435,15 @@ export async function sendRemainderLink(id: string, opts: { send: boolean }) {
 
   const origin = process.env.NEXT_PUBLIC_SITE_URL || "https://kickoffcamps.hu"
 
+  // Match /api/stripe/remainder: parents get 14 days to pay (Stripe max is 30 days).
+  const expiresAt = Math.floor(Date.now() / 1000) + 14 * 24 * 3600
+
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     payment_method_types: currency === "EUR" ? ["card", "sepa_debit"] : ["card"],
     customer_email: app.parentEmail,
     locale: "hu",
+    expires_at: expiresAt,
     line_items: [
       {
         price_data: {
@@ -705,5 +709,177 @@ export async function resetSiteContent(section: string, locale: string) {
   await db.siteContent.deleteMany({ where: { section, locale } })
   revalidatePath("/", "layout")
   revalidatePath("/admin/tartalom")
+}
+
+// ─── Benfica camp info blast ───
+
+type CampInfoRecipient = {
+  parentEmail: string
+  parentName: string
+  childNames: string[]
+  campCity: string
+  campDates: string
+  venue: string
+}
+
+async function loadPaidCampInfoRecipients(): Promise<CampInfoRecipient[]> {
+  const apps = await db.application.findMany({
+    where: { paymentStatus: { in: ["DEPOSIT_PAID", "FULLY_PAID"] } },
+    select: {
+      parentEmail: true,
+      parentName: true,
+      childName: true,
+      camp: { select: { city: true, dates: true, venue: true } },
+    },
+    orderBy: { parentEmail: "asc" },
+  })
+
+  const byEmail = new Map<string, CampInfoRecipient>()
+  for (const app of apps) {
+    const key = app.parentEmail.trim().toLowerCase()
+    const existing = byEmail.get(key)
+    if (!existing) {
+      byEmail.set(key, {
+        parentEmail: app.parentEmail.trim(),
+        parentName: app.parentName.trim() || "Szülő",
+        childNames: [app.childName.trim()].filter(Boolean),
+        campCity: app.camp.city,
+        campDates: app.camp.dates,
+        venue: app.camp.venue,
+      })
+    } else if (app.childName.trim() && !existing.childNames.includes(app.childName.trim())) {
+      existing.childNames.push(app.childName.trim())
+    }
+  }
+  return [...byEmail.values()]
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+/**
+ * Sends the Benfica pre-camp info email to all parents who paid
+ * (DEPOSIT_PAID or FULLY_PAID). One email per distinct parentEmail.
+ *
+ * - dryRun: return recipient list only
+ * - testEmail: send a single preview to that address (uses first recipient's data, or placeholders)
+ * - otherwise: blast to all recipients with a short delay between sends
+ */
+export async function sendBenficaCampInfoEmails(opts: {
+  dryRun?: boolean
+  testEmail?: string
+}): Promise<{
+  ok: boolean
+  dryRun?: boolean
+  total: number
+  sent: number
+  failed: Array<{ email: string; error: string }>
+  recipients: Array<{ email: string; name: string; children: string[] }>
+  error?: string
+}> {
+  await requireAdmin()
+  const { sendEmail, renderBenficaCampInfoEmail } = await import("@/lib/email")
+
+  const recipients = await loadPaidCampInfoRecipients()
+  const summary = recipients.map((r) => ({
+    email: r.parentEmail,
+    name: r.parentName,
+    children: r.childNames,
+  }))
+
+  if (opts.dryRun) {
+    return {
+      ok: true,
+      dryRun: true,
+      total: recipients.length,
+      sent: 0,
+      failed: [],
+      recipients: summary,
+    }
+  }
+
+  if (recipients.length === 0) {
+    return {
+      ok: false,
+      total: 0,
+      sent: 0,
+      failed: [],
+      recipients: [],
+      error: "Nincs befizetett jelentkezés (DEPOSIT_PAID / FULLY_PAID).",
+    }
+  }
+
+  const testTo = opts.testEmail?.trim()
+  if (testTo) {
+    const sample = recipients[0]
+    const { subject, html } = renderBenficaCampInfoEmail({
+      parentName: sample.parentName,
+      childNames: sample.childNames,
+      campCity: sample.campCity,
+      campDates: sample.campDates,
+      venue: sample.venue,
+    })
+    const result = await sendEmail({
+      to: testTo,
+      subject: `[TESZT] ${subject}`,
+      html,
+      replyTo: "info@kickoffcamps.hu",
+    })
+    if (!result.sent) {
+      return {
+        ok: false,
+        total: recipients.length,
+        sent: 0,
+        failed: [{ email: testTo, error: result.error || "Küldés sikertelen" }],
+        recipients: summary,
+        error: result.error || "A teszt email küldése sikertelen.",
+      }
+    }
+    return {
+      ok: true,
+      total: recipients.length,
+      sent: 1,
+      failed: [],
+      recipients: summary,
+    }
+  }
+
+  const failed: Array<{ email: string; error: string }> = []
+  let sent = 0
+
+  for (const recipient of recipients) {
+    const { subject, html } = renderBenficaCampInfoEmail({
+      parentName: recipient.parentName,
+      childNames: recipient.childNames,
+      campCity: recipient.campCity,
+      campDates: recipient.campDates,
+      venue: recipient.venue,
+    })
+    const result = await sendEmail({
+      to: recipient.parentEmail,
+      subject,
+      html,
+      replyTo: "info@kickoffcamps.hu",
+    })
+    if (result.sent) {
+      sent += 1
+    } else {
+      failed.push({
+        email: recipient.parentEmail,
+        error: result.error || "Küldés sikertelen",
+      })
+    }
+    await sleep(400)
+  }
+
+  return {
+    ok: failed.length === 0,
+    total: recipients.length,
+    sent,
+    failed,
+    recipients: summary,
+    error: failed.length ? `${failed.length} címre nem sikerült kiküldeni.` : undefined,
+  }
 }
 

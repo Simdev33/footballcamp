@@ -342,6 +342,97 @@ export function renderDepositPaidEmail(args: {
   return { subject, html }
 }
 
+function sectionHeading(title: string): string {
+  return `<div style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:${C.bg};margin:28px 0 12px;padding-bottom:8px;border-bottom:2px solid ${C.line};">${escapeHtml(title)}</div>`
+}
+
+function bulletList(items: string[]): string {
+  const rows = items
+    .map(
+      (item) =>
+        `<tr>
+          <td style="width:18px;vertical-align:top;padding:0 0 10px;color:${C.gold};font-weight:700;font-size:15px;line-height:1.6;">•</td>
+          <td style="vertical-align:top;padding:0 0 10px;font-size:15px;line-height:1.6;color:${C.ink};">${item}</td>
+        </tr>`,
+    )
+    .join("")
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 8px;">${rows}</table>`
+}
+
+export function renderBenficaCampInfoEmail(args: {
+  parentName: string
+  childNames: string[]
+  campCity: string
+  campDates: string
+  venue: string
+}): { subject: string; html: string } {
+  const subject = "Benfica Focitábor – tájékoztató"
+  const kids =
+    args.childNames.length === 1
+      ? `<strong>${escapeHtml(args.childNames[0])}</strong>`
+      : args.childNames.map((n) => `<strong>${escapeHtml(n)}</strong>`).join(", ")
+
+  const html = wrap(
+    {
+      title: "Benfica Focitábor – tudnivalók",
+      eyebrow: "Tábor előtti tájékoztató",
+      preheader: "Hétfő–péntek 8:00–16:30 · Érkezés július 27-én 07:30-tól · Algyő Sportközpont",
+    },
+    `
+    ${greeting(args.parentName)}
+    ${paragraph(`Kedves Szülők, Kedves Gyerekek!`)}
+    ${paragraph(
+      `Már nem sokat kell aludni, és kezdődik a Benfica Focitábor${args.childNames.length ? ` — ${kids} részére` : ""}. Az alábbiakban összefoglaltuk a legfontosabb tudnivalókat, hogy mindenki felkészülten érkezzen.`,
+    )}
+    ${campCard(args.campCity, args.campDates)}
+    ${infoBox("Helyszín", escapeHtml(args.venue))}
+
+    ${sectionHeading("Időbeosztás")}
+    ${paragraph(
+      `A tábor <strong>hétfőtől péntekig</strong> tart. Kezdés reggel <strong>8:00</strong>, befejezés délután <strong>16:30</strong>.`,
+    )}
+    ${infoBox(
+      "Érkezés – hétfő, július 27.",
+      `Az első napon már <strong>07:30-tól</strong> lehet érkezni, a regisztráció és a felszerelések kiosztása miatt!`,
+    )}
+    ${infoBox(
+      "Zárónap – péntek, július 31.",
+      `Pénteken, a program végén <strong>emléklapok átadása</strong> lesz a gyerekek részére, illetve lehetőség lesz fotózkodni a portugál edzőkkel. Mindezek miatt a pénteki program kicsit hosszabbra nyúlhat.`,
+    )}
+
+    ${sectionHeading("Felszerelés és hoznivalók")}
+    ${bulletList([
+      `<strong>Cipő:</strong> ha van rá lehetőség, hernyótalpas vagy stoplis cipőt hozzanak a gyerekek — ebben tudnak a műfüves vagy akár a füves pályán is edzeni. Túl sok csapadék nem várható, ezért a sima talpú (teremcipő) is megfelelő lehet.`,
+      `<strong>Tölthető kulacs + víz:</strong> nagyon fontos a folyamatos folyadékpótlás az edzések során — különösen nagy melegben —, erre nagyon oda fogunk figyelni.`,
+      `<strong>Váltópóló:</strong> legyen mindenkinél olyan póló, amit szükség esetén edzés közben is fel tud venni, ha cserélni kellene. Lehetőség szerint ez <strong>piros vagy fehér</strong> színű legyen.`,
+    ])}
+
+    ${sectionHeading("Étkezés")}
+    ${paragraph(
+      `Napi <strong>3× étkezést</strong> kapnak a gyerekek. <strong>Reggelizve érkezzenek</strong>, mert az első étkezés a tízórai lesz!`,
+    )}
+    ${paragraph(
+      `Ebédre forró, meleg levesek nem lesznek — helyette limonádé/üdítő gép lesz, amivel tudják magukat frissíteni.`,
+    )}
+    ${paragraph(`Az uzsonnázásra általában a nap vége előtt, <strong>15:30 körül</strong> kerül sor.`)}
+
+    ${sectionHeading("Egyéb tudnivalók")}
+    ${bulletList([
+      `Kérjük, hogy a gyerekek <strong>pihenten és reggelizve</strong> érkezzenek.`,
+      `Ne aggódjatok az esetleges meleg miatt — a szakemberek megfelelő mennyiségű pihenőidőt és frissítést fognak biztosítani.`,
+      `Ne aggódjatok az angol nyelv miatt sem: a segédedzők fognak fordítani. Ha kell, bátran kérdezzenek a gyerekek; a legbátrabbak pedig használják az angolt!`,
+      `Sajnos a Benfica visszajelzése szerint nem minden igényelt mezméret volt elérhető — ilyen esetben mindig az <strong>egy mérettel nagyobbat</strong> küldik.`,
+    ])}
+
+    ${paragraph(`Bármilyen egyéb felmerülő kérdés esetén állunk rendelkezésetekre!`)}
+    ${paragraph(`<strong>Találkozzunk július 27-én!</strong>`)}
+    <p style="font-size:15px;line-height:1.7;margin:22px 0 0;color:${C.ink};">Sportbaráti üdvözlettel,<br><strong>KickOff Camps csapata</strong></p>
+  `,
+  )
+
+  return { subject, html }
+}
+
 export function renderFullyPaidEmail(args: {
   parentName: string
   childName: string
