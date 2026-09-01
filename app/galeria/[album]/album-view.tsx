@@ -95,12 +95,16 @@ export function AlbumView({ slug, photos }: { slug: string; photos: AlbumPhoto[]
           {album.videos && album.videos.length > 0 && (
             <div className="mt-12">
               <h2 className="font-serif text-2xl font-bold md:text-3xl">{g.videoTitle}</h2>
-              <div className="mt-6 grid gap-6 lg:grid-cols-2">
+              {/*
+                Egymás alatt, mert a fekvő és az álló videó magassága nagyon eltér –
+                rácsban a rövidebb doboz felnyúlna a magasabbik magasságára.
+              */}
+              <div className="mt-6 space-y-6">
                 {album.videos.map((video, i) => (
                   <figure
                     key={i}
-                    className={`overflow-hidden rounded-sm border border-[#d4a017]/20 bg-[#0a1f0a] ${
-                      video.aspect === "9/16" ? "mx-auto w-full max-w-sm" : ""
+                    className={`mx-auto w-full overflow-hidden rounded-sm border border-[#d4a017]/20 bg-[#0a1f0a] ${
+                      video.aspect === "9/16" ? "max-w-sm" : "max-w-4xl"
                     }`}
                   >
                     <div className="relative" style={{ aspectRatio: video.aspect ?? "16 / 9" }}>
