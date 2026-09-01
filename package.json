@@ -11,7 +11,8 @@
     "db:seed": "npx tsx prisma/seed.ts",
     "db:audit": "node scripts/restore-site.mjs audit",
     "db:restore": "node scripts/restore-site.mjs restore-all",
-    "db:security-table": "node scripts/ensure-login-rate-limit-table.mjs"
+    "db:security-table": "node scripts/ensure-login-rate-limit-table.mjs",
+    "gallery:upload": "node scripts/upload-gallery-album.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

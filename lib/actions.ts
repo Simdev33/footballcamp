@@ -608,24 +608,71 @@ export async function deleteBlogPost(id: string) {
 
 // ─── Gallery ───
 
+async function nextGallerySortOrder(category: string) {
+  const last = await db.galleryImage.findFirst({
+    where: { category },
+    orderBy: { sortOrder: "desc" },
+    select: { sortOrder: true },
+  })
+  return (last?.sortOrder ?? 0) + 1
+}
+
+function revalidateGallery(category: string) {
+  revalidatePath("/admin/galeria")
+  revalidatePath("/galeria")
+  revalidatePath(`/galeria/${category}`)
+}
+
 export async function addGalleryImage(formData: FormData) {
   await requireAdmin()
+  const category = (formData.get("category") as string) || "general"
   await db.galleryImage.create({
     data: {
       url: formData.get("url") as string,
-      alt: formData.get("alt") as string || "",
-      category: formData.get("category") as string || "general",
+      alt: (formData.get("alt") as string) || "",
+      category,
+      sortOrder: await nextGallerySortOrder(category),
     },
   })
-  revalidatePath("/admin/galeria")
-  revalidatePath("/galeria")
+  revalidateGallery(category)
+}
+
+/** Több feltöltött kép hozzáadása egy mappához (album) egy lépésben. */
+export async function addGalleryImages(urls: string[], category: string, alt = "") {
+  await requireAdmin()
+  const cleanCategory = category || "general"
+  const candidates = Array.from(
+    new Set(urls.filter((u) => typeof u === "string" && u.startsWith("https://"))),
+  )
+  if (candidates.length === 0) return { added: 0, skipped: 0 }
+
+  // Ne kerüljön be kétszer ugyanaz a kép (pl. újra megnyomott „Behúzás” gomb).
+  const existing = await db.galleryImage.findMany({
+    where: { url: { in: candidates } },
+    select: { url: true },
+  })
+  const existingUrls = new Set(existing.map((e) => e.url))
+  const cleanUrls = candidates.filter((u) => !existingUrls.has(u))
+  if (cleanUrls.length === 0) return { added: 0, skipped: candidates.length }
+
+  const start = await nextGallerySortOrder(cleanCategory)
+  await db.galleryImage.createMany({
+    data: cleanUrls.map((url, i) => ({
+      url,
+      alt,
+      category: cleanCategory,
+      sortOrder: start + i,
+    })),
+  })
+
+  revalidateGallery(cleanCategory)
+  return { added: cleanUrls.length, skipped: candidates.length - cleanUrls.length }
 }
 
 export async function deleteGalleryImage(id: string) {
   await requireAdmin()
-  await db.galleryImage.delete({ where: { id } })
-  revalidatePath("/admin/galeria")
-  revalidatePath("/galeria")
+  const image = await db.galleryImage.delete({ where: { id } })
+  revalidateGallery(image.category)
 }
 
 // ─── Users ───

@@ -9,6 +9,7 @@ import { LimitedSpots } from "@/components/limited-spots"
 import { TargetAudience } from "@/components/target-audience"
 import { LocationCards } from "@/components/location-cards"
 import { ApplicationForm } from "@/components/application-form"
+import { CampRecap } from "@/components/camp-recap"
 import { FootballDivider } from "@/components/football-divider"
 import { useSiteImage } from "@/lib/site-images-context"
 import type { PublicCamp } from "@/lib/public-camps"
@@ -140,7 +141,10 @@ export default function BelowFoldHome({ initialCamps = [] }: { initialCamps?: Pu
       {/* 8. Helyszínek */}
       <LocationCards initialCamps={initialCamps} />
 
-      {/* 9. Záró CTA — Transfer window stílus */}
+      {/* 9. Így telt a legutóbbi táborunk – képek + videó */}
+      <CampRecap />
+
+      {/* 10. Záró CTA — Transfer window stílus */}
       <ApplicationForm />
     </>
   )
